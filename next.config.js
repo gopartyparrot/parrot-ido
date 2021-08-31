@@ -45,7 +45,9 @@ const SentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-module.exports =
-  process.env.CHANNEL === 'prod' && process.env.NODE_ENV === 'production'
-    ? withSentryConfig(nextJsConfig, SentryWebpackPluginOptions)
-    : nextJsConfig;
+module.exports = nextJsConfig;
+
+// module.exports =
+//   process.env.CHANNEL === 'prod' && process.env.NODE_ENV === 'production'
+//     ? withSentryConfig(nextJsConfig, SentryWebpackPluginOptions)
+//     : nextJsConfig;
