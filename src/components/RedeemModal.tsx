@@ -1,75 +1,66 @@
-import { useEffect, useState } from 'react'
-import useWalletStore from '../stores/useWalletStore'
-import Button from './Button'
-import Input from './Input'
-import ConnectWalletButton from './ConnectWalletButton'
-import Loading from './Loading'
-import useLargestAccounts from '../hooks/useLargestAccounts'
-import useVaults from '../hooks/useVaults'
-import { calculateSupply } from '../utils/balance'
+import { useEffect, useState } from 'react';
+import useWalletStore from '../stores/useWalletStore';
+import Button from './Button';
+import Input from './Input';
+import ConnectWalletButton from './ConnectWalletButton';
+import Loading from './Loading';
+import useLargestAccounts from '../hooks/useLargestAccounts';
+import useVaults from '../hooks/useVaults';
+import { calculateSupply } from '../utils/balance';
 
 const RedeemModal = () => {
-  const actions = useWalletStore((s) => s.actions)
-  const wallet = useWalletStore((s) => s.current)
-  const connected = useWalletStore((s) => s.connected)
-  const redeemableMint = useWalletStore((s) => s.pool?.redeemableMint)
-  const mints = useWalletStore((s) => s.mints)
-  const largestAccounts = useLargestAccounts()
-  const vaults = useVaults()
+  const actions = useWalletStore(s => s.actions);
+  const connected = useWalletStore(s => s.connected);
+  const redeemableMint = useWalletStore(s => s.pool?.redeemableMint);
+  const mints = useWalletStore(s => s.mints);
+  const largestAccounts = useLargestAccounts();
+  const vaults = useVaults();
 
   const numberFormat = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-  const totalRaised = 70462383.600012
-  const redeemableBalance = largestAccounts.redeemable?.balance || 0
+    maximumFractionDigits: 2
+  });
+  const totalRaised = 70462383.600012;
+  const redeemableBalance = largestAccounts.redeemable?.balance || 0;
   const redeemableSupply =
-    redeemableMint && calculateSupply(mints, redeemableMint)
+    redeemableMint && calculateSupply(mints, redeemableMint);
   const mangoAvailable =
     vaults.mango && redeemableSupply
       ? (redeemableBalance * vaults.mango.balance) / redeemableSupply
-      : 0
+      : 0;
 
-  const [submitting, setSubmitting] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  const handleConnectDisconnect = () => {
-    if (connected) {
-      wallet.disconnect()
-    } else {
-      wallet.connect()
-    }
-  }
+  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleRedeem = () => {
-    setSubmitting(true)
-  }
+    setSubmitting(true);
+  };
 
   useEffect(() => {
     if (redeemableMint) {
-      actions.fetchMints()
+      actions.fetchMints();
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     if (largestAccounts.redeemable) {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [largestAccounts])
+  }, [largestAccounts]);
 
   useEffect(() => {
     if (submitting) {
       const handleSubmit = async () => {
-        await actions.redeem()
-        setSubmitting(false)
-      }
-      handleSubmit()
+        await actions.redeem();
+        setSubmitting(false);
+      };
+      handleSubmit();
     }
-  }, [submitting])
+  }, [submitting]);
 
-  const disableFormInputs = !connected || loading
-  const disableSubmit = disableFormInputs || redeemableBalance < 0
+  const disableFormInputs = !connected || loading;
+  const disableSubmit = disableFormInputs || redeemableBalance < 0;
 
   return (
     <>
@@ -166,13 +157,13 @@ const RedeemModal = () => {
               </div>
             </div>
             <div className="flex justify-center">
-              <ConnectWalletButton onClick={handleConnectDisconnect} />
+              <ConnectWalletButton />
             </div>
           </>
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default RedeemModal
+export default RedeemModal;
