@@ -9,11 +9,9 @@ import {
   SOLANA_COMMITMENT,
   SOLANA_NETWORK
 } from '../config/constants';
-// import useWallet from '../hooks/useWallet'
+import { IDOProvider } from '../contexts/IDOContext';
 
 function App({ Component, pageProps }) {
-  // useWallet()
-
   const title = 'Mango Markets';
   const description =
     'Claim your stake in the Mango DAO. Join us in building Mango, the protocol for permissionless leverage trading & lending.';
@@ -55,7 +53,9 @@ function App({ Component, pageProps }) {
             }}
           >
             <ModalContextProvider>
-              <Component {...pageProps} />
+              <IDOProvider>
+                <Component {...pageProps} />
+              </IDOProvider>
             </ModalContextProvider>
           </WalletContextProvider>
         </ToastProvider>

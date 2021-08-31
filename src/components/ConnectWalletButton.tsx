@@ -1,11 +1,12 @@
 // import { Menu } from '@headlessui/react'
-import { LinkIcon } from '@heroicons/react/solid'
-import { useWallet } from '@parrotfi/wallets'
-import WalletModal from '@parrotfi/wallets/dist/react/WalletModal'
-import { useCallback } from 'react'
-import useModal from '../hooks/useModal'
+import { LinkIcon } from '@heroicons/react/solid';
+import { useWallet } from '@parrotfi/wallets';
+import WalletModal from '@parrotfi/wallets/dist/react/WalletModal';
+import { useCallback, useEffect } from 'react';
+import useModal from '../hooks/useModal';
+import useWalletStore from '../stores/useWalletStore';
 
-import Button from './Button'
+import Button from './Button';
 
 // const ChevronDownIcon = (props) => (
 //   <svg
@@ -39,13 +40,26 @@ import Button from './Button'
 //   </svg>
 // )
 
-const ConnectWalletButton = (props) => {
+const ConnectWalletButton = () => {
+  const { set: setWalletStore } = useWalletStore(s => s);
+
   const { wallet, connected } = useWallet();
 
-  const [onPresentConnectWallet] = useModal(<WalletModal onError={() => {
-    console.log('error');
+  useEffect(() => {
+    if (wallet) {
+      setWalletStore(s => {
+        s.wallet = wallet;
+      });
+    }
+  }, [wallet]);
 
-  }} />);
+  const [onPresentConnectWallet] = useModal(
+    <WalletModal
+      onError={() => {
+        console.log('error');
+      }}
+    />
+  );
 
   const handleConnect = useCallback(() => {
     console.log('handleConnect');
@@ -57,7 +71,6 @@ const ConnectWalletButton = (props) => {
     }
   }, [wallet, connected, onPresentConnectWallet]);
 
-
   return (
     <div className="flex">
       <Button
@@ -68,10 +81,8 @@ const ConnectWalletButton = (props) => {
         <LinkIcon className="h-4 w-4 mr-2" />
         {connected ? 'Disconnect' : 'Connect Wallet'}
       </Button>
-
-
     </div>
-  )
-}
+  );
+};
 
-export default ConnectWalletButton
+export default ConnectWalletButton;
