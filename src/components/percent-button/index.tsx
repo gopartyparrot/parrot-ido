@@ -1,41 +1,41 @@
-import BigNumber from 'bignumber.js';
-import classNames from 'classnames';
-import { useCallback, useMemo } from 'react';
+import BigNumber from 'bignumber.js'
+import classNames from 'classnames'
+import { useCallback, useMemo } from 'react'
 
 interface PercentButtonProps {
-  disabled?: boolean;
-  current: string;
-  max: string;
-  maxPercentage: number;
-  onChange: (value: string) => void;
+  disabled?: boolean
+  current: string
+  max: string
+  maxPercentage: number
+  onChange: (value: string) => void
 }
 
 const PercentButton: React.FC<PercentButtonProps> = ({
   disabled,
   max,
   maxPercentage,
-  onChange
+  onChange,
 }) => {
   const percentages = useMemo(
     () => [
       { label: '25%', value: 25 },
       { label: '50%', value: 50 },
       { label: '75%', value: 75 },
-      { label: '100%', value: maxPercentage }
+      { label: '100%', value: maxPercentage },
     ],
     [maxPercentage]
-  );
+  )
 
   const handleChange = useCallback(
     (per: number) => () => {
-      onChange(new BigNumber(max).multipliedBy(per / 100).toString());
+      onChange(new BigNumber(max).multipliedBy(per / 100).toString())
     },
     [max, onChange]
-  );
+  )
 
   return (
     <div className={classNames('flex flex-row items-center -mx-2')}>
-      {percentages.map(per => (
+      {percentages.map((per) => (
         <button
           key={per.value}
           disabled={disabled}
@@ -49,7 +49,7 @@ const PercentButton: React.FC<PercentButtonProps> = ({
         </button>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default PercentButton;
+export default PercentButton

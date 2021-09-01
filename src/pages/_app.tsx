@@ -1,24 +1,20 @@
-import '../styles/global.scss';
-import 'slick-carousel/slick/slick.css';
-import Head from 'next/head';
-import { ThemeProvider } from 'next-themes';
-import { ModalContextProvider } from '../contexts/ModalContext';
-import { WalletContextProvider } from '@parrotfi/wallets';
-import { ToastProvider } from '../contexts/ToastContext';
-import {
-  RPC_URL,
-  SOLANA_COMMITMENT,
-  SOLANA_NETWORK
-} from '../config/constants';
-import { IDOProvider } from '../contexts/IDOContext';
+import '../styles/global.scss'
+import 'slick-carousel/slick/slick.css'
+import Head from 'next/head'
+import { ThemeProvider } from 'next-themes'
+import { ModalContextProvider } from '../contexts/ModalContext'
+import { WalletContextProvider } from '@parrotfi/wallets'
+import { ToastProvider } from '../contexts/ToastContext'
+import { RPC_URL, SOLANA_COMMITMENT, SOLANA_NETWORK } from '../config/constants'
+import { IDOProvider } from '../contexts/IDOContext'
 
 function App({ Component, pageProps }) {
-  const title = 'Mango Markets';
+  const title = 'Mango Markets'
   const description =
-    'Claim your stake in the Mango DAO. Join us in building Mango, the protocol for permissionless leverage trading & lending.';
+    'Claim your stake in the Mango DAO. Join us in building Mango, the protocol for permissionless leverage trading & lending.'
   const keywords =
-    'Mango Markets, Serum, SRM, Serum DEX, DEFI, Decentralized Finance, Decentralised Finance, Crypto, ERC20, Ethereum, Decentralize, Solana, SOL, SPL, Cross-Chain, Trading, Fastest, Fast, SerumBTC, SerumUSD, SRM Tokens, SPL Tokens';
-  const baseUrl = 'https://token.mango.markets';
+    'Mango Markets, Serum, SRM, Serum DEX, DEFI, Decentralized Finance, Decentralised Finance, Crypto, ERC20, Ethereum, Decentralize, Solana, SOL, SPL, Cross-Chain, Trading, Fastest, Fast, SerumBTC, SerumUSD, SRM Tokens, SPL Tokens'
+  const baseUrl = 'https://token.mango.markets'
 
   return (
     <>
@@ -50,7 +46,7 @@ function App({ Component, pageProps }) {
             options={{
               network: SOLANA_NETWORK,
               rpcURL: RPC_URL,
-              commitment: SOLANA_COMMITMENT
+              commitment: SOLANA_COMMITMENT,
             }}
           >
             <ModalContextProvider>
@@ -62,7 +58,7 @@ function App({ Component, pageProps }) {
         </ToastProvider>
       </ThemeProvider>
     </>
-  );
+  )
 }
 
-export default App;
+export default App

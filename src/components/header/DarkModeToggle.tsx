@@ -1,14 +1,14 @@
-import { useTheme } from 'next-themes';
-import React, { useCallback } from 'react';
+import { useTheme } from 'next-themes'
+import React, { useCallback } from 'react'
 
-import ModeDarkIcon from '../../../public/icons/mode-dark.svg';
-import ModeLightIcon from '../../../public/icons/mode-light.svg';
+import ModeDarkIcon from '../../../public/icons/mode-dark.svg'
+import ModeLightIcon from '../../../public/icons/mode-light.svg'
 
 export const DarkModeToggle: React.FC = () => {
-  const { setTheme, theme } = useTheme();
+  const { setTheme, theme } = useTheme()
   const handleChange = useCallback(() => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  }, [setTheme, theme]);
+    setTheme(theme === 'light' ? 'dark' : 'light')
+  }, [setTheme, theme])
 
   return (
     <label className="relative w-14 h-6 mr-4" htmlFor="dark-mode-btn">
@@ -25,5 +25,5 @@ export const DarkModeToggle: React.FC = () => {
         </span>
       </span>
     </label>
-  );
-};
+  )
+}

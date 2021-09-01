@@ -1,19 +1,19 @@
-import { Dialog, Transition } from '@headlessui/react';
-import React, { Fragment } from 'react';
+import { Dialog, Transition } from '@headlessui/react'
+import React, { Fragment } from 'react'
 
 interface ModalProps {
-  isOpen: boolean;
-  onDismiss: () => void;
-  minHeight?: number | false;
-  maxHeight?: number;
-  initialFocusRef?: React.RefObject<unknown>;
-  children?: React.ReactNode;
+  isOpen: boolean
+  onDismiss: () => void
+  minHeight?: number | false
+  maxHeight?: number
+  initialFocusRef?: React.RefObject<unknown>
+  children?: React.ReactNode
 }
 
 const Modal: React.FC<ModalProps> = ({
   isOpen = false,
   onDismiss,
-  children
+  children,
 }) => {
   return (
     // <Transition  as={Fragment}>
@@ -40,7 +40,7 @@ const Modal: React.FC<ModalProps> = ({
       </div>
     </Dialog>
     // </Transition>
-  );
-};
+  )
+}
 
-export default Modal;
+export default Modal

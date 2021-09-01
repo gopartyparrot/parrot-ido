@@ -1,6 +1,6 @@
-import usePool from '../../hooks/usePool';
-import useVaults from '../../hooks/useVaults';
-import PoolCountdown from './PoolCountdown';
+import usePool from '../../hooks/usePool'
+import useVaults from '../../hooks/useVaults'
+import PoolCountdown from './PoolCountdown'
 
 const Card = (props: any) => {
   return (
@@ -11,12 +11,12 @@ const Card = (props: any) => {
       <p className="pb-2 text-white text-opacity-50 text-md">{props.title}</p>
       {props.children}
     </div>
-  );
-};
+  )
+}
 
 const PoolInfoCards = () => {
-  const { endIdo, endDeposits } = usePool();
-  const vaults = useVaults();
+  const { endIdo, endDeposits } = usePool()
+  const vaults = useVaults()
 
   //const numberFormat = new Intl.NumberFormat('en-US', {
   //  maximumFractionDigits: 10,
@@ -72,7 +72,7 @@ const PoolInfoCards = () => {
       </Card>
       */}
     </div>
-  );
-};
+  )
+}
 
-export default PoolInfoCards;
+export default PoolInfoCards

@@ -1,8 +1,8 @@
-import classNames from 'classnames';
-import { Spinner } from '../spinner';
-import React, { cloneElement, ElementType, isValidElement } from 'react';
+import classNames from 'classnames'
+import { Spinner } from '../spinner'
+import React, { cloneElement, ElementType, isValidElement } from 'react'
 
-import { ButtonProps, sizes, variants } from './types';
+import { ButtonProps, sizes, variants } from './types'
 
 const Button = <E extends ElementType = 'button'>(
   props: ButtonProps<E>
@@ -18,8 +18,8 @@ const Button = <E extends ElementType = 'button'>(
     children,
     block = false,
     ...rest
-  } = props;
-  const isDisabled = isLoading || disabled;
+  } = props
+  const isDisabled = isLoading || disabled
 
   return (
     <button
@@ -46,7 +46,7 @@ const Button = <E extends ElementType = 'button'>(
           'bg-failure hover:bg-failureHover': variant === variants.DANGER,
           'bg-disabled hover:bg-disabled active:shadow-none cursor-now-allowed remove-active-effect':
             isDisabled,
-          'text-disabled': isDisabled
+          'text-disabled': isDisabled,
         },
         className
       )}
@@ -59,7 +59,7 @@ const Button = <E extends ElementType = 'button'>(
         {isValidElement(endIcon) && cloneElement(endIcon)}
       </>
     </button>
-  );
-};
+  )
+}
 
-export default Button;
+export default Button

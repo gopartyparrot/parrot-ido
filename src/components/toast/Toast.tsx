@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { CSSTransition } from 'react-transition-group';
+import React, { useCallback, useEffect, useRef } from 'react'
+import { CSSTransition } from 'react-transition-group'
 
-import { Alert, AlertTypes } from '../alert';
-import { ToastProps, ToastTypes } from './types';
+import { Alert, AlertTypes } from '../alert'
+import { ToastProps, ToastTypes } from './types'
 
 const alertTypeMap = {
   [ToastTypes.INFO]: AlertTypes.INFO,
   [ToastTypes.SUCCESS]: AlertTypes.SUCCESS,
   [ToastTypes.DANGER]: AlertTypes.FAILURE,
-  [ToastTypes.WARNING]: AlertTypes.WARNING
-};
+  [ToastTypes.WARNING]: AlertTypes.WARNING,
+}
 
 const Toast: React.FC<ToastProps> = ({
   toast,
@@ -18,43 +18,43 @@ const Toast: React.FC<ToastProps> = ({
   ttl,
   ...props
 }) => {
-  const timer = useRef<number>();
-  const ref = useRef(null);
-  const removeHandler = useRef(onRemove);
-  const { id, title, message, type } = toast;
+  const timer = useRef<number>()
+  const ref = useRef(null)
+  const removeHandler = useRef(onRemove)
+  const { id, title, message, type } = toast
 
   const handleRemove = useCallback(
     () => removeHandler.current(id),
     [id, removeHandler]
-  );
+  )
 
   const handleMouseEnter = () => {
-    clearTimeout(timer.current);
-  };
+    clearTimeout(timer.current)
+  }
 
   const handleMouseLeave = () => {
     if (timer.current) {
-      clearTimeout(timer.current);
+      clearTimeout(timer.current)
     }
 
     timer.current = window.setTimeout(() => {
-      handleRemove();
-    }, ttl);
-  };
+      handleRemove()
+    }, ttl)
+  }
 
   useEffect(() => {
     if (timer.current) {
-      clearTimeout(timer.current);
+      clearTimeout(timer.current)
     }
 
     timer.current = window.setTimeout(() => {
-      handleRemove();
-    }, ttl);
+      handleRemove()
+    }, ttl)
 
     return () => {
-      clearTimeout(timer.current);
-    };
-  }, [timer, ttl, handleRemove]);
+      clearTimeout(timer.current)
+    }
+  }, [timer, ttl, handleRemove])
 
   return (
     <CSSTransition nodeRef={ref} timeout={250} style={style} {...props}>
@@ -72,7 +72,7 @@ const Toast: React.FC<ToastProps> = ({
         />
       </div>
     </CSSTransition>
-  );
-};
+  )
+}
 
-export default Toast;
+export default Toast

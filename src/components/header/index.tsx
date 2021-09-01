@@ -1,8 +1,8 @@
-import React from 'react';
-import ConnectWallet from '../account/ConnectWallet';
+import React from 'react'
+import ConnectWallet from '../account/ConnectWallet'
 
-import { Logo } from '../logo';
-import { DarkModeToggle } from './DarkModeToggle';
+import { Logo } from '../logo'
+import { DarkModeToggle } from './DarkModeToggle'
 
 export const Header: React.FC = () => {
   return (
@@ -17,5 +17,5 @@ export const Header: React.FC = () => {
         </div>
       </div>
     </header>
-  );
-};
+  )
+}

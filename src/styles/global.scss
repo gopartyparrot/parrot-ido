@@ -178,7 +178,8 @@ button {
 }
 
 .alert-shadow {
-  box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
+  box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%),
+    0 9px 28px 8px rgb(0 0 0 / 5%);
 }
 
 .badge-dot::before {
@@ -227,7 +228,12 @@ button {
 
 .dark .react-loading-skeleton {
   background-color: #282938 !important;
-  background-image: linear-gradient(90deg, #25263b, #343548, #25263b) !important;
+  background-image: linear-gradient(
+    90deg,
+    #25263b,
+    #343548,
+    #25263b
+  ) !important;
 }
 
 .dark-mode-toggle {
@@ -239,4 +245,3 @@ button {
   background-color: #3a3b51;
   transform: translateX(2rem);
 }
-

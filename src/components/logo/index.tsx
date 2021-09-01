@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import React from 'react';
+import Image from 'next/image'
+import React from 'react'
 
 export const Logo: React.FC = () => {
   return (
@@ -21,5 +21,5 @@ export const Logo: React.FC = () => {
         />
       </span>
     </>
-  );
-};
+  )
+}

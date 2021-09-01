@@ -1,18 +1,18 @@
-import usePool from '../../hooks/usePool';
-import Countdown from 'react-countdown';
-import moment from 'moment';
-import { ClockIcon } from '@heroicons/react/outline';
+import usePool from '../../hooks/usePool'
+import Countdown from 'react-countdown'
+import moment from 'moment'
+import { ClockIcon } from '@heroicons/react/outline'
 
 const PoolCountdown = (props: { className?: string; date: moment.Moment }) => {
-  const { endIdo, endDeposits } = usePool();
+  const { endIdo, endDeposits } = usePool()
   const renderCountdown = ({ days, hours, minutes, seconds, completed }) => {
-    hours += days * 24;
+    hours += days * 24
     const message =
       endDeposits?.isBefore() && endIdo?.isAfter()
         ? 'Deposits are closed'
-        : 'The IDO has ended';
+        : 'The IDO has ended'
     if (completed) {
-      return <p className="text-sm mt-2">{message}</p>;
+      return <p className="text-sm mt-2">{message}</p>
     } else {
       return (
         <div className={`${props.className} flex items-center`}>
@@ -35,15 +35,15 @@ const PoolCountdown = (props: { className?: string; date: moment.Moment }) => {
             <span className="text-xs mt-1 text-secondary">secs</span>
           </div>
         </div>
-      );
+      )
     }
-  };
+  }
 
   if (props.date) {
-    return <Countdown date={props.date.format()} renderer={renderCountdown} />;
+    return <Countdown date={props.date.format()} renderer={renderCountdown} />
   } else {
-    return null;
+    return null
   }
-};
+}
 
-export default PoolCountdown;
+export default PoolCountdown

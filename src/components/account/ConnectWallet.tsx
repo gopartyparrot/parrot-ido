@@ -1,18 +1,18 @@
-import { useWallet, WalletModal } from '@parrotfi/wallets';
-import classNames from 'classnames';
-import React, { useCallback } from 'react';
-import useModal from '../../hooks/useModal';
+import { useWallet, WalletModal } from '@parrotfi/wallets'
+import classNames from 'classnames'
+import React, { useCallback } from 'react'
+import useModal from '../../hooks/useModal'
 
 interface ConnectWalletProps {
-  className?: string;
-  onShowWallets?: () => void;
+  className?: string
+  onShowWallets?: () => void
 }
 
 export const ConnectWallet: React.FC<ConnectWalletProps> = ({
   className,
-  onShowWallets
+  onShowWallets,
 }) => {
-  const { wallet, connected } = useWallet();
+  const { wallet, connected } = useWallet()
 
   const [onPresentConnectWallet] = useModal(
     <WalletModal
@@ -20,18 +20,18 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
         //
       }}
     />
-  );
+  )
 
   const handleConnect = useCallback(() => {
     if (connected && wallet) {
-      wallet.disconnect();
+      wallet.disconnect()
     } else {
       if (onShowWallets) {
-        onShowWallets();
+        onShowWallets()
       }
-      onPresentConnectWallet();
+      onPresentConnectWallet()
     }
-  }, [wallet, connected]);
+  }, [wallet, connected])
 
   return (
     <button
@@ -40,7 +40,7 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
         'outline-none focus:outline-none h-8 px-4',
         {
           'text-brandPrimary hover:bg-brandPrimaryHover': !connected,
-          'text-failure hover:bg-failureHover': connected
+          'text-failure hover:bg-failureHover': connected,
         },
         className
       )}
@@ -48,7 +48,7 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
     >
       {connected == true ? 'Disconnect' : 'Connect Wallet'}
     </button>
-  );
-};
+  )
+}
 
-export default ConnectWallet;
+export default ConnectWallet

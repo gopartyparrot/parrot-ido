@@ -1,5 +1,5 @@
-import { BaseButtonProps } from '../button/types';
+import { BaseButtonProps } from '../button/types'
 
 export interface ButtonMenuItemProps extends BaseButtonProps {
-  isActive?: boolean;
+  isActive?: boolean
 }

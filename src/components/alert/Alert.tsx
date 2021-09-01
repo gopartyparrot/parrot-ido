@@ -1,40 +1,40 @@
-import { default as ReachAlert } from '@reach/alert';
-import classNames from 'classnames';
-import { useCallback } from 'react';
+import { default as ReachAlert } from '@reach/alert'
+import classNames from 'classnames'
+import { useCallback } from 'react'
 
-import { AlertProps, AlertTypes } from './types';
+import { AlertProps, AlertTypes } from './types'
 
-let globalId = 0;
+let globalId = 0
 
 const nextId = () => {
-  return `${new Date().valueOf()}_${globalId++}`;
-};
+  return `${new Date().valueOf()}_${globalId++}`
+}
 
 const getIcon = (type: AlertTypes = AlertTypes.INFO) => {
   switch (type) {
     case AlertTypes.FAILURE:
-      return '✕';
+      return '✕'
     case AlertTypes.WARNING:
-      return '';
+      return ''
     case AlertTypes.SUCCESS:
-      return '✓';
+      return '✓'
     case AlertTypes.INFO:
     default:
-      return '';
+      return ''
   }
-};
+}
 
 const Alert: React.FC<AlertProps> = ({ message, children, type, onClick }) => {
-  const Icon = getIcon(type);
+  const Icon = getIcon(type)
 
   const handleClose = useCallback(
-    evt => {
+    (evt) => {
       if (onClick) {
-        onClick(evt);
+        onClick(evt)
       }
     },
     [onClick]
-  );
+  )
 
   return (
     <ReachAlert
@@ -49,7 +49,7 @@ const Alert: React.FC<AlertProps> = ({ message, children, type, onClick }) => {
             'bg-success': type === AlertTypes.SUCCESS,
             'bg-failure': type === AlertTypes.FAILURE,
             'bg-warning': type === AlertTypes.WARNING,
-            'bg-lightgray': type === AlertTypes.INFO
+            'bg-lightgray': type === AlertTypes.INFO,
           }
         )}
       >
@@ -57,12 +57,12 @@ const Alert: React.FC<AlertProps> = ({ message, children, type, onClick }) => {
       </div>
       <div className="space-y-1 leading-snug w-full overflow-y-auto">
         {message.split('\n').map((i, key) => {
-          return <div key={key}>{i}</div>;
+          return <div key={key}>{i}</div>
         })}
         {children}
       </div>
     </ReachAlert>
-  );
-};
+  )
+}
 
-export default Alert;
+export default Alert

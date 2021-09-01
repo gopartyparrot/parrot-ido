@@ -1,8 +1,8 @@
-import classNames from 'classnames';
+import classNames from 'classnames'
 
 export interface SpinnerProps {
-  size?: 'sm' | 'md';
-  className?: string;
+  size?: 'sm' | 'md'
+  className?: string
 }
 
 const Spinner: React.FC<SpinnerProps> = ({ /*size = 'sm',*/ className }) => {
@@ -14,7 +14,7 @@ const Spinner: React.FC<SpinnerProps> = ({ /*size = 'sm',*/ className }) => {
         className
       )}
     />
-  );
-};
+  )
+}
 
-export default Spinner;
+export default Spinner

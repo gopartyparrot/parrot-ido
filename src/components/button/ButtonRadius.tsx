@@ -1,12 +1,12 @@
-import classNames from 'classnames';
-import React from 'react';
+import classNames from 'classnames'
+import React from 'react'
 
 type ButtonRadiusProps = React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 > & {
-  isSecondary?: boolean;
-};
+  isSecondary?: boolean
+}
 
 const ButtonRadius: React.FC<ButtonRadiusProps> = ({
   className = '',
@@ -23,7 +23,7 @@ const ButtonRadius: React.FC<ButtonRadiusProps> = ({
           'bg-brandSecondary hover:bg-brandSecondaryHover': isSecondary,
           'bg-disabled hover:bg-disabled active:shadow-none cursor-not-allowed remove-active-effect':
             rest.disabled,
-          'text-disabled': rest.disabled
+          'text-disabled': rest.disabled,
         },
         className
       )}
@@ -31,7 +31,7 @@ const ButtonRadius: React.FC<ButtonRadiusProps> = ({
     >
       {children}
     </button>
-  );
-};
+  )
+}
 
-export default ButtonRadius;
+export default ButtonRadius

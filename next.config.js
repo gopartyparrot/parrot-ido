@@ -1,9 +1,9 @@
-const fs = require('fs');
-const dotenv = require('dotenv');
-const { join, resolve } = require('path');
+const fs = require('fs')
+const dotenv = require('dotenv')
+const { join, resolve } = require('path')
 // const { withSentryConfig } = require('@sentry/nextjs');
 
-dotenv.config({ path: join(__dirname, `./.env.${process.env.CHANNEL}`) });
+dotenv.config({ path: join(__dirname, `./.env.${process.env.CHANNEL}`) })
 
 const nextJsConfig = {
   poweredByHeader: false,
@@ -23,17 +23,17 @@ const nextJsConfig = {
         ...config.module.rules,
         {
           test: /\.svg$/,
-          loader: '@svgr/webpack'
-        }
-      ]
-    };
-    if (!options.isServer) {
-      config.resolve.fallback.fs = false;
-      config.resolve.fallback.path = false;
+          loader: '@svgr/webpack',
+        },
+      ],
     }
-    return config;
-  }
-};
+    if (!options.isServer) {
+      config.resolve.fallback.fs = false
+      config.resolve.fallback.path = false
+    }
+    return config
+  },
+}
 
 const SentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
@@ -43,9 +43,9 @@ const SentryWebpackPluginOptions = {
   //   urlPrefix, include, ignore
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options.
-};
+}
 
-module.exports = nextJsConfig;
+module.exports = nextJsConfig
 
 // module.exports =
 //   process.env.CHANNEL === 'prod' && process.env.NODE_ENV === 'production'

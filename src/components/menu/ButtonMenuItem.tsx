@@ -1,8 +1,8 @@
-import classNames from 'classnames';
-import React from 'react';
-import { variants } from '../button/types';
+import classNames from 'classnames'
+import React from 'react'
+import { variants } from '../button/types'
 
-import { ButtonMenuItemProps } from './types';
+import { ButtonMenuItemProps } from './types'
 
 const ButtonMenuItem: React.FC<ButtonMenuItemProps> = ({
   isActive = false,
@@ -18,7 +18,7 @@ const ButtonMenuItem: React.FC<ButtonMenuItemProps> = ({
         {
           'text-tertiary': !isActive,
           'text-brandPrimary': isActive,
-          'font-bold': isActive
+          'font-bold': isActive,
         }
       )}
       {...props}
@@ -27,11 +27,11 @@ const ButtonMenuItem: React.FC<ButtonMenuItemProps> = ({
       <div
         className={classNames('rounded-full h-1 -mx-2 mt-1', {
           'bg-brandPrimary': isActive,
-          'bg-transparent': !isActive
+          'bg-transparent': !isActive,
         })}
       />
     </button>
-  );
-};
+  )
+}
 
-export default ButtonMenuItem;
+export default ButtonMenuItem

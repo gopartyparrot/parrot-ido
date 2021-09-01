@@ -1,57 +1,57 @@
-import React, { createContext, useState } from 'react';
-import { Modal } from '../components/modal';
+import React, { createContext, useState } from 'react'
+import { Modal } from '../components/modal'
 
 interface ModalContext {
-  onPresent: (node: React.ReactNode, key?: string) => void;
-  onDismiss: () => void;
-  setBlocking: (block: boolean) => void;
+  onPresent: (node: React.ReactNode, key?: string) => void
+  onDismiss: () => void
+  setBlocking: (block: boolean) => void
 }
 
 export const ModalContext = createContext<ModalContext>({
   onPresent: () => null,
   onDismiss: () => null,
-  setBlocking: () => null
-});
+  setBlocking: () => null,
+})
 
 export const ModalContextProvider: React.FC = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [modalNode, setModalNode] = useState<React.ReactNode>();
-  const [isBlocking, setBlocking] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
+  const [modalNode, setModalNode] = useState<React.ReactNode>()
+  const [isBlocking, setBlocking] = useState(false)
 
   const handlePresent = (node: React.ReactNode) => {
-    setModalNode(node);
-    setBlocking(false);
-    setIsOpen(true);
-  };
+    setModalNode(node)
+    setBlocking(false)
+    setIsOpen(true)
+  }
 
   const handleDismiss = () => {
     if (!isBlocking) {
-      setModalNode(undefined);
-      setIsOpen(false);
+      setModalNode(undefined)
+      setIsOpen(false)
     }
-  };
+  }
 
   const handleRequestDismiss = () => {
-    setModalNode(undefined);
-    setBlocking(false);
-    setIsOpen(false);
-  };
+    setModalNode(undefined)
+    setBlocking(false)
+    setIsOpen(false)
+  }
 
   return (
     <ModalContext.Provider
       value={{
         onPresent: handlePresent,
         onDismiss: handleDismiss,
-        setBlocking
+        setBlocking,
       }}
     >
       <Modal isOpen={isOpen} onDismiss={handleDismiss}>
         {React.isValidElement(modalNode) &&
           React.cloneElement(modalNode, {
-            onRequestDismiss: handleRequestDismiss
+            onRequestDismiss: handleRequestDismiss,
           })}
       </Modal>
       {children}
     </ModalContext.Provider>
-  );
-};
+  )
+}

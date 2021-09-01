@@ -1,20 +1,20 @@
-import Image from 'next/image';
-import React from 'react';
+import Image from 'next/image'
+import React from 'react'
 
 interface TokenIconProps {
-  className?: string;
-  symbol: string;
-  icon: string;
-  size: string;
+  className?: string
+  symbol: string
+  icon: string
+  size: string
 }
 
 const TokenIcon: React.FC<TokenIconProps> = ({
   className,
   symbol,
   size = '64',
-  icon
+  icon,
 }) => {
-  const iconUrl = icon?.startsWith('http') ? icon : `/icons/${icon}`;
+  const iconUrl = icon?.startsWith('http') ? icon : `/icons/${icon}`
   return (
     <Image
       className={className}
@@ -23,7 +23,7 @@ const TokenIcon: React.FC<TokenIconProps> = ({
       width={size}
       height={size}
     />
-  );
-};
+  )
+}
 
-export default TokenIcon;
+export default TokenIcon
