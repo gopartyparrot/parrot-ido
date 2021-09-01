@@ -14,8 +14,8 @@ const baseColors = {
   black: 'var(--color-black)',
   gray: 'var(--color-gray)',
   lightgray: 'var(--color-lightgray)',
-  transparent: 'transparent'
-};
+  transparent: 'transparent',
+}
 
 module.exports = {
   purge: {
@@ -23,8 +23,8 @@ module.exports = {
     preserveHtmlElements: false,
     content: ['./src/**/*.tsx'],
     options: {
-      safelist: ['dark']
-    }
+      safelist: ['dark'],
+    },
   },
   darkMode: 'class',
   theme: {
@@ -34,7 +34,7 @@ module.exports = {
       md: '768px',
       lg: '1024px',
       xl: '1280px',
-      '2xl': '1536px'
+      '2xl': '1536px',
     },
     textColor: {
       ...baseColors,
@@ -43,7 +43,7 @@ module.exports = {
       tertiary: 'var(--color-text-tertiary)',
       disabled: 'var(--color-text-disabled)',
       input: 'var(--color-text-input)',
-      inputSecondary: 'var(--color-text-input-secondary)'
+      inputSecondary: 'var(--color-text-input-secondary)',
     },
     backgroundColor: {
       ...baseColors,
@@ -55,13 +55,13 @@ module.exports = {
       // Extra
       header: 'var(--color-bg-header)',
       scaffold: 'var(--color-bg-scaffold)',
-      overlay: 'var(--color-bg-overlay)'
+      overlay: 'var(--color-bg-overlay)',
     },
     borderColor: {
       ...baseColors,
       default: 'var(--color-border-default)',
       secondary: 'var(--color-border-secondary)',
-      grey: 'var(--color-border-grey)'
+      grey: 'var(--color-border-grey)',
     },
     fontFamily: {
       sans: ['Manrope', 'Roboto'],
@@ -73,8 +73,8 @@ module.exports = {
         'Consolas',
         'Liberation Mono',
         'Courier New',
-        'monospace'
-      ]
+        'monospace',
+      ],
     },
     fontSize: {
       xs: ['12px', '12px'],
@@ -84,7 +84,7 @@ module.exports = {
       mdx: ['20px', '20px'],
       lg: ['24px', '24px'],
       xl: ['36px', '36px'],
-      xxl: ['40px', '40px']
+      xxl: ['40px', '40px'],
     },
     maxWidth: {
       none: 'none',
@@ -103,26 +103,32 @@ module.exports = {
       full: '100%',
       min: 'min-content',
       max: 'max-content',
-      prose: '65ch'
+      prose: '65ch',
     },
     minWidth: {
       symbol: '2.5em',
-      card: '530px'
+      card: '530px',
     },
     extend: {
       width: {
-        card: '480px'
+        card: '530px',
+      },
+      blur: {
+        xs: 'blur(3px)',
+      },
+      shadow: {
+        card: '0px 2px 2px rgba(0, 0, 0, 0.16)',
       },
       minHeight: {
-        '70vh': '70vh'
+        '70vh': '70vh',
       },
       maxHeight: {
-        90: '21rem'
-      }
-    }
+        90: '21rem',
+      },
+    },
   },
   variants: {
-    extend: { boxShadow: ['active'] }
+    extend: { boxShadow: ['active'] },
   },
-  plugins: []
-};
+  plugins: [],
+}

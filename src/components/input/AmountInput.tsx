@@ -1,53 +1,53 @@
-import classNames from 'classnames';
-import { TokenIcon } from '../icons';
-import PercentButton from '../percent-button';
-import { Spinner } from '../spinner';
-import React, { useCallback } from 'react';
-import NumberFormat, { NumberFormatValues } from 'react-number-format';
+import classNames from 'classnames'
+import { TokenIcon } from '../icons'
+import PercentButton from '../percent-button'
+import { Spinner } from '../spinner'
+import React, { useCallback } from 'react'
+import NumberFormat, { NumberFormatValues } from 'react-number-format'
 
-import SortDown from '../../../public/icons/sort-down.svg';
-import BigNumber from 'bignumber.js';
+import SortDown from '../../../public/icons/sort-down.svg'
+import BigNumber from 'bignumber.js'
 
 const toSafeNum = (
   value: string,
   decimals: number,
   round: 'floor' | 'ceil'
 ): string | undefined => {
-  const safeNum = new BigNumber(value);
+  const safeNum = new BigNumber(value)
   if (safeNum.isNaN()) {
-    return;
+    return
   }
   switch (round) {
     case 'ceil':
-      return safeNum.decimalPlaces(decimals, BigNumber.ROUND_CEIL).toString();
+      return safeNum.decimalPlaces(decimals, BigNumber.ROUND_CEIL).toString()
     case 'floor':
-      return safeNum.decimalPlaces(decimals, BigNumber.ROUND_FLOOR).toString();
+      return safeNum.decimalPlaces(decimals, BigNumber.ROUND_FLOOR).toString()
     default:
-      return;
+      return
   }
-};
+}
 
 type AmountInputProps = {
-  className?: string;
-  title: string;
-  errorMessage?: string;
-  placeholder: string;
-  value: string;
-  valueRound: 'floor' | 'ceil';
-  maxLabel?: string;
-  maxValue?: string;
-  maxPercentage?: number;
-  maxIsLoading?: boolean;
-  tokenIcon: string;
-  tokenSymbol: string;
-  tokenNameDetail?: string;
-  decimals: number;
-  disabled?: boolean;
-  readOnly?: boolean;
-  hasError?: boolean;
-  onChange?: (value: string) => void;
-  onSelectToken?: () => void;
-};
+  className?: string
+  title: string
+  errorMessage?: string
+  placeholder: string
+  value: string
+  valueRound: 'floor' | 'ceil'
+  maxLabel?: string
+  maxValue?: string
+  maxPercentage?: number
+  maxIsLoading?: boolean
+  tokenIcon: string
+  tokenSymbol: string
+  tokenNameDetail?: string
+  decimals: number
+  disabled?: boolean
+  readOnly?: boolean
+  hasError?: boolean
+  onChange?: (value: string) => void
+  onSelectToken?: () => void
+}
 
 export const AmountInput: React.FC<AmountInputProps> = ({
   className,
@@ -68,44 +68,44 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   hasError = false,
   errorMessage,
   onChange,
-  onSelectToken
+  onSelectToken,
 }) => {
   const handleChange = useCallback(
     ({ value }: NumberFormatValues) => {
       if (!onChange) {
-        return;
+        return
       }
-      onChange(value);
+      onChange(value)
     },
     [onChange]
-  );
+  )
 
   const handleCheckValidInput = useCallback(
     ({ value }: NumberFormatValues) => {
-      return !!value.match(`^\\d*\\.?\\d{0,${decimals}}$`)?.length;
+      return !!value.match(`^\\d*\\.?\\d{0,${decimals}}$`)?.length
     },
     [onChange, decimals]
-  );
+  )
 
   const handleSelectMax = useCallback(
-    value => {
+    (value) => {
       if (!onChange || disabled || readOnly) {
-        return;
+        return
       }
       if (value) {
-        const safeNum = toSafeNum(value, decimals, valueRound);
+        const safeNum = toSafeNum(value, decimals, valueRound)
         if (safeNum) {
-          onChange(safeNum);
+          onChange(safeNum)
         }
       }
     },
     [onChange, disabled, readOnly]
-  );
+  )
 
   return (
     <div className="mb-3">
       <div className="flex flex-row items-center justify-between mb-3">
-        <label className="flex-1">{title}</label>
+        <label className="flex-1 text-sm font-bold">{title}</label>
         {maxIsLoading && <Spinner className="mx-2" />}
         {!!maxValue && (
           <PercentButton
@@ -118,13 +118,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         )}
       </div>
       <div
-        className={classNames('flex flex-row items-center rounded-xl border', {
+        className={classNames('flex flex-row items-center rounded-lg border', {
           'bg-disabled': disabled,
           'bg-input': !disabled,
           'bg-tertiary': readOnly,
           'border-transparent': !hasError,
           'border-error': hasError,
-          className
+          className,
         })}
       >
         <NumberFormat
@@ -132,7 +132,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           className={classNames(
             'flex-1 p-4 appearance-none w-full outline-none focus:outline-none text-black bg-transparent',
             {
-              'text-disabled': disabled && !readOnly
+              'text-disabled': disabled && !readOnly,
             }
           )}
           value={value}
@@ -150,7 +150,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             'flex flex-row items-center justify-center space-x-1 p-2 pr-4 outline-none m-w-24 ease-out transition-colors duration-100 focus:outline-none rounded-lg',
             {
               'hover:bg-secondary': !disabled && onSelectToken,
-              'cursor-default': disabled || !onSelectToken
+              'cursor-default': disabled || !onSelectToken,
             }
           )}
           onClick={onSelectToken}
@@ -159,7 +159,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           <TokenIcon symbol={tokenSymbol} icon={tokenIcon} size="24" />
           <div
             className={classNames('min-w-symbol flex flex-col items-center', {
-              'text-disabled': disabled
+              'text-disabled': disabled,
             })}
           >
             <span className="px-1">{tokenSymbol}</span>
@@ -174,7 +174,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
               className={classNames('w-2 ml-2 relative fill-current', {
                 visible: onSelectToken,
                 'text-secondary': disabled,
-                'text-black': !disabled
+                'text-black': !disabled,
               })}
             />
           )}
@@ -188,5 +188,5 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         </span>
       </div>
     </div>
-  );
-};
+  )
+}

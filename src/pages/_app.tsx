@@ -1,6 +1,7 @@
+import '../styles/global.scss';
+import 'slick-carousel/slick/slick.css';
 import Head from 'next/head';
 import { ThemeProvider } from 'next-themes';
-import '../styles/global.scss';
 import { ModalContextProvider } from '../contexts/ModalContext';
 import { WalletContextProvider } from '@parrotfi/wallets';
 import { ToastProvider } from '../contexts/ToastContext';
