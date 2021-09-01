@@ -81,6 +81,10 @@
         {
           "name": "endIdoTs",
           "type": "i64"
+        },
+        {
+          "name": "withdrawMelonTs",
+          "type": "i64"
         }
       ]
     },
@@ -339,6 +343,10 @@
           {
             "name": "endIdoTs",
             "type": "i64"
+          },
+          {
+            "name": "withdrawMelonTs",
+            "type": "i64"
           }
         ]
       }
@@ -397,6 +405,6 @@
     }
   ],
   "metadata": {
-    "address": "6QXNNAPkPsWjd1j3qQJTvRFgSNPARMhF2tE8g1WeGyrM"
+    "address": "5s48HdiM1PjxqHDpGvZUVnX6eKbGbvN15rFHJ7RwxCv4"
   }
 }
