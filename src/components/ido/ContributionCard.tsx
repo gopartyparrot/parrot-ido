@@ -167,13 +167,15 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
         <h1 className="text-md font-bold">IDO Round 1</h1>
       </header>
       <div className="px-6 py-4">
-        <ButtonMenu
-          activeIndex={isDeposit ? 0 : 1}
-          onItemClick={handleChangeMode}
-        >
-          <ButtonMenuItem>Deposit</ButtonMenuItem>
-          <ButtonMenuItem>Withdraw</ButtonMenuItem>
-        </ButtonMenu>
+        <div className="my-2">
+          <ButtonMenu
+            activeIndex={isDeposit ? 0 : 1}
+            onItemClick={handleChangeMode}
+          >
+            <ButtonMenuItem>Deposit</ButtonMenuItem>
+            <ButtonMenuItem>Withdraw</ButtonMenuItem>
+          </ButtonMenu>
+        </div>
         <div className="pb-4 text-center">
           {!submitted && submitting && (
             <>

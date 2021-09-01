@@ -21,18 +21,18 @@ const StatsCard = () => {
       <div className="flex flex-col space-y-2">
         <div className="grid grid-cols-2 gap-2 bg-secondary rounded-xl p-6">
           <div className="text-center">
-            <p className="text-sm">Sale Period Ends</p>
+            <p className="text-sm text-secondary">Sale Period Ends</p>
             <PoolCountdown date={endDeposits} className="justify-center pt-2" />
           </div>
 
           <div className="text-center">
-            <p className="text-sm">Grace Period Ends</p>
+            <p className="text-sm text-secondary">Grace Period Ends</p>
             <PoolCountdown date={endIdo} className="justify-center pt-2" />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2 bg-secondary rounded-xl p-6">
           <div className="text-center">
-            <p className="text-sm">USDC Contributed</p>
+            <p className="text-sm text-secondary">USDC Contributed</p>
             <div className="flex items-center justify-center pt-2">
               <img
                 alt=""
@@ -46,7 +46,7 @@ const StatsCard = () => {
           </div>
 
           <div className="text-center">
-            <p className="text-sm">Estimated Token Price</p>
+            <p className="text-sm text-secondary">Estimated Token Price</p>
             <div className="flex items-center justify-center pt-2">
               <img
                 alt=""
@@ -64,7 +64,7 @@ const StatsCard = () => {
 
         <div className="bg-secondary rounded-xl p-6">
           <div className="text-center">
-            <p className="text-sm">PRT For Sale</p>
+            <p className="text-sm text-secondary">PRT For Sale</p>
             <div className="flex items-center justify-center pt-2">
               <img
                 className="h-5 mr-2 w-auto"

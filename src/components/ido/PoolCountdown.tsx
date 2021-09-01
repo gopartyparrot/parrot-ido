@@ -12,24 +12,28 @@ const PoolCountdown = (props: { className?: string; date: moment.Moment }) => {
         ? 'Deposits are closed'
         : 'The IDO has ended';
     if (completed) {
-      return <p className="text-sm">{message}</p>;
+      return <p className="text-sm mt-2">{message}</p>;
     } else {
       return (
-        <div
-          className={`${props.className} font-bold text-white flex items-center`}
-        >
-          <ClockIcon className="w-5 h-5 mr-2 mt-0.5 text-fgd-3" />
-          <span className="text-mdx">
-            {/* <span className="bg-bkg-1 border border-bkg-4 mx-0.5 px-1.5 py-1 rounded"> */}
-            {hours < 10 ? `0${hours}` : hours}
-            {/* </span> */}:
-            {/* <span className="bg-bkg-1 border border-bkg-4 mx-0.5 px-1.5 py-1 rounded"> */}
-            {minutes < 10 ? `0${minutes}` : minutes}
-            {/* </span> */}:
-            {/* <span className="bg-bkg-1 border border-bkg-4 mx-0.5 px-1.5 py-1 rounded"> */}
-            {seconds < 10 ? `0${seconds}` : seconds}
-            {/* </span> */}
-          </span>
+        <div className={`${props.className} flex items-center`}>
+          <div className="flex flex-col">
+            <span className="bg-black text-white font-bold mx-1 w-8 inline-block py-2 rounded">
+              {hours < 10 ? `0${hours}` : hours}
+            </span>
+            <span className="text-xs mt-1 text-secondary">hrs</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="bg-black text-white font-bold mx-1 w-8 inline-block py-2 rounded">
+              {minutes < 10 ? `0${minutes}` : minutes}
+            </span>
+            <span className="text-xs mt-1 text-secondary">mins</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="bg-black text-white font-bold mx-1 w-8 inline-block py-2 rounded">
+              {seconds < 10 ? `0${seconds}` : seconds}
+            </span>
+            <span className="text-xs mt-1 text-secondary">secs</span>
+          </div>
         </div>
       );
     }
