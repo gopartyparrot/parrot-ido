@@ -1,7 +1,6 @@
 // import { Menu } from '@headlessui/react'
 import { LinkIcon } from '@heroicons/react/solid';
-import { useWallet } from '@parrotfi/wallets';
-import WalletModal from '@parrotfi/wallets/dist/react/WalletModal';
+import { useWallet, WalletModal } from '@parrotfi/wallets';
 import { useCallback, useEffect } from 'react';
 import useModal from '../hooks/useModal';
 import useWalletStore from '../stores/useWalletStore';

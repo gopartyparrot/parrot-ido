@@ -1,5 +1,5 @@
-import { Dialog } from '@headlessui/react';
-import React from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import React, { Fragment } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -15,21 +15,31 @@ const Modal: React.FC<ModalProps> = ({
   onDismiss,
   children
 }) => {
-  console.log('isOpen', isOpen);
-
   return (
+    // <Transition  as={Fragment}>
     <Dialog
       open={isOpen}
       onClose={() => onDismiss()}
       className="fixed z-10 inset-0 overflow-y-auto"
     >
-      <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="relative bg-white text-black w-full max-w-sm mx-auto rounded-3xl p-6">
+      {/* <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        > */}
+      <Dialog.Overlay className="fixed inset-0 bg-overlay" />
+      {/* </Transition.Child> */}
+      <div className="min-h-full flex items-center max-w-sm w-full mx-auto">
+        <div className="relative bg-default rounded-3xl w-full p-4 sm:p-6">
           {children}
         </div>
       </div>
     </Dialog>
+    // </Transition>
   );
 };
 

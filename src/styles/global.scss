@@ -14,7 +14,7 @@
   font-display: swap;
 }
 
-.light {
+:root {
   // Shared
   --color-brand-primary: #2dd6a0;
   --color-brand-primary-hover: #6ce2bc;
@@ -92,22 +92,25 @@
   --color-border-grey: #ffffff;
 }
 
-/* base */
+// tailwind
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+// styles
 
 * {
   @apply m-0 p-0;
 }
 
 body {
-  @apply bg-bkg-1 text-fgd-1 text-base font-body tracking-wide;
+  @apply tracking-wide font-sans font-normal text-base text-default;
 }
 
 h2 {
   @apply text-xl mb-1 font-bold;
-}
-
-p {
-  @apply text-fgd-3 text-sm;
 }
 
 button {
@@ -116,6 +119,14 @@ button {
 
 .default-transition {
   @apply transition-all duration-300;
+}
+
+.dark .dark-hidden {
+  display: none !important;
+}
+
+.light .light-hidden {
+  display: none !important;
 }
 
 .-z-1 {
@@ -210,16 +221,8 @@ button {
   outline: none;
 }
 
-.dark .dark-hidden {
-  display: none !important;
-}
-
 .dark .dark-invert {
   filter: invert(0.9) hue-rotate(180deg);
-}
-
-.light .light-hidden {
-  display: none !important;
 }
 
 .dark .react-loading-skeleton {
@@ -237,7 +240,3 @@ button {
   transform: translateX(2rem);
 }
 
-// tailwind
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';

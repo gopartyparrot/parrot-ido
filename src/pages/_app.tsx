@@ -43,7 +43,7 @@ function App({ Component, pageProps }) {
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@mangomarkets" />
       </Head>
-      <ThemeProvider defaultTheme="Mango">
+      <ThemeProvider defaultTheme="light" attribute="class">
         <ToastProvider>
           <WalletContextProvider
             options={{

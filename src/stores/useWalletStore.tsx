@@ -36,7 +36,8 @@ export const ENDPOINTS: any[] = [
     url: 'https://api.devnet.solana.com',
     websocket: 'https://api.devnet.solana.com',
     programId: '5s48HdiM1PjxqHDpGvZUVnX6eKbGbvN15rFHJ7RwxCv4',
-    poolKey: '9Rjif7icpFwoKT35odhwH4jxxz1YmRjE8YBjM1u2bysH'
+    poolKey: 'BuwLsSNCCKreog2dq48M9cBFARsFcST91NvdwWiVWmUR'
+    // poolKey: '9Rjif7icpFwoKT35odhwH4jxxz1YmRjE8YBjM1u2bysH' // ended
     // poolKey: '5vYiGgXRJs1HwkYZkgnWPKxjgDR9ypLREeFPgarXqV8L' // ended
   },
   {
