@@ -14,7 +14,7 @@ const TokenIcon: React.FC<TokenIconProps> = ({
   size = '64',
   icon
 }) => {
-  const iconUrl = icon?.startsWith('http') ? icon : `/images/tokens/${icon}`;
+  const iconUrl = icon?.startsWith('http') ? icon : `/icons/${icon}`;
   return (
     <Image
       className={className}

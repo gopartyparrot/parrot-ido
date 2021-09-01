@@ -1,6 +1,6 @@
 import usePool from '../../hooks/usePool';
 import useVaults from '../../hooks/useVaults';
-import PoolCountdown from '../PoolCountdown';
+import PoolCountdown from './PoolCountdown';
 
 const Card = (props: any) => {
   return (

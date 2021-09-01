@@ -1,27 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import {
-  ExclamationCircleIcon,
-  LockClosedIcon,
-  LockOpenIcon,
-  RefreshIcon
-} from '@heroicons/react/outline';
-import useWalletStore from '../../stores/useWalletStore';
-import Input from '../Input';
-import { Button } from '../Button';
-// import ConnectWalletButton from '../ConnectWalletButton';
-// import PoolCountdown from './PoolCountdown'
-import Slider from '../Slider';
-import Loading from '../Loading';
+import React, { useCallback, useEffect, useState } from 'react';
+import 'twin.macro';
+import useIpAddress from '../../hooks/useIpAddress';
 import useLargestAccounts from '../../hooks/useLargestAccounts';
 import usePool from '../../hooks/usePool';
-import styled from '@emotion/styled';
-import 'twin.macro';
+import useWalletStore from '../../stores/useWalletStore';
 import { notify } from '../../utils/notifications';
-import useIpAddress from '../../hooks/useIpAddress';
+import { Button } from '../button';
 import { AmountInput } from '../input/AmountInput';
+import Loading from '../Loading';
+import { ButtonMenu, ButtonMenuItem } from '../menu';
 import StatsCard from './StatsCard';
-
-const SmallButton = styled.button``;
 
 interface ContributionCardProps {
   round?: string;
@@ -38,7 +26,7 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
   const usdcBalance = largestAccounts.usdc?.balance || 0;
   const redeemableBalance = largestAccounts.redeemable?.balance || 0;
 
-  const isDeposit = true;
+  const [isDeposit, setIsDeposit] = useState(true);
 
   const totalBalance = isDeposit ? usdcBalance : redeemableBalance;
   console.log('totalBalance', totalBalance.toString());
@@ -80,10 +68,12 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
     setEditContribution(false);
   };
 
-  const handleEditContribution = () => {
-    setEditContribution(true);
-    setSubmitted(false);
-  };
+  const handleChangeMode = useCallback(
+    (value: number) => {
+      setIsDeposit(value === 0);
+    },
+    [setIsDeposit]
+  );
 
   const onChangeAmountInput = (amount: string) => {
     setInputAmount(amount);
@@ -94,18 +84,6 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
       // setWalletAmount(totalBalance - amount);
     }
   };
-
-  // const onChangeSlider = percentage => {
-  //   let newContribution = Math.round(percentage * totalBalance) / 100;
-  //   if (endDeposits?.isBefore() && newContribution > redeemableBalance) {
-  //     newContribution = redeemableBalance;
-  //     setErrorMessage('Deposits ended, contribution cannot increase');
-  //     setTimeout(() => setErrorMessage(null), 4000);
-  //   }
-
-  //   setWalletAmount(totalBalance - newContribution);
-  //   setInputAmount(newContribution);
-  // };
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -189,6 +167,13 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
         <h1 className="text-md font-bold">IDO Round 1</h1>
       </header>
       <div className="px-6 py-4">
+        <ButtonMenu
+          activeIndex={isDeposit ? 0 : 1}
+          onItemClick={handleChangeMode}
+        >
+          <ButtonMenuItem>Deposit</ButtonMenuItem>
+          <ButtonMenuItem>Withdraw</ButtonMenuItem>
+        </ButtonMenu>
         <div className="pb-4 text-center">
           {!submitted && submitting && (
             <>
@@ -263,113 +248,7 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
             <Loading className="h-6 w-6 mb-3 text-primary-light" />
           </div>
         ) : (
-          <>
-            <div
-              className={`${
-                connected ? 'opacity-100' : 'opacity-30'
-              } pb-6 transition-all duration-1000 w-full`}
-            >
-              <div className="flex justify-between pb-2">
-                <div className="flex items-center text-xs text-fgd-4">
-                  <a
-                    onClick={handleRefresh}
-                    className={
-                      refreshing ? 'animate-spin' : 'hover:cursor-pointer'
-                    }
-                  >
-                    <RefreshIcon
-                      className={`w-4 h-4`}
-                      style={{ transform: 'scaleX(-1)' }}
-                    />
-                  </a>
-
-                  {connected ? (
-                    loading ? (
-                      <div className="bg-bkg-4 rounded w-10 h-4 animate-pulse" />
-                    ) : (
-                      <span
-                        className="font-display text-fgd-3 ml-1"
-                        title="Wallet USDC"
-                      >
-                        {totalBalance}
-                      </span>
-                    )
-                  ) : (
-                    '----'
-                  )}
-                  <img
-                    alt=""
-                    title="Wallet USDC"
-                    width="16"
-                    height="16"
-                    src="/icons/usdc.svg"
-                    className="ml-1 opacity-75"
-                  />
-                </div>
-                <div className="flex">
-                  {submitted ? (
-                    <SmallButton
-                      className="ring-1 ring-secondary-1-light ring-inset hover:ring-secondary-1-dark hover:bg-transparent hover:text-secondary-1-dark font-normal rounded text-secondary-1-light text-xs py-0.5 px-1.5 mr-2"
-                      disabled={!connected}
-                      onClick={() => handleEditContribution()}
-                    >
-                      Unlock
-                    </SmallButton>
-                  ) : null}
-                  <SmallButton
-                    className={`${
-                      disableFormInputs && 'opacity-30'
-                    } bg-bkg-4 hover:bg-bkg-3 font-normal rounded text-fgd-3 text-xs py-0.5 px-1.5`}
-                    disabled={disableFormInputs}
-                  >
-                    Max
-                  </SmallButton>
-                </div>
-              </div>
-              <div className="flex items-center pb-4 relative">
-                {submitted ? (
-                  <LockClosedIcon className="absolute text-secondary-2-light h-4 w-4 mb-0.5 left-2 z-10" />
-                ) : null}
-                {editContribution ? (
-                  <LockOpenIcon className="absolute text-secondary-1-light h-4 w-4 mb-0.5 left-2 z-10" />
-                ) : null}
-                <Input
-                  className={(submitted || editContribution) && 'pl-7'}
-                  disabled={disableFormInputs}
-                  type="text"
-                  onChange={e => onChangeAmountInput(e.target.value)}
-                  value={loading ? '' : inputAmount}
-                  suffix="USDC"
-                />
-              </div>
-              <div
-                className={`${
-                  !submitted ? 'opacity-100' : 'opacity-30'
-                } transiton-all duration-1000`}
-              >
-                <div className="pb-12">
-                  {/* <Slider
-                    disabled={disableFormInputs}
-                    value={(100 * inputAmount) / totalBalance}
-                    onChange={v => onChangeSlider(v)}
-                    step={1}
-                    maxButtonTransition={maxButtonTransition}
-                  /> */}
-                </div>
-                <div className="h-12 pb-4">
-                  {errorMessage && (
-                    <div className="flex items-center pt-1.5 text-secondary-2-light">
-                      <ExclamationCircleIcon className="h-4 w-4 mr-1.5" />
-                      {errorMessage}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              {/* <ConnectWalletButton /> */}
-            </div>
-          </>
+          <div />
         )}
       </div>
     </div>

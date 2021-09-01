@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
-import useWalletStore from '../stores/useWalletStore';
-import Button from './Button';
-import Input from './Input';
-import ConnectWalletButton from './ConnectWalletButton';
-import Loading from './Loading';
-import useLargestAccounts from '../hooks/useLargestAccounts';
-import useVaults from '../hooks/useVaults';
-import { calculateSupply } from '../utils/balance';
+import useWalletStore from '../../stores/useWalletStore';
+import { Button } from '../button';
+import Loading from '../Loading';
+import useLargestAccounts from '../../hooks/useLargestAccounts';
+import useVaults from '../../hooks/useVaults';
+import { calculateSupply } from '../../utils/balance';
 
 const RedeemModal = () => {
   const actions = useWalletStore(s => s.actions);
@@ -87,7 +85,7 @@ const RedeemModal = () => {
           <>
             <div>
               <span className="text-fgd-4 text-xs">Total raised</span>
-              <Input
+              {/* <Input
                 className="border-0"
                 disabled
                 type="text"
@@ -101,7 +99,7 @@ const RedeemModal = () => {
                     className="inline"
                   />
                 }
-              />
+              /> */}
             </div>
             <div
               className={`${
@@ -110,7 +108,7 @@ const RedeemModal = () => {
             >
               <div className="py-1">
                 <span className="text-fgd-4 text-xs">Your contribution</span>
-                <Input
+                {/* <Input
                   className="border-0"
                   disabled
                   type="text"
@@ -124,11 +122,11 @@ const RedeemModal = () => {
                       className="inline"
                     />
                   }
-                />
+                /> */}
               </div>
               <div className="py-1">
                 <span className="text-fgd-4 text-xs">Redeemable amount</span>
-                <Input
+                {/* <Input
                   className="border-0"
                   disabled
                   type="text"
@@ -142,7 +140,7 @@ const RedeemModal = () => {
                       className="inline"
                     />
                   }
-                />
+                /> */}
               </div>
               <div className="py-6">
                 <Button
@@ -157,7 +155,7 @@ const RedeemModal = () => {
               </div>
             </div>
             <div className="flex justify-center">
-              <ConnectWalletButton />
+              {/* <ConnectWalletButton /> */}
             </div>
           </>
         )}

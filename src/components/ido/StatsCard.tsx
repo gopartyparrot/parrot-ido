@@ -1,4 +1,4 @@
-import PoolCountdown from '../PoolCountdown';
+import PoolCountdown from './PoolCountdown';
 import useVaults from '../../hooks/useVaults';
 import usePool from '../../hooks/usePool';
 import 'twin.macro';
@@ -63,10 +63,16 @@ const StatsCard = () => {
         </div>
 
         <div className="bg-secondary rounded-xl p-6">
-          <p className="text-sm">PRT For Sale</p>
-          <div className="flex items-center justify-center pt-2">
-            <img className="h-5 mr-2 w-auto" src="/logo.svg" alt="mango" />
-            <div className="font-bold text-mdx">{vaults.mangoBalance}</div>
+          <div className="text-center">
+            <p className="text-sm">PRT For Sale</p>
+            <div className="flex items-center justify-center pt-2">
+              <img
+                className="h-5 mr-2 w-auto"
+                src="/icons/prt.svg"
+                alt="mango"
+              />
+              <div className="font-bold text-mdx">{vaults.mangoBalance}</div>
+            </div>
           </div>
 
           {/* <p>

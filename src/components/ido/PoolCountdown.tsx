@@ -1,4 +1,4 @@
-import usePool from '../hooks/usePool';
+import usePool from '../../hooks/usePool';
 import Countdown from 'react-countdown';
 import moment from 'moment';
 import { ClockIcon } from '@heroicons/react/outline';
