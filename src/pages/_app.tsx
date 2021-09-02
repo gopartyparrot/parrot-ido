@@ -1,12 +1,13 @@
-import '../styles/global.scss'
-import 'slick-carousel/slick/slick.css'
-import Head from 'next/head'
-import { ThemeProvider } from 'next-themes'
-import { ModalContextProvider } from '../contexts/ModalContext'
 import { WalletContextProvider } from '@parrotfi/wallets'
-import { ToastProvider } from '../contexts/ToastContext'
+import { ThemeProvider } from 'next-themes'
+import Head from 'next/head'
+import React from 'react'
+import Notifications from '../components/Notifications'
 import { RPC_URL, SOLANA_COMMITMENT, SOLANA_NETWORK } from '../config/constants'
 import { IDOProvider } from '../contexts/IDOContext'
+import { ModalProvider } from '../contexts/ModalContext'
+import '../styles/global.scss'
+import '../styles/toast.scss'
 
 function App({ Component, pageProps }) {
   const title = 'Mango Markets'
@@ -41,21 +42,20 @@ function App({ Component, pageProps }) {
         <meta name="twitter:site" content="@mangomarkets" />
       </Head>
       <ThemeProvider defaultTheme="light" attribute="class">
-        <ToastProvider>
-          <WalletContextProvider
-            options={{
-              network: SOLANA_NETWORK,
-              rpcURL: RPC_URL,
-              commitment: SOLANA_COMMITMENT,
-            }}
-          >
-            <ModalContextProvider>
-              <IDOProvider>
-                <Component {...pageProps} />
-              </IDOProvider>
-            </ModalContextProvider>
-          </WalletContextProvider>
-        </ToastProvider>
+        <WalletContextProvider
+          options={{
+            network: SOLANA_NETWORK,
+            rpcURL: RPC_URL,
+            commitment: SOLANA_COMMITMENT,
+          }}
+        >
+          <ModalProvider>
+            <IDOProvider>
+              <Component {...pageProps} />
+              <Notifications />
+            </IDOProvider>
+          </ModalProvider>
+        </WalletContextProvider>
       </ThemeProvider>
     </>
   )

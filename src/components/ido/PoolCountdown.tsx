@@ -1,10 +1,21 @@
 import usePool from '../../hooks/usePool'
 import Countdown from 'react-countdown'
 import moment from 'moment'
-import { ClockIcon } from '@heroicons/react/outline'
+import { PoolAccount } from '../../stores/useWalletStore'
+import classNames from 'classnames'
 
-const PoolCountdown = (props: { className?: string; date: moment.Moment }) => {
-  const { endIdo, endDeposits } = usePool()
+interface PoolCountdownProps {
+  pool: PoolAccount
+  className?: string
+  date: moment.Moment
+}
+
+const PoolCountdown: React.FC<PoolCountdownProps> = ({
+  pool,
+  date,
+  className,
+}) => {
+  const { endIdo, endDeposits } = usePool(pool)
   const renderCountdown = ({ days, hours, minutes, seconds, completed }) => {
     hours += days * 24
     const message =
@@ -15,7 +26,7 @@ const PoolCountdown = (props: { className?: string; date: moment.Moment }) => {
       return <p className="text-sm mt-2">{message}</p>
     } else {
       return (
-        <div className={`${props.className} flex items-center`}>
+        <div className={classNames(className, 'flex items-center')}>
           <div className="flex flex-col">
             <span className="bg-black text-white font-bold mx-1 w-8 inline-block py-2 rounded">
               {hours < 10 ? `0${hours}` : hours}
@@ -39,8 +50,8 @@ const PoolCountdown = (props: { className?: string; date: moment.Moment }) => {
     }
   }
 
-  if (props.date) {
-    return <Countdown date={props.date.format()} renderer={renderCountdown} />
+  if (date) {
+    return <Countdown date={date.format()} renderer={renderCountdown} />
   } else {
     return null
   }

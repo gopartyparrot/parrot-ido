@@ -1,31 +1,23 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
+import ToastContent from './ToastContent'
 
-import { Alert, AlertTypes } from '../alert'
-import { ToastProps, ToastTypes } from './types'
+import { ToastItemProps, ToastTypes } from './types'
 
-const alertTypeMap = {
-  [ToastTypes.INFO]: AlertTypes.INFO,
-  [ToastTypes.SUCCESS]: AlertTypes.SUCCESS,
-  [ToastTypes.DANGER]: AlertTypes.FAILURE,
-  [ToastTypes.WARNING]: AlertTypes.WARNING,
-}
-
-const Toast: React.FC<ToastProps> = ({
+const ToastItem: React.FC<ToastItemProps> = ({
   toast,
-  onRemove,
+  duration,
   style,
-  ttl,
+  onRemove,
   ...props
 }) => {
   const timer = useRef<number>()
   const ref = useRef(null)
   const removeHandler = useRef(onRemove)
-  const { id, title, message, type } = toast
 
   const handleRemove = useCallback(
-    () => removeHandler.current(id),
-    [id, removeHandler]
+    () => removeHandler.current(toast.id),
+    [toast.id, removeHandler]
   )
 
   const handleMouseEnter = () => {
@@ -39,7 +31,7 @@ const Toast: React.FC<ToastProps> = ({
 
     timer.current = window.setTimeout(() => {
       handleRemove()
-    }, ttl)
+    }, duration)
   }
 
   useEffect(() => {
@@ -49,12 +41,12 @@ const Toast: React.FC<ToastProps> = ({
 
     timer.current = window.setTimeout(() => {
       handleRemove()
-    }, ttl)
+    }, duration)
 
     return () => {
       clearTimeout(timer.current)
     }
-  }, [timer, ttl, handleRemove])
+  }, [timer, duration, handleRemove])
 
   return (
     <CSSTransition nodeRef={ref} timeout={250} style={style} {...props}>
@@ -64,15 +56,10 @@ const Toast: React.FC<ToastProps> = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <Alert
-          title={title}
-          type={alertTypeMap[type]}
-          onClick={handleRemove}
-          message={message || ''}
-        />
+        <ToastContent toast={toast} onRemove={handleRemove} />
       </div>
     </CSSTransition>
   )
 }
 
-export default Toast
+export default ToastItem

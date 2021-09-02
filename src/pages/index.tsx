@@ -1,48 +1,22 @@
 import usePool from '../hooks/usePool'
 import React from 'react'
 import { Header } from '../components/header'
-import ContributionCard from '../components/ido/ContributionCard'
-import Slider, { Settings } from 'react-slick'
-import RedeemCard from '../components/ido/RedeemCard'
-
-const settings: Settings = {
-  dots: true,
-  centerMode: true,
-  swipeToSlide: false,
-  swipe: false,
-  infinite: false,
-  slidesToScroll: 1,
-  autoplay: false,
-  centerPadding: '0px',
-  slidesToShow: 1,
-  arrows: false,
-  variableWidth: true,
-  appendDots: (dots) => (
-    <div>
-      <ul className="w-full flex justify-center items-center my-4 space-x-2">
-        {' '}
-        {dots}{' '}
-      </ul>
-    </div>
-  ),
-}
+import ContributionCard from '../components/ido/PoolCard'
+import useWalletStore from '../stores/useWalletStore'
+import PoolCard from '../components/ido/PoolCard'
 
 const Main = () => {
-  const { startIdo, endIdo } = usePool()
+  const pools = useWalletStore((s) => s.pools)
 
   return (
-    <main className="flex-1">
-      <Slider {...settings} className="center my-6">
-        <div className="w-full sm:w-card">
-          <ContributionCard round="1" />
-        </div>
-        <div className="w-full sm:w-card">
-          <ContributionCard round="2" />
-        </div>
-        <div className="w-full sm:w-card">
-          <RedeemCard />
-        </div>
-      </Slider>
+    <main className="flex-1 flex flex-row space-x-2 my-6">
+      {pools.map((pool, index) => (
+        <PoolCard
+          key={pool.publicKey.toBase58()}
+          pool={pool}
+          round={`${index + 1}`}
+        />
+      ))}
     </main>
   )
 }

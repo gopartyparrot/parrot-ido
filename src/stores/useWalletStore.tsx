@@ -27,38 +27,38 @@ export const ENDPOINTS: any[] = [
   {
     name: 'mainnet',
     url: 'https://parrot.rpcpool.com',
-    websocket: 'https://parrot.rpcpool.com',
     programId: '6QXNNAPkPsWjd1j3qQJTvRFgSNPARMhF2tE8g1WeGyrM',
-    poolKey: 'AHBj9LAjxStT2YQHN6QdfHKpZLtEVr8ACqeFgYcPsTnr',
+    pools: ['AHBj9LAjxStT2YQHN6QdfHKpZLtEVr8ACqeFgYcPsTnr'],
   },
   {
     name: 'devnet',
     url: 'https://api.devnet.solana.com',
-    websocket: 'https://api.devnet.solana.com',
     programId: '5s48HdiM1PjxqHDpGvZUVnX6eKbGbvN15rFHJ7RwxCv4',
-    // poolKey: 'BuwLsSNCCKreog2dq48M9cBFARsFcST91NvdwWiVWmUR'
-    poolKey: '9Rjif7icpFwoKT35odhwH4jxxz1YmRjE8YBjM1u2bysH', // ended
-    // poolKey: '5vYiGgXRJs1HwkYZkgnWPKxjgDR9ypLREeFPgarXqV8L' // ended
+    pools: [
+      '3LF3P35APZEVBbmYRmRz83oaW5rKNRFqC62r863ujUeZ',
+      '9Rjif7icpFwoKT35odhwH4jxxz1YmRjE8YBjM1u2bysH',
+      '5vYiGgXRJs1HwkYZkgnWPKxjgDR9ypLREeFPgarXqV8L',
+    ],
   },
   {
     name: 'localnet',
     url: 'http://localhost:8899',
-    websocket: 'http://localhost:8899',
     programId: 'FF8zcQ1aEmyXeBt99hohoyYprgpEVmWsRK44qta3emno',
-    poolKey: '8gswb9g1JdYEVj662KXr9p6p9SMgR77NryyqvWn9GPXJ',
+    pools: ['8gswb9g1JdYEVj662KXr9p6p9SMgR77NryyqvWn9GPXJ'],
   },
 ]
 
 const ENDPOINT = ENDPOINTS.find((e) => e.name === SOLANA_NETWORK)
 const DEFAULT_CONNECTION = new Connection(ENDPOINT.url, 'recent')
-const WEBSOCKET_CONNECTION = new Connection(ENDPOINT.websocket, 'recent')
 const PROGRAM_ID = new PublicKey(ENDPOINT.programId)
-const POOL_PK = new PublicKey(ENDPOINT.poolKey)
+const POOLS_PKS = ENDPOINT.pools.map((i) => new PublicKey(i))
 
-interface PoolAccount {
+export interface PoolAccount {
+  publicKey: PublicKey
   distributionAuthority: PublicKey
   endDepositsTs: anchor.BN
   endIdoTs: anchor.BN
+  withdrawMelonTs: anchor.BN
   nonce: number
   numIdoTokens: anchor.BN
   poolUsdc: PublicKey
@@ -73,7 +73,6 @@ interface WalletStore extends State {
   connection: {
     cluster: string
     current: Connection
-    websocket: Connection
     endpoint: string
     programId: PublicKey
   }
@@ -81,13 +80,31 @@ interface WalletStore extends State {
   providerUrl: string
   provider: anchor.Provider | undefined
   program: anchor.Program | undefined
-  pool: PoolAccount | undefined
+  pools: PoolAccount[]
   mangoVault: TokenAccount | undefined
   usdcVault: TokenAccount | undefined
   tokenAccounts: ProgramAccount<TokenAccount>[]
   mints: { [pubkey: string]: MintAccount }
   set: (x: any) => void
-  actions: any
+  actions: WalletStoreActions
+}
+
+interface WalletStoreActions {
+  fetchPools: () => Promise<void>
+  fetchWalletTokenAccounts: () => Promise<void>
+  fetchMints: () => Promise<void>
+  fetchUsdcVault: (pool: PoolAccount) => Promise<void>
+  fetchPrtVault: (pool: PoolAccount) => Promise<void>
+  fetchRedeemableMint: (pool: PoolAccount) => Promise<void>
+  submitDepositContribution: (
+    pool: PoolAccount,
+    amount: number
+  ) => Promise<void>
+  submitWithdrawContribution: (
+    pool: PoolAccount,
+    amount: number
+  ) => Promise<void>
+  submitRedeem: (pool: PoolAccount) => Promise<void>
 }
 
 const useWalletStore = create<WalletStore>((set, get) => ({
@@ -95,7 +112,6 @@ const useWalletStore = create<WalletStore>((set, get) => ({
   connection: {
     cluster: SOLANA_NETWORK,
     current: DEFAULT_CONNECTION,
-    websocket: WEBSOCKET_CONNECTION,
     endpoint: ENDPOINT.url,
     programId: PROGRAM_ID,
   },
@@ -103,13 +119,13 @@ const useWalletStore = create<WalletStore>((set, get) => ({
   providerUrl: '',
   provider: undefined,
   program: undefined,
-  pool: undefined,
+  pools: [],
   mangoVault: undefined,
   usdcVault: undefined,
   tokenAccounts: [],
   mints: {},
   actions: {
-    async fetchPool() {
+    async fetchPools() {
       const connection = get().connection.current
       const wallet = get().current
       const programId = get().connection.programId
@@ -123,14 +139,17 @@ const useWalletStore = create<WalletStore>((set, get) => ({
           anchor.Provider.defaultOptions()
         )
         const program = new anchor.Program(poolIdl, programId, provider)
-        const pool = (await program.account.poolAccount.fetch(
-          POOL_PK
-        )) as PoolAccount
+        console.log('pool', SOLANA_NETWORK)
 
-        const [usdcVault, mangoVault] = await Promise.all([
-          getTokenAccount(connection, pool.poolUsdc),
-          getTokenAccount(connection, pool.poolWatermelon),
-        ])
+        const pools: PoolAccount[] = []
+        for await (const poolPk of POOLS_PKS) {
+          const pool = (await program.account.poolAccount.fetch(
+            poolPk
+          )) as PoolAccount
+
+          pool.publicKey = poolPk
+          pools.push(pool)
+        }
 
         // console.log('fetchPool', { program, pool, usdcVault, mangoVault })
         // const now = Date.now() / 1000;
@@ -138,10 +157,15 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         // pool.endDepositsTs = new BN(now + 1500);
         // pool.endIdoTs = new BN(now + 2000);
 
+        const [usdcVault, mangoVault] = await Promise.all([
+          getTokenAccount(connection, pools[0].poolUsdc),
+          getTokenAccount(connection, pools[0].poolWatermelon),
+        ])
+
         set((state) => {
           state.provider = provider
           state.program = program
-          state.pool = pool
+          state.pools = pools
           state.usdcVault = usdcVault.account
           state.mangoVault = mangoVault.account
         })
@@ -175,9 +199,8 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         })
       }
     },
-    async fetchUsdcVault() {
+    async fetchUsdcVault(pool: PoolAccount) {
       const connection = get().connection.current
-      const pool = get().pool
       const set = get().set
 
       if (!pool) return
@@ -194,12 +217,16 @@ const useWalletStore = create<WalletStore>((set, get) => ({
     },
     async fetchMints() {
       const connection = get().connection.current
-      const pool = get().pool
       const mangoVault = get().mangoVault
       const usdcVault = get().usdcVault
+      const pools = get().pools
       const set = get().set
 
-      const mintKeys = [mangoVault.mint, usdcVault.mint, pool.redeemableMint]
+      const mintKeys = [
+        mangoVault.mint,
+        usdcVault.mint,
+        ...pools.map((i) => i.redeemableMint),
+      ]
       const mints = await Promise.all(
         mintKeys.map((pk) => getMint(connection, pk))
       )
@@ -212,9 +239,8 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         }
       })
     },
-    async fetchMNGOVault() {
+    async fetchPrtVault(pool: PoolAccount) {
       const connection = get().connection.current
-      const pool = get().pool
       const set = get().set
 
       if (!pool) return
@@ -229,9 +255,8 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         state.mangoVault = vault
       })
     },
-    async fetchRedeemableMint() {
+    async fetchRedeemableMint(pool: PoolAccount) {
       const connection = get().connection.current
-      const pool = get().pool
       const set = get().set
 
       const mintKeys = [pool.redeemableMint]
@@ -247,16 +272,85 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         }
       })
     },
-    async submitContribution(amount: number) {
-      console.log('submitContribution', amount)
+    async submitDepositContribution(pool: PoolAccount, amount: number) {
+      const actions = get().actions
+      await actions.fetchWalletTokenAccounts()
+      const {
+        program,
+        provider,
+        tokenAccounts,
+        mints,
+        usdcVault,
+        current: wallet,
+        connection: { current: connection },
+      } = get()
 
+      const usdc = findLargestBalanceAccountForMint(
+        mints,
+        tokenAccounts,
+        usdcVault.mint
+      )
+
+      const [poolSigner] = await anchor.web3.PublicKey.findProgramAddress(
+        [pool.watermelonMint.toBuffer()],
+        program.programId
+      )
+
+      const depositAmount = calculateNativeAmountUnsafe(
+        mints,
+        usdcVault.mint,
+        amount
+      )
+      console.log(
+        'submitDepositContribution',
+        amount,
+        depositAmount.toString(),
+        'exchangeUsdcForRedeemable'
+      )
+
+      const redeemableAcc = findLargestBalanceAccountForMint(
+        mints,
+        tokenAccounts,
+        pool.redeemableMint
+      )
+      let redeemableAccPk = redeemableAcc?.account?.publicKey
+      const transaction = new Transaction()
+      if (!redeemableAccPk) {
+        const [ins, pk] = await createAssociatedTokenAccount(
+          wallet.publicKey,
+          wallet.publicKey,
+          pool.redeemableMint
+        )
+        transaction.add(ins)
+        redeemableAccPk = pk
+      }
+      transaction.add(
+        program.instruction.exchangeUsdcForRedeemable(depositAmount, {
+          accounts: {
+            poolAccount: pool.publicKey,
+            poolSigner: poolSigner,
+            redeemableMint: pool.redeemableMint,
+            poolUsdc: pool.poolUsdc,
+            userAuthority: provider.wallet.publicKey,
+            userUsdc: usdc.account.publicKey,
+            userRedeemable: redeemableAccPk,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          },
+        })
+      )
+      await sendTransaction({ transaction, wallet, connection })
+
+      await actions.fetchWalletTokenAccounts()
+      actions.fetchUsdcVault(pool)
+    },
+    async submitWithdrawContribution(pool: PoolAccount, amount: number) {
       const actions = get().actions
       await actions.fetchWalletTokenAccounts()
 
       const {
         program,
         provider,
-        pool,
         tokenAccounts,
         mints,
         usdcVault,
@@ -274,57 +368,27 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         usdcVault.mint
       )
 
-      const difference = amount - (redeemable?.balance || 0)
       const [poolSigner] = await anchor.web3.PublicKey.findProgramAddress(
         [pool.watermelonMint.toBuffer()],
         program.programId
       )
 
-      if (difference > 0) {
-        const depositAmount = calculateNativeAmountUnsafe(
-          mints,
-          usdcVault.mint,
-          difference
-        )
-        console.log(depositAmount.toString(), 'exchangeUsdcForReemable')
-
-        let redeemableAccPk = redeemable?.account?.publicKey
-        const transaction = new Transaction()
-        if (!redeemable) {
-          const [ins, pk] = await createAssociatedTokenAccount(
-            wallet.publicKey,
-            wallet.publicKey,
-            pool.redeemableMint
-          )
-          transaction.add(ins)
-          redeemableAccPk = pk
-        }
-        transaction.add(
-          program.instruction.exchangeUsdcForRedeemable(depositAmount, {
-            accounts: {
-              poolAccount: POOL_PK,
-              poolSigner: poolSigner,
-              redeemableMint: pool.redeemableMint,
-              poolUsdc: pool.poolUsdc,
-              userAuthority: provider.wallet.publicKey,
-              userUsdc: usdc.account.publicKey,
-              userRedeemable: redeemableAccPk,
-              tokenProgram: TOKEN_PROGRAM_ID,
-              clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-            },
-          })
-        )
-        await sendTransaction({ transaction, wallet, connection })
-      } else if (difference < 0) {
-        const withdrawAmount = calculateNativeAmountUnsafe(
-          mints,
-          usdcVault.mint,
-          -1 * difference
-        )
-        console.log(withdrawAmount.toString(), 'exchangeRedeemableForUsdc')
-        await program.rpc.exchangeRedeemableForUsdc(withdrawAmount, {
+      const withdrawAmount = calculateNativeAmountUnsafe(
+        mints,
+        usdcVault.mint,
+        amount
+      )
+      console.log(
+        'submitDepositContribution',
+        amount,
+        withdrawAmount.toString(),
+        'exchangeRedeemableForUsdc'
+      )
+      const transaction = new Transaction()
+      transaction.add(
+        program.instruction.exchangeRedeemableForUsdc(withdrawAmount, {
           accounts: {
-            poolAccount: POOL_PK,
+            poolAccount: pool.publicKey,
             poolSigner: poolSigner,
             redeemableMint: pool.redeemableMint,
             poolUsdc: pool.poolUsdc,
@@ -335,21 +399,19 @@ const useWalletStore = create<WalletStore>((set, get) => ({
             clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           },
         })
-      } else {
-        console.log('difference = 0 no submission needed', difference)
-        return
-      }
+      )
+
+      await sendTransaction({ transaction, wallet, connection })
 
       await actions.fetchWalletTokenAccounts()
-      actions.fetchUsdcVault()
+      actions.fetchUsdcVault(pool)
     },
-    async redeem() {
+    async submitRedeem(pool: PoolAccount) {
       const actions = get().actions
       await actions.fetchWalletTokenAccounts()
 
       const {
         program,
-        pool,
         tokenAccounts,
         mints,
         current: wallet,
@@ -392,7 +454,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
           redeemable.account.account.amount,
           {
             accounts: {
-              poolAccount: POOL_PK,
+              poolAccount: pool.publicKey,
               poolSigner,
               redeemableMint: pool.redeemableMint,
               poolWatermelon: pool.poolWatermelon,
@@ -410,12 +472,12 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         transaction,
         wallet,
         connection,
-        sendingMessage: 'Sending redeem MNGO transaction...',
-        successMessage: 'MNGO redeemed successfully!',
+        sendingMessage: 'Sending redeem transaction...',
+        successMessage: 'PRT redeemed successfully!',
       })
 
       await Promise.all([
-        actions.fetchPool(),
+        actions.fetchPools(),
         actions.fetchWalletTokenAccounts(),
       ])
     },

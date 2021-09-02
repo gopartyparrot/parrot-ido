@@ -1,4 +1,3 @@
-import { notify } from './notifications'
 import {
   Account,
   Commitment,
@@ -9,6 +8,7 @@ import {
   TransactionSignature,
 } from '@solana/web3.js'
 import { WalletAdapter } from '@parrotfi/wallets'
+import { notify } from '../stores/useNotificationStore'
 
 class TransactionError extends Error {
   public txid: string
@@ -121,7 +121,7 @@ export async function sendSignedTransaction({
 }): Promise<string> {
   const rawTransaction = signedTransaction.serialize()
   const startTime = getUnixTs()
-  notify({ message: sendingMessage })
+  notify({ title: sendingMessage })
   const txid: TransactionSignature = await connection.sendRawTransaction(
     rawTransaction,
     {
@@ -172,7 +172,7 @@ export async function sendSignedTransaction({
   } finally {
     done = true
   }
-  notify({ message: successMessage, type: 'success', txid })
+  notify({ title: successMessage, type: 'success', txid })
 
   console.log('Latency', txid, getUnixTs() - startTime)
   return txid

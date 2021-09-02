@@ -3,10 +3,15 @@ import useVaults from '../../hooks/useVaults'
 import usePool from '../../hooks/usePool'
 import 'twin.macro'
 import NumberText from '../texts/Number'
+import { PoolAccount } from '../../stores/useWalletStore'
 
-const StatsCard = () => {
+interface StatsCardProps {
+  pool: PoolAccount
+}
+
+const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
   const vaults = useVaults()
-  const { endIdo, endDeposits } = usePool()
+  const { endIdo, endDeposits } = usePool(pool)
 
   // const mangoRedeemable = vaults.usdc
   //   ? (redeemableBalance * vaults.mango.balance) / vaults.usdc.balance
@@ -17,12 +22,20 @@ const StatsCard = () => {
       <div className="grid grid-cols-2 gap-2 bg-secondary rounded-xl p-6">
         <div className="text-center">
           <p className="text-sm text-secondary">Sale Period Ends</p>
-          <PoolCountdown date={endDeposits} className="justify-center pt-2" />
+          <PoolCountdown
+            pool={pool}
+            date={endDeposits}
+            className="justify-center pt-2"
+          />
         </div>
 
         <div className="text-center">
           <p className="text-sm text-secondary">Grace Period Ends</p>
-          <PoolCountdown date={endIdo} className="justify-center pt-2" />
+          <PoolCountdown
+            pool={pool}
+            date={endIdo}
+            className="justify-center pt-2"
+          />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2 bg-secondary rounded-xl p-6">

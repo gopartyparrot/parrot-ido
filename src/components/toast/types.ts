@@ -1,6 +1,6 @@
 export enum ToastTypes {
   SUCCESS = 'success',
-  DANGER = 'danger',
+  FAILURE = 'failure',
   WARNING = 'warning',
   INFO = 'info',
 }
@@ -15,19 +15,25 @@ export interface Toast {
   type: ToastTypes
   title: string
   message: string
+  duration?: number
   action?: ToastAction
 }
 
 export interface ToastContainerProps {
   toasts: Toast[]
   stackSpacing?: number
-  ttl?: number
+  duration?: number
   onRemove: (id: string) => void
 }
 
-export interface ToastProps {
+export interface ToastItemProps {
+  toast: Toast
+  duration: number
+  style: Partial<CSSStyleDeclaration>
+  onRemove: ToastContainerProps['onRemove']
+}
+
+export interface ToastContentProps {
   toast: Toast
   onRemove: ToastContainerProps['onRemove']
-  ttl: number
-  style: Partial<CSSStyleDeclaration>
 }

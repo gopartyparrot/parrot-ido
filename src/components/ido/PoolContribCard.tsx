@@ -1,27 +1,26 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import 'twin.macro'
+import useInterval from '../../hooks/useInterval'
 import useIpAddress from '../../hooks/useIpAddress'
 import useLargestAccounts from '../../hooks/useLargestAccounts'
 import usePool from '../../hooks/usePool'
-import useWalletStore from '../../stores/useWalletStore'
-import { notify } from '../../utils/notifications'
+import { notify } from '../../stores/useNotificationStore'
+import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
 import { Button } from '../button'
 import { AmountInput } from '../input/AmountInput'
 import Loading from '../Loading'
 import { ButtonMenu, ButtonMenuItem } from '../menu'
-import CardOverlay from './CardOverlay'
-import StatsCard from './StatsCard'
 
-interface ContributionCardProps {
-  round?: string
+interface PoolContribCardProps {
+  pool: PoolAccount
 }
 
-const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
+const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   const actions = useWalletStore((s) => s.actions)
   const connected = useWalletStore((s) => s.connected)
-  const largestAccounts = useLargestAccounts()
+  const largestAccounts = useLargestAccounts(pool)
   // const vaults = useVaults()
-  const { endIdo, endDeposits } = usePool()
+  const { startIdo, endIdo, endDeposits } = usePool(pool)
   const { ipAllowed } = useIpAddress()
 
   const usdcBalance = largestAccounts.usdc?.balance || 0
@@ -32,6 +31,16 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
   const totalBalance = isDeposit ? usdcBalance : redeemableBalance
   console.log('totalBalance', totalBalance.toString())
 
+  // refresh usdc vault regularly
+  useInterval(async () => {
+    if (endIdo.isAfter()) {
+      await actions.fetchUsdcVault(pool)
+    } else {
+      await actions.fetchPrtVault(pool)
+      await actions.fetchRedeemableMint(pool)
+    }
+  }, 10_000)
+
   // const mangoRedeemable = vaults.usdc
   //   ? (redeemableBalance * vaults.mango.balance) / vaults.usdc.balance
   //   : 0
@@ -39,35 +48,26 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
   const [inputAmount, setInputAmount] = useState('0')
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const [editContribution, setEditContribution] = useState(false)
   const [loading, setLoading] = useState(true)
   const [maxButtonTransition, setMaxButtonTransition] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
   const [refreshing, setRefreshing] = useState(false)
 
-  const usdFormat = new Intl.NumberFormat('en-US')
-
-  //const priceFormat = new Intl.NumberFormat('en-US', {
-  //  maximumSignificantDigits: 4,
-  //})
-
   useEffect(() => {
-    console.log('refresh modal on balance change')
-    // setInputAmount(redeemableBalance);
-    // if (redeemableBalance > 0) {
-    //   setSubmitted(true);
-    // }
+    console.log('reset input on balance change')
+    setInputAmount('')
+    if (redeemableBalance > 0) {
+      setSubmitted(true)
+    }
   }, [totalBalance])
 
   useEffect(() => {
     setSubmitted(false)
-    setEditContribution(false)
   }, [connected])
 
-  const handleSetContribution = () => {
+  const handleSubmitContribution = useCallback(() => {
     setSubmitting(true)
-    setEditContribution(false)
-  }
+  }, [])
 
   const handleChangeMode = useCallback(
     (value: number) => {
@@ -112,64 +112,53 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
     if (submitting) {
       const handleSubmit = async () => {
         try {
-          await actions.submitContribution(inputAmount)
+          if (isDeposit) {
+            await actions.submitDepositContribution(pool, +inputAmount)
+          } else {
+            await actions.submitWithdrawContribution(pool, +inputAmount)
+          }
           setSubmitted(true)
           setSubmitting(false)
         } catch (e) {
-          notify({ type: 'error', message: e.message })
-          console.error(e.message)
+          notify({
+            type: 'error',
+            title: isDeposit ? 'Deposit error' : 'Withdraw error',
+            message: e.message,
+          })
           setSubmitted(false)
           setSubmitting(false)
         }
       }
       handleSubmit()
     }
-  }, [submitting])
-
-  const hasUSDC = usdcBalance > 0 || redeemableBalance > 0
-  // const difference = inputAmount - redeemableBalance;
-
-  const toLateToDeposit =
-    endDeposits?.isBefore() &&
-    endIdo.isAfter() &&
-    !largestAccounts.redeemable?.balance
-
-  const disableFormInputs =
-    submitted || !connected || loading || (connected && toLateToDeposit)
-
-  const dontAddMore = endDeposits?.isBefore() // && inputAmount > redeemableBalance;
-  const disableSubmit = disableFormInputs || dontAddMore // difference == 0 ;
-
-  console.log(
-    'toLateToDeposit',
-    connected,
-    toLateToDeposit,
-    disableFormInputs,
-    dontAddMore
-  )
-
-  const allEnded =
-    !submitted &&
-    !submitting &&
-    !editContribution &&
-    connected &&
-    toLateToDeposit
+  }, [submitting, isDeposit])
 
   const canDeposit =
     connected &&
-    !submitted &&
     !submitting &&
-    !editContribution &&
-    !toLateToDeposit
+    startIdo.isBefore() &&
+    endIdo.isAfter() &&
+    endDeposits.isAfter()
+
+  useEffect(() => {
+    if (!canDeposit) {
+      handleChangeMode(1)
+    }
+  }, [canDeposit])
+
+  const canWithdraw =
+    connected && !submitting && startIdo.isBefore() && endIdo.isAfter()
+
+  const disableSubmit = loading || isDeposit ? !canDeposit : !canWithdraw // difference == 0 ;
 
   return (
-    <CardOverlay title={`IDO Round ${round}`} ended={round === '1'}>
+    <>
       <div className="my-2">
         <ButtonMenu
           activeIndex={isDeposit ? 0 : 1}
           onItemClick={handleChangeMode}
         >
-          <ButtonMenuItem>Deposit</ButtonMenuItem>
+          <ButtonMenuItem disabled={!canDeposit}>Deposit</ButtonMenuItem>
           <ButtonMenuItem>Withdraw</ButtonMenuItem>
         </ButtonMenu>
       </div>
@@ -184,23 +173,6 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
           <div className="flex h-64 items-center justify-center">
             <Loading className="h-6 w-6 mb-3 text-primary-light" />
           </div>
-        )}
-        {submitted && !submitting && (
-          <>
-            <h2>You&apos;ve contributed ${inputAmount}.</h2>
-          </>
-        )}
-        {editContribution && !submitting && (
-          <>
-            <h2>
-              You&apos;ve contributed ${usdFormat.format(redeemableBalance)}.
-            </h2>
-            <p>
-              {endDeposits?.isBefore() && endIdo?.isAfter()
-                ? 'You can only reduce your contribution during the grace period. Reducing cannot be reversed.'
-                : 'Increase or reduce your contribution.'}
-            </p>
-          </>
         )}
       </div>
       <AmountInput
@@ -221,18 +193,12 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
       />
       {ipAllowed || !connected ? (
         <Button
-          onClick={() => handleSetContribution()}
+          onClick={handleSubmitContribution}
           className="w-full my-4"
           disabled={disableSubmit}
         >
           <div className={`flex items-center justify-center`}>
-            {dontAddMore
-              ? "Sorry you can't add anymore 🥲"
-              : !hasUSDC && connected
-              ? 'Your USDC balance is 0'
-              : isDeposit
-              ? `Deposit`
-              : `Withdraw`}
+            {isDeposit ? `Deposit` : `Withdraw`}
           </div>
         </Button>
       ) : (
@@ -242,9 +208,13 @@ const ContributionCard: React.FC<ContributionCardProps> = ({ round }) => {
           </div>
         </Button>
       )}
-      <StatsCard />
-    </CardOverlay>
+      <p>
+        {endDeposits?.isBefore() && endIdo?.isAfter()
+          ? 'You can only reduce your contribution during the grace period. Reducing cannot be reversed.'
+          : 'Increase or reduce your contribution.'}
+      </p>
+    </>
   )
 }
 
-export default ContributionCard
+export default PoolContribCard

@@ -13,7 +13,7 @@ export const ModalContext = createContext<ModalContext>({
   setBlocking: () => null,
 })
 
-export const ModalContextProvider: React.FC = ({ children }) => {
+export const ModalProvider: React.FC = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [modalNode, setModalNode] = useState<React.ReactNode>()
   const [isBlocking, setBlocking] = useState(false)

@@ -1,4 +1,4 @@
-import useWalletStore from '../stores/useWalletStore'
+import useWalletStore, { PoolAccount } from '../stores/useWalletStore'
 import { calculateBalance } from '../utils/balance'
 import { ProgramAccount, TokenAccount } from '../utils/tokens'
 
@@ -22,14 +22,13 @@ export function findLargestBalanceAccountForMint(
   return { account, balance }
 }
 
-export default function useLargestAccounts() {
-  const { pool, tokenAccounts, mints, usdcVault } = useWalletStore(
-    (state) => state
-  )
+export default function useLargestAccounts(pool: PoolAccount) {
+  const { tokenAccounts, mints, usdcVault } = useWalletStore((state) => state)
 
   const usdc = usdcVault
     ? findLargestBalanceAccountForMint(mints, tokenAccounts, usdcVault.mint)
     : undefined
+
   const redeemable = pool
     ? findLargestBalanceAccountForMint(
         mints,

@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from 'react'
-
 import { useWallet } from '@parrotfi/wallets'
+import React, { useEffect } from 'react'
 import { RPC_URL } from '../config/constants'
-
-import useWalletStore from '../stores/useWalletStore'
-import { notify } from '../utils/notifications'
 import useLocalStorageState from '../hooks/useLocalStorageState'
-import usePool from '../hooks/usePool'
-import useInterval from '../hooks/useInterval'
+import { notify } from '../stores/useNotificationStore'
+import useWalletStore from '../stores/useWalletStore'
 
 const SECONDS = 1000
 
@@ -22,7 +18,6 @@ export const IDOProvider = ({ children }) => {
     actions,
   } = useWalletStore((state) => state)
 
-  const { endIdo } = usePool()
   const [savedProviderUrl, setSavedProviderUrl] = useLocalStorageState(
     'walletProvider',
     RPC_URL
@@ -63,14 +58,20 @@ export const IDOProvider = ({ children }) => {
         state.connected = true
       })
       notify({
-        message: 'Wallet connected',
-        description:
+        title: 'Wallet connected',
+        message:
           'Connected to wallet ' +
           wallet.publicKey.toString().substr(0, 5) +
           '...' +
           wallet.publicKey.toString().substr(-5),
       })
-      actions.fetchPool()
+      actions.fetchPools().catch((e) => {
+        notify({
+          type: 'error',
+          title: 'Failed to fetch pools information',
+          message: e.message,
+        })
+      })
       actions.fetchWalletTokenAccounts()
     } else {
       setWalletStore((state) => {
@@ -78,8 +79,7 @@ export const IDOProvider = ({ children }) => {
         state.tokenAccounts = []
       })
       notify({
-        type: 'info',
-        message: 'Disconnected from wallet',
+        title: 'Disconnected from wallet',
       })
     }
     return () => {
@@ -93,21 +93,17 @@ export const IDOProvider = ({ children }) => {
   // fetch pool on page load
   useEffect(() => {
     const pageLoad = async () => {
-      await actions.fetchPool()
-      actions.fetchMints()
+      await actions.fetchPools()
+      await actions.fetchMints()
     }
-    pageLoad()
+    pageLoad().catch((e) => {
+      notify({
+        type: 'error',
+        title: 'Failed to fetch pools information',
+        message: e.message,
+      })
+    })
   }, [])
-
-  // refresh usdc vault regularly
-  useInterval(async () => {
-    if (endIdo.isAfter()) {
-      await actions.fetchUsdcVault()
-    } else {
-      await actions.fetchMNGOVault()
-      await actions.fetchRedeemableMint()
-    }
-  }, 10 * SECONDS)
 
   return <IDOContext.Provider value={{}}>{children}</IDOContext.Provider>
 }
