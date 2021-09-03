@@ -180,7 +180,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           )}
         </button>
       </div>
-      <div className="flex flex-row py-1">
+      <div className="flex flex-row py-2">
         {hasError && <span className="text-xs text-error">{errorMessage}</span>}
         <span className="flex-1" />
         <span className="text-xs text-secondary">

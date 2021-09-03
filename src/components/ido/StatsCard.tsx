@@ -1,32 +1,37 @@
 import PoolCountdown from './PoolCountdown'
 import useVaults from '../../hooks/useVaults'
 import usePool from '../../hooks/usePool'
-import 'twin.macro'
 import NumberText from '../texts/Number'
 import { PoolAccount } from '../../stores/useWalletStore'
+import { QuestionMarkCircleIcon } from '@heroicons/react/outline'
 
 interface StatsCardProps {
   pool: PoolAccount
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
-  const { startIdo, endIdo, endDeposits, startRedeem } = usePool(pool)
+  const { endIdo, endDeposits } = usePool(pool)
   const vaults = useVaults(pool)
 
   return (
     <div className="flex flex-col space-y-2">
-      <div className="grid grid-cols-2 gap-2 bg-tertiary rounded-xl p-6">
-        <div className="text-center">
-          <p className="text-sm text-secondary">Sale Period Ends</p>
+      <div className="bg-secondary rounded-xl p-6 grid grid-cols-2 gap-2">
+        <div>
+          <div className="text-sm text-secondary flex flex-row items-center justify-center">
+            <span>Sale Period Ends</span>
+            <QuestionMarkCircleIcon className="ml-1 h-5 w-5" />
+          </div>
           <PoolCountdown
             pool={pool}
             date={endDeposits}
             className="justify-center pt-2"
           />
         </div>
-
-        <div className="text-center">
-          <p className="text-sm text-secondary">Grace Period Ends</p>
+        <div>
+          <div className="text-sm text-secondary flex flex-row items-center justify-center">
+            <span>Grace Period Ends</span>
+            <QuestionMarkCircleIcon className="ml-1 h-5 w-5" />
+          </div>
           <PoolCountdown
             pool={pool}
             date={endIdo}
@@ -34,7 +39,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-2 bg-tertiary rounded-xl p-6">
+      <div className="bg-secondary rounded-xl p-6 grid grid-cols-2 gap-2">
         <div className="text-center">
           <p className="text-sm text-secondary">USDC Contributed</p>
           <div className="flex items-center justify-center pt-2">
@@ -71,8 +76,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
           </div>
         </div>
       </div>
-
-      <div className=" bg-tertiary rounded-xl p-6">
+      <div className="bg-secondary rounded-xl p-6">
         <div className="text-center">
           <p className="text-sm text-secondary">PRT For Sale</p>
           <div className="flex items-center justify-center pt-2">
@@ -84,22 +88,6 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
             />
           </div>
         </div>
-      </div>
-      <div className="bg-tertiary p-4 space-y-3 font-mono text-xs">
-        <p>
-          Start Ido: {startIdo?.fromNow()} ({startIdo?.format()})
-        </p>
-        <p>
-          End Deposits: {endDeposits?.fromNow()} ({endDeposits?.format()})
-        </p>
-        <p>
-          End Withdraws/Ido: {endIdo?.fromNow()} ({endIdo?.format()})
-        </p>
-        <p>
-          Start Redeem: {startRedeem?.fromNow()} ({startRedeem?.format()})
-        </p>
-        <p>Current USDC in Pool: {vaults.usdcBalance || 'N/A'}</p>
-        <p>Locked PRT in Pool: {vaults.prtBalance || 'N/A'}</p>
       </div>
     </div>
   )

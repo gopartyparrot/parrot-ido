@@ -18,13 +18,12 @@ const PoolCountdown: React.FC<PoolCountdownProps> = ({
   const { endIdo, endDeposits } = usePool(pool)
   const renderCountdown = ({ days, hours, minutes, seconds, completed }) => {
     hours += days * 24
-
     const message =
       endDeposits?.isBefore() && endIdo?.isAfter()
         ? 'Deposits are closed'
         : 'The IDO has ended'
     if (completed) {
-      return <p className="text-sm mt-2">{message}</p>
+      return <p className="text-sm mt-2 text-center">{message}</p>
     } else {
       return (
         <div className={classNames(className, 'flex items-center')}>

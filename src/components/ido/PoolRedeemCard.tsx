@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
-import { Button } from '../button'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import useLargestAccounts from '../../hooks/useLargestAccounts'
 import useVaults from '../../hooks/useVaults'
-import { calculateSupply } from '../../utils/balance'
-import { AmountInput } from '../input/AmountInput'
 import { notify } from '../../stores/useNotificationStore'
-import { TOTAL_RAISED } from '../../config/constants'
+import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
+import { calculateSupply } from '../../utils/balance'
+import { Button } from '../button'
 import NumberText from '../texts/Number'
 
 interface PoolRedeemCardProps {
@@ -19,16 +17,17 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
   const mints = useWalletStore((s) => s.mints)
   const largestAccounts = useLargestAccounts(pool)
   const vaults = useVaults(pool)
-
-  const redeemableBalance = largestAccounts.redeemable?.balance || 0
-  const redeemableSupply = calculateSupply(mints, pool.redeemableMint)
-  const mangoAvailable =
-    vaults.prtBalance && redeemableSupply
-      ? (redeemableBalance * vaults.prtBalance) / redeemableSupply
-      : 0
-
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
+
+  const contributeBalance = largestAccounts.redeemable?.balance || 0
+
+  const redeemableAmount = useMemo(() => {
+    const redeemableSupply = calculateSupply(mints, pool.redeemableMint)
+    return vaults.prtBalance && redeemableSupply
+      ? (contributeBalance * vaults.prtBalance) / redeemableSupply
+      : 0
+  }, [vaults.prtBalance, contributeBalance, mints, pool.redeemableMint])
 
   const handleRedeem = useCallback(() => {
     setSubmitting(true)
@@ -66,12 +65,11 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
     }
   }, [submitting])
 
-  const disableFormInputs = !connected || loading
-  const disableSubmit = disableFormInputs || redeemableBalance < 0
+  const disableSubmit = !connected || loading || redeemableAmount < 0
 
   return (
     <div className="space-y-2">
-      <div className="bg-tertiary rounded-xl p-6 text-center">
+      <div className="bg-secondary rounded-xl p-6 text-center">
         <p className="text-sm text-secondary">Total raised</p>
         <div className="flex items-center justify-center pt-2">
           <img
@@ -88,7 +86,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           />
         </div>
       </div>
-      <div className="bg-tertiary rounded-xl p-6 text-center">
+      <div className="bg-secondary rounded-xl p-6 text-center">
         <p className="text-sm text-secondary">Your contribution</p>
         <div className="flex items-center justify-center pt-2">
           <img
@@ -100,21 +98,46 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           />
           <NumberText
             className="font-bold text-mdx"
-            value={redeemableBalance}
+            value={contributeBalance}
             defaultIfNull="N/A"
           />
         </div>
       </div>
-      <AmountInput
-        title="Redeemable amount"
-        placeholder="0"
-        tokenSymbol="PRT"
-        tokenIcon="prt.svg"
-        value={mangoAvailable.toString()}
-        valueRound="ceil"
-        decimals={6}
-        readOnly
-      />
+      <div className="bg-secondary rounded-xl p-6 text-center">
+        <p className="text-sm text-secondary">Token Price</p>
+        <div className="flex items-center justify-center pt-2">
+          <img
+            alt=""
+            width="20"
+            height="20"
+            src="/icons/usdc.svg"
+            className="mr-2"
+          />
+          <NumberText
+            className="font-bold text-mdx"
+            value={vaults.estimatedPrice}
+            defaultIfNull="N/A"
+          />
+        </div>
+      </div>
+      <div className="bg-secondary rounded-xl p-6 text-center">
+        <p className="text-sm text-secondary">Redeemable amount</p>
+        <div className="flex items-center justify-center pt-2">
+          <img
+            alt=""
+            width="20"
+            height="20"
+            src="/icons/prt.svg"
+            className="mr-2"
+          />
+          <NumberText
+            className="font-bold text-mdx"
+            value={redeemableAmount}
+            defaultIfNull="N/A"
+          />
+        </div>
+      </div>
+
       <Button
         onClick={handleRedeem}
         className="w-full mt-6 mb-4"

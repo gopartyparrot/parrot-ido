@@ -9,7 +9,7 @@ const Main = () => {
   const pools = useWalletStore((s) => s.pools)
 
   return (
-    <main className="flex-1 flex flex-row space-x-2 my-6 mx-auto">
+    <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 my-6 mx-auto">
       {pools.map((pool, index) => (
         <PoolCard
           key={pool.publicKey.toBase58()}

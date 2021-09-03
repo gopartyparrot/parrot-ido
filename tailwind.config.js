@@ -107,11 +107,11 @@ module.exports = {
     },
     minWidth: {
       symbol: '2.5em',
-      card: '530px',
+      card: '496px',
     },
     extend: {
       width: {
-        card: '530px',
+        card: '496px',
       },
       blur: {
         xs: 'blur(3px)',

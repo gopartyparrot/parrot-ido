@@ -1,12 +1,10 @@
 import React from 'react'
-import 'twin.macro'
 import useInterval from '../../hooks/useInterval'
 import usePool from '../../hooks/usePool'
 import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
 import CardOverlay from './CardOverlay'
 import PoolContribCard from './PoolContribCard'
 import PoolRedeemCard from './PoolRedeemCard'
-import StatsCard from './StatsCard'
 
 interface PoolCardProps {
   pool: PoolAccount
@@ -33,7 +31,21 @@ const PoolCard: React.FC<PoolCardProps> = ({ pool, round }) => {
     >
       {startRedeem.isAfter() && <PoolContribCard pool={pool} />}
       {startRedeem.isBefore() && <PoolRedeemCard pool={pool} />}
-      <StatsCard pool={pool} />
+      {/* Debug stats */}
+      <div className="bg-secondary rounded-xl p-2 mt-4 space-y-3 font-mono text-xs">
+        <p>
+          Start Ido: {startIdo?.fromNow()} ({startIdo?.format()})
+        </p>
+        <p>
+          End Deposits: {endDeposits?.fromNow()} ({endDeposits?.format()})
+        </p>
+        <p>
+          End Withdraws/Ido: {endIdo?.fromNow()} ({endIdo?.format()})
+        </p>
+        <p>
+          Start Redeem: {startRedeem?.fromNow()} ({startRedeem?.format()})
+        </p>
+      </div>
     </CardOverlay>
   )
 }

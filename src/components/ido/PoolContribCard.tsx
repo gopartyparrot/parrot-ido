@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import 'twin.macro'
-import useInterval from '../../hooks/useInterval'
-import useIpAddress from '../../hooks/useIpAddress'
+// import useIpAddress from '../../hooks/useIpAddress's
 import useLargestAccounts from '../../hooks/useLargestAccounts'
 import usePool from '../../hooks/usePool'
 import { notify } from '../../stores/useNotificationStore'
@@ -9,6 +7,7 @@ import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
 import { Button } from '../button'
 import { AmountInput } from '../input/AmountInput'
 import { ButtonMenu, ButtonMenuItem } from '../menu'
+import StatsCard from './StatsCard'
 
 interface PoolContribCardProps {
   pool: PoolAccount
@@ -19,7 +18,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   const connected = useWalletStore((s) => s.connected)
   const largestAccounts = useLargestAccounts(pool)
   const { startIdo, endIdo, endDeposits } = usePool(pool)
-  const { ipAllowed } = useIpAddress()
+  // const { ipAllowed } = useIpAddress()
 
   const usdcBalance = largestAccounts.usdc?.balance || 0
   const redeemableBalance = largestAccounts.redeemable?.balance || 0
@@ -165,11 +164,14 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
       {/* <Button className="w-full my-4" disabled>
           Country Not Allowed 🇺🇸😭
         </Button> */}
-      <p className="text-xs">
-        {endDeposits?.isBefore() && endIdo?.isAfter()
-          ? 'You can only reduce your contribution during the grace period. Reducing cannot be reversed.'
-          : 'Increase or reduce your contribution.'}
-      </p>
+      {endDeposits?.isBefore() && endIdo?.isAfter() && (
+        <p className="text-xs my-4">
+          You can only reduce your contribution during the grace period.
+          Reducing cannot be reversed.
+        </p>
+      )}
+
+      <StatsCard pool={pool} />
     </>
   )
 }
