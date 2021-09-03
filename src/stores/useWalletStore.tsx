@@ -1,61 +1,52 @@
-import create, { State } from 'zustand'
-import produce from 'immer'
-import { Connection, PublicKey, Transaction } from '@solana/web3.js'
+import { WalletAdapter } from '@parrotfi/wallets'
 import * as anchor from '@project-serum/anchor'
-
-// @ts-ignore
-import poolIdl from '../idls/ido_pool'
-
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { Connection, PublicKey, Transaction } from '@solana/web3.js'
+import produce from 'immer'
+import uniqBy from 'lodash/uniqBy'
+import create, { SetState, State } from 'zustand'
+import { RPC_URL, SOLANA_NETWORK } from '../config/constants'
+import { findLargestBalanceAccountForMint } from '../hooks/useLargestAccounts'
+import poolIdl from '../idls/ido_pool.json'
+import { createAssociatedTokenAccount } from '../utils/associated'
+import { calculateNativeAmountUnsafe } from '../utils/balance'
+import { sendTransaction } from '../utils/send'
 import {
-  getOwnedTokenAccounts,
   getMint,
+  getOwnedTokenAccounts,
+  MintAccount,
+  parseTokenAccount,
   ProgramAccount,
   TokenAccount,
-  MintAccount,
-  getTokenAccount,
 } from '../utils/tokens'
-import { findLargestBalanceAccountForMint } from '../hooks/useLargestAccounts'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { createAssociatedTokenAccount } from '../utils/associated'
-import { sendTransaction } from '../utils/send'
-import { calculateNativeAmountUnsafe } from '../utils/balance'
-import { BN } from '@project-serum/anchor'
-import { WalletAdapter } from '@parrotfi/wallets'
-import { SOLANA_NETWORK } from '../config/constants'
 
-export const ENDPOINTS: any[] = [
+export const IDO_CONFIGS = [
   {
-    name: 'mainnet',
-    url: 'https://parrot.rpcpool.com',
-    programId: '6QXNNAPkPsWjd1j3qQJTvRFgSNPARMhF2tE8g1WeGyrM',
+    network: 'mainnet',
+    programId: 'xxx',
+    usdcMint: 'xxx',
     pools: ['AHBj9LAjxStT2YQHN6QdfHKpZLtEVr8ACqeFgYcPsTnr'],
   },
   {
-    name: 'devnet',
-    url: 'https://api.devnet.solana.com',
+    network: 'devnet',
     programId: '5s48HdiM1PjxqHDpGvZUVnX6eKbGbvN15rFHJ7RwxCv4',
+    usdcMint: 'G1Z261S3B2XQWCZo1qXJkEbeqkrcY1mVW3B3vMj5uqRq',
     pools: [
       '3LF3P35APZEVBbmYRmRz83oaW5rKNRFqC62r863ujUeZ',
       '9Rjif7icpFwoKT35odhwH4jxxz1YmRjE8YBjM1u2bysH',
-      '5vYiGgXRJs1HwkYZkgnWPKxjgDR9ypLREeFPgarXqV8L',
+      'BuwLsSNCCKreog2dq48M9cBFARsFcST91NvdwWiVWmUR',
     ],
-  },
-  {
-    name: 'localnet',
-    url: 'http://localhost:8899',
-    programId: 'FF8zcQ1aEmyXeBt99hohoyYprgpEVmWsRK44qta3emno',
-    pools: ['8gswb9g1JdYEVj662KXr9p6p9SMgR77NryyqvWn9GPXJ'],
   },
 ]
 
-const ENDPOINT = ENDPOINTS.find((e) => e.name === SOLANA_NETWORK)
-const DEFAULT_CONNECTION = new Connection(ENDPOINT.url, 'recent')
-const PROGRAM_ID = new PublicKey(ENDPOINT.programId)
-const POOLS_PKS = ENDPOINT.pools.map((i) => new PublicKey(i))
+const IDO_CONFIG = IDO_CONFIGS.find((e) => e.network === SOLANA_NETWORK)
+const DEFAULT_CONNECTION = new Connection(RPC_URL, 'recent')
+const POOLS_PKS = IDO_CONFIG.pools.map((i) => new PublicKey(i))
 
 export interface PoolAccount {
   publicKey: PublicKey
   distributionAuthority: PublicKey
+  startIdoTs: anchor.BN
   endDepositsTs: anchor.BN
   endIdoTs: anchor.BN
   withdrawMelonTs: anchor.BN
@@ -63,29 +54,23 @@ export interface PoolAccount {
   numIdoTokens: anchor.BN
   poolUsdc: PublicKey
   poolWatermelon: PublicKey
-  redeemableMint: PublicKey
-  startIdoTs: anchor.BN
   watermelonMint: PublicKey
+  redeemableMint: PublicKey
 }
 
 interface WalletStore extends State {
   connected: boolean
-  connection: {
-    cluster: string
-    current: Connection
-    endpoint: string
-    programId: PublicKey
-  }
-  current: WalletAdapter | undefined
+  programId: PublicKey
+  usdcMint: PublicKey
+  wallet: WalletAdapter | undefined
+  connection: Connection
   providerUrl: string
   provider: anchor.Provider | undefined
   program: anchor.Program | undefined
   pools: PoolAccount[]
-  mangoVault: TokenAccount | undefined
-  usdcVault: TokenAccount | undefined
   tokenAccounts: ProgramAccount<TokenAccount>[]
   mints: { [pubkey: string]: MintAccount }
-  set: (x: any) => void
+  set: SetState<WalletStore>
   actions: WalletStoreActions
 }
 
@@ -93,8 +78,9 @@ interface WalletStoreActions {
   fetchPools: () => Promise<void>
   fetchWalletTokenAccounts: () => Promise<void>
   fetchMints: () => Promise<void>
-  fetchUsdcVault: (pool: PoolAccount) => Promise<void>
-  fetchPrtVault: (pool: PoolAccount) => Promise<void>
+  fetchVaults: (
+    pool: PoolAccount
+  ) => Promise<{ usdc: TokenAccount; watermelon: TokenAccount }>
   fetchRedeemableMint: (pool: PoolAccount) => Promise<void>
   submitDepositContribution: (
     pool: PoolAccount,
@@ -109,27 +95,19 @@ interface WalletStoreActions {
 
 const useWalletStore = create<WalletStore>((set, get) => ({
   connected: false,
-  connection: {
-    cluster: SOLANA_NETWORK,
-    current: DEFAULT_CONNECTION,
-    endpoint: ENDPOINT.url,
-    programId: PROGRAM_ID,
-  },
-  current: null,
+  programId: new PublicKey(IDO_CONFIG.programId),
+  usdcMint: new PublicKey(IDO_CONFIG.usdcMint),
+  wallet: null,
+  connection: DEFAULT_CONNECTION,
   providerUrl: '',
   provider: undefined,
   program: undefined,
   pools: [],
-  mangoVault: undefined,
-  usdcVault: undefined,
   tokenAccounts: [],
   mints: {},
   actions: {
     async fetchPools() {
-      const connection = get().connection.current
-      const wallet = get().current
-      const programId = get().connection.programId
-      const set = get().set
+      const { wallet, connection, programId, set } = get()
 
       // console.log('fetchPool', connection, poolIdl)
       if (connection) {
@@ -138,45 +116,49 @@ const useWalletStore = create<WalletStore>((set, get) => ({
           wallet,
           anchor.Provider.defaultOptions()
         )
-        const program = new anchor.Program(poolIdl, programId, provider)
-        console.log('pool', SOLANA_NETWORK)
+        const program = new anchor.Program(
+          poolIdl as anchor.Idl,
+          programId,
+          provider
+        )
 
         const pools: PoolAccount[] = []
         for await (const poolPk of POOLS_PKS) {
           const pool = (await program.account.poolAccount.fetch(
             poolPk
           )) as PoolAccount
-
           pool.publicKey = poolPk
           pools.push(pool)
         }
-
-        // console.log('fetchPool', { program, pool, usdcVault, mangoVault })
-        // const now = Date.now() / 1000;
-        // pool.startIdoTs = new BN(now + 1000);
-        // pool.endDepositsTs = new BN(now + 1500);
-        // pool.endIdoTs = new BN(now + 2000);
-
-        const [usdcVault, mangoVault] = await Promise.all([
-          getTokenAccount(connection, pools[0].poolUsdc),
-          getTokenAccount(connection, pools[0].poolWatermelon),
-        ])
 
         set((state) => {
           state.provider = provider
           state.program = program
           state.pools = pools
-          state.usdcVault = usdcVault.account
-          state.mangoVault = mangoVault.account
         })
       }
     },
+    async fetchMints() {
+      const { connection, usdcMint, pools, set } = get()
+      const mintKeys = [
+        usdcMint,
+        ...pools.map((i) => i.watermelonMint),
+        ...pools.map((i) => i.redeemableMint),
+      ]
+      const mints = await Promise.all(
+        uniqBy(mintKeys, (i) => i.toBase58()).map((pk) =>
+          getMint(connection, pk)
+        )
+      )
+      set((state) => {
+        for (const mint of mints) {
+          state.mints[mint.publicKey.toBase58()] = mint.account
+        }
+      })
+    },
     async fetchWalletTokenAccounts() {
-      const connection = get().connection.current
-      const connected = get().connected
-      const wallet = get().current
+      const { connection, connected, wallet, set } = get()
       const walletOwner = wallet?.publicKey
-      const set = get().set
 
       console.log(
         'fetchWalletTokenAccounts',
@@ -199,96 +181,47 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         })
       }
     },
-    async fetchUsdcVault(pool: PoolAccount) {
-      const connection = get().connection.current
-      const set = get().set
+    async fetchVaults(pool: PoolAccount) {
+      const { connection } = get()
+      const [accountUsdc, accountWatermelon] =
+        await connection.getMultipleAccountsInfo([
+          pool.poolUsdc,
+          pool.poolWatermelon,
+        ])
 
-      if (!pool) return
-
-      const { account: vault } = await getTokenAccount(
-        connection,
-        pool.poolUsdc
+      const usdc = parseTokenAccount(pool.poolUsdc, accountUsdc)
+      const watermelon = parseTokenAccount(
+        pool.poolWatermelon,
+        accountWatermelon
       )
-      // console.log('fetchUsdcVault', vault)
-
-      set((state) => {
-        state.usdcVault = vault
-      })
-    },
-    async fetchMints() {
-      const connection = get().connection.current
-      const mangoVault = get().mangoVault
-      const usdcVault = get().usdcVault
-      const pools = get().pools
-      const set = get().set
-
-      const mintKeys = [
-        mangoVault.mint,
-        usdcVault.mint,
-        ...pools.map((i) => i.redeemableMint),
-      ]
-      const mints = await Promise.all(
-        mintKeys.map((pk) => getMint(connection, pk))
-      )
-      // console.log('fetchMints', mints)
-
-      set((state) => {
-        for (const pa of mints) {
-          state.mints[pa.publicKey.toBase58()] = pa.account
-          // console.log('mint', pa.publicKey.toBase58(), pa.account)
-        }
-      })
-    },
-    async fetchPrtVault(pool: PoolAccount) {
-      const connection = get().connection.current
-      const set = get().set
-
-      if (!pool) return
-
-      const { account: vault } = await getTokenAccount(
-        connection,
-        pool.poolWatermelon
-      )
-      // console.log('fetchMNGOVault', vault)
-
-      set((state) => {
-        state.mangoVault = vault
-      })
+      return { usdc: usdc.account, watermelon: watermelon.account }
     },
     async fetchRedeemableMint(pool: PoolAccount) {
-      const connection = get().connection.current
+      const connection = get().connection
       const set = get().set
 
       const mintKeys = [pool.redeemableMint]
       const mints = await Promise.all(
         mintKeys.map((pk) => getMint(connection, pk))
       )
-      // console.log('fetchMints', mints)
 
       set((state) => {
-        for (const pa of mints) {
-          state.mints[pa.publicKey.toBase58()] = pa.account
+        for (const mint of mints) {
+          state.mints[mint.publicKey.toBase58()] = mint.account
           // console.log('mint', pa.publicKey.toBase58(), pa.account)
         }
       })
     },
     async submitDepositContribution(pool: PoolAccount, amount: number) {
-      const actions = get().actions
+      const { actions, usdcMint } = get()
       await actions.fetchWalletTokenAccounts()
-      const {
-        program,
-        provider,
-        tokenAccounts,
-        mints,
-        usdcVault,
-        current: wallet,
-        connection: { current: connection },
-      } = get()
+      const { program, provider, tokenAccounts, mints, wallet, connection } =
+        get()
 
       const usdc = findLargestBalanceAccountForMint(
         mints,
         tokenAccounts,
-        usdcVault.mint
+        usdcMint
       )
 
       const [poolSigner] = await anchor.web3.PublicKey.findProgramAddress(
@@ -296,11 +229,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         program.programId
       )
 
-      const depositAmount = calculateNativeAmountUnsafe(
-        mints,
-        usdcVault.mint,
-        amount
-      )
+      const depositAmount = calculateNativeAmountUnsafe(mints, usdcMint, amount)
       console.log(
         'submitDepositContribution',
         amount,
@@ -340,9 +269,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         })
       )
       await sendTransaction({ transaction, wallet, connection })
-
       await actions.fetchWalletTokenAccounts()
-      actions.fetchUsdcVault(pool)
     },
     async submitWithdrawContribution(pool: PoolAccount, amount: number) {
       const actions = get().actions
@@ -353,9 +280,9 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         provider,
         tokenAccounts,
         mints,
-        usdcVault,
-        current: wallet,
-        connection: { current: connection },
+        wallet,
+        usdcMint,
+        connection,
       } = get()
       const redeemable = findLargestBalanceAccountForMint(
         mints,
@@ -365,7 +292,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
       const usdc = findLargestBalanceAccountForMint(
         mints,
         tokenAccounts,
-        usdcVault.mint
+        usdcMint
       )
 
       const [poolSigner] = await anchor.web3.PublicKey.findProgramAddress(
@@ -375,7 +302,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
 
       const withdrawAmount = calculateNativeAmountUnsafe(
         mints,
-        usdcVault.mint,
+        usdcMint,
         amount
       )
       console.log(
@@ -404,19 +331,12 @@ const useWalletStore = create<WalletStore>((set, get) => ({
       await sendTransaction({ transaction, wallet, connection })
 
       await actions.fetchWalletTokenAccounts()
-      actions.fetchUsdcVault(pool)
     },
     async submitRedeem(pool: PoolAccount) {
       const actions = get().actions
       await actions.fetchWalletTokenAccounts()
 
-      const {
-        program,
-        tokenAccounts,
-        mints,
-        current: wallet,
-        connection: { current: connection },
-      } = get()
+      const { program, tokenAccounts, mints, wallet, connection } = get()
 
       const redeemable = findLargestBalanceAccountForMint(
         mints,
@@ -482,7 +402,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
       ])
     },
   },
-  set: (fn) => set(produce(fn)),
+  set: (fn: (s: WalletStore) => WalletStore) => set(produce(fn)),
 }))
 
 export default useWalletStore

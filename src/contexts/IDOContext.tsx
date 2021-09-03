@@ -5,14 +5,11 @@ import useLocalStorageState from '../hooks/useLocalStorageState'
 import { notify } from '../stores/useNotificationStore'
 import useWalletStore from '../stores/useWalletStore'
 
-const SECONDS = 1000
-
 export const IDOContext = React.createContext({})
 
 export const IDOProvider = ({ children }) => {
   const { connected, provider, wallet } = useWallet()
   const {
-    connection: { endpoint },
     providerUrl: selectedProviderUrl,
     set: setWalletStore,
     actions,
@@ -33,7 +30,7 @@ export const IDOProvider = ({ children }) => {
     if (provider) {
       const updateWallet = () => {
         setWalletStore((state) => {
-          state.current = wallet
+          state.wallet = wallet
         })
       }
 
@@ -49,7 +46,7 @@ export const IDOProvider = ({ children }) => {
         updateWallet()
       }
     }
-  }, [provider, endpoint])
+  }, [provider])
 
   useEffect(() => {
     if (!wallet) return

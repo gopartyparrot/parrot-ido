@@ -1,43 +1,38 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
 import { Button } from '../button'
-import Loading from '../Loading'
 import useLargestAccounts from '../../hooks/useLargestAccounts'
 import useVaults from '../../hooks/useVaults'
 import { calculateSupply } from '../../utils/balance'
 import { AmountInput } from '../input/AmountInput'
-import CardOverlay from './CardOverlay'
+import { notify } from '../../stores/useNotificationStore'
+import { TOTAL_RAISED } from '../../config/constants'
+import NumberText from '../texts/Number'
 
 interface PoolRedeemCardProps {
   pool: PoolAccount
-  round?: string
 }
 
-const PoolRedeemCard = ({ pool }) => {
+const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
   const actions = useWalletStore((s) => s.actions)
   const connected = useWalletStore((s) => s.connected)
   const mints = useWalletStore((s) => s.mints)
   const largestAccounts = useLargestAccounts(pool)
-  const vaults = useVaults()
+  const vaults = useVaults(pool)
 
-  const numberFormat = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-  const totalRaised = 70462383.600012
   const redeemableBalance = largestAccounts.redeemable?.balance || 0
   const redeemableSupply = calculateSupply(mints, pool.redeemableMint)
   const mangoAvailable =
-    vaults.mango && redeemableSupply
-      ? (redeemableBalance * vaults.mango.balance) / redeemableSupply
+    vaults.prtBalance && redeemableSupply
+      ? (redeemableBalance * vaults.prtBalance) / redeemableSupply
       : 0
 
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  const handleRedeem = () => {
+  const handleRedeem = useCallback(() => {
     setSubmitting(true)
-  }
+  }, [])
 
   useEffect(() => {
     if (pool.redeemableMint) {
@@ -55,8 +50,17 @@ const PoolRedeemCard = ({ pool }) => {
   useEffect(() => {
     if (submitting) {
       const handleSubmit = async () => {
-        await actions.submitRedeem(pool)
-        setSubmitting(false)
+        try {
+          await actions.submitRedeem(pool)
+          setSubmitting(false)
+        } catch (e) {
+          notify({
+            type: 'error',
+            title: 'Redeem error',
+            message: e.message,
+          })
+          setSubmitting(false)
+        }
       }
       handleSubmit()
     }
@@ -66,45 +70,60 @@ const PoolRedeemCard = ({ pool }) => {
   const disableSubmit = disableFormInputs || redeemableBalance < 0
 
   return (
-    <>
-      <AmountInput
-        title="Total raised"
-        placeholder="0"
-        tokenSymbol="USDC"
-        tokenIcon="usdc.svg"
-        value={totalRaised.toString()}
-        valueRound="ceil"
-        decimals={6}
-        readOnly
-      />
-      <AmountInput
-        title="Your contribution"
-        placeholder="0"
-        tokenSymbol="USDC"
-        tokenIcon="usdc.svg"
-        value={numberFormat.format(redeemableBalance)}
-        valueRound="ceil"
-        decimals={6}
-        readOnly
-      />
+    <div className="space-y-2">
+      <div className="bg-tertiary rounded-xl p-6 text-center">
+        <p className="text-sm text-secondary">Total raised</p>
+        <div className="flex items-center justify-center pt-2">
+          <img
+            alt=""
+            width="20"
+            height="20"
+            src="/icons/usdc.svg"
+            className="mr-2"
+          />
+          <NumberText
+            className="font-bold text-mdx"
+            value={vaults.usdcBalance}
+            defaultIfNull="N/A"
+          />
+        </div>
+      </div>
+      <div className="bg-tertiary rounded-xl p-6 text-center">
+        <p className="text-sm text-secondary">Your contribution</p>
+        <div className="flex items-center justify-center pt-2">
+          <img
+            alt=""
+            width="20"
+            height="20"
+            src="/icons/usdc.svg"
+            className="mr-2"
+          />
+          <NumberText
+            className="font-bold text-mdx"
+            value={redeemableBalance}
+            defaultIfNull="N/A"
+          />
+        </div>
+      </div>
       <AmountInput
         title="Redeemable amount"
         placeholder="0"
         tokenSymbol="PRT"
         tokenIcon="prt.svg"
-        value={numberFormat.format(mangoAvailable)}
+        value={mangoAvailable.toString()}
         valueRound="ceil"
         decimals={6}
         readOnly
       />
       <Button
-        onClick={() => handleRedeem()}
-        className="w-full mt-6 mb-2"
+        onClick={handleRedeem}
+        className="w-full mt-6 mb-4"
         disabled={disableSubmit}
+        isLoading={submitting}
       >
-        Go PRT
+        {submitting ? 'Waiting approval' : 'Get PRT'}
       </Button>
-    </>
+    </div>
   )
 }
 

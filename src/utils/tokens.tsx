@@ -1,13 +1,13 @@
-import { Connection, PublicKey } from '@solana/web3.js'
+import { Connection, PublicKey, AccountInfo } from '@solana/web3.js'
 import {
-  AccountInfo,
+  AccountInfo as TokenAccountInfo,
   AccountLayout,
   MintInfo,
   MintLayout,
   u64,
 } from '@solana/spl-token'
 
-export type TokenAccount = AccountInfo
+export type TokenAccount = TokenAccountInfo
 export type MintAccount = MintInfo
 export type ProgramAccount<T> = {
   publicKey: PublicKey
@@ -36,6 +36,18 @@ export async function getMint(
   const result = await connection.getAccountInfo(publicKey)
   const data = Buffer.from(result.data)
   const account = parseMintAccountData(data)
+  return {
+    publicKey,
+    account,
+  }
+}
+
+export function parseTokenAccount(
+  publicKey: PublicKey,
+  info: AccountInfo<Buffer>
+): ProgramAccount<TokenAccount> {
+  const data = Buffer.from(info.data)
+  const account = parseTokenAccountData(publicKey, data)
   return {
     publicKey,
     account,

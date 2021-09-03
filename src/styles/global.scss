@@ -133,22 +133,6 @@ button {
   z-index: -1;
 }
 
-.loader {
-  border-color: var(--color-bg-disabled);
-  border-top-color: var(--color-brand-primary);
-  animation: spinner 1.5s linear infinite;
-}
-
-@keyframes spinner {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 .progress-bar {
   position: relative;
   height: 6.5px;

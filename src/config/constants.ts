@@ -12,3 +12,7 @@ export const RPC_URL =
 export const TOKEN_COIN_DISPLAY_DECIMALS = 4
 export const TOKEN_STABLE_DISPLAY_DECIMALS = 2
 export const NUMBER_DISPLAY_DECIMALS = 2
+
+export const TOTAL_RAISED = 70462383.600012
+
+export const RPC_ENDPOINTS = {}

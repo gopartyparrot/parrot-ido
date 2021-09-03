@@ -25,7 +25,7 @@ const Button = <E extends ElementType = 'button'>(
     <button
       disabled={isDisabled}
       className={classNames(
-        'font-bold px-4 outline-none ring-opacity-75 text-white focus:outline-none custom-button-active-effect',
+        'font-bold px-4 flex flex-row items-center justify-center outline-none ring-opacity-75 text-white focus:outline-none custom-button-active-effect',
         {
           'w-full': block,
           'py-2': size !== sizes.XS,

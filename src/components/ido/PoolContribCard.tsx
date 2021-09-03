@@ -8,7 +8,6 @@ import { notify } from '../../stores/useNotificationStore'
 import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
 import { Button } from '../button'
 import { AmountInput } from '../input/AmountInput'
-import Loading from '../Loading'
 import { ButtonMenu, ButtonMenuItem } from '../menu'
 
 interface PoolContribCardProps {
@@ -19,7 +18,6 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   const actions = useWalletStore((s) => s.actions)
   const connected = useWalletStore((s) => s.connected)
   const largestAccounts = useLargestAccounts(pool)
-  // const vaults = useVaults()
   const { startIdo, endIdo, endDeposits } = usePool(pool)
   const { ipAllowed } = useIpAddress()
 
@@ -29,25 +27,9 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   const [isDeposit, setIsDeposit] = useState(true)
 
   const totalBalance = isDeposit ? usdcBalance : redeemableBalance
-  console.log('totalBalance', totalBalance.toString())
-
-  // refresh usdc vault regularly
-  useInterval(async () => {
-    if (endIdo.isAfter()) {
-      await actions.fetchUsdcVault(pool)
-    } else {
-      await actions.fetchPrtVault(pool)
-      await actions.fetchRedeemableMint(pool)
-    }
-  }, 10_000)
-
-  // const mangoRedeemable = vaults.usdc
-  //   ? (redeemableBalance * vaults.mango.balance) / vaults.usdc.balance
-  //   : 0
 
   const [inputAmount, setInputAmount] = useState('0')
   const [submitting, setSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [maxButtonTransition, setMaxButtonTransition] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
@@ -56,14 +38,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   useEffect(() => {
     console.log('reset input on balance change')
     setInputAmount('')
-    if (redeemableBalance > 0) {
-      setSubmitted(true)
-    }
   }, [totalBalance])
-
-  useEffect(() => {
-    setSubmitted(false)
-  }, [connected])
 
   const handleSubmitContribution = useCallback(() => {
     setSubmitting(true)
@@ -117,7 +92,6 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
           } else {
             await actions.submitWithdrawContribution(pool, +inputAmount)
           }
-          setSubmitted(true)
           setSubmitting(false)
         } catch (e) {
           notify({
@@ -125,7 +99,6 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
             title: isDeposit ? 'Deposit error' : 'Withdraw error',
             message: e.message,
           })
-          setSubmitted(false)
           setSubmitting(false)
         }
       }
@@ -149,32 +122,21 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   const canWithdraw =
     connected && !submitting && startIdo.isBefore() && endIdo.isAfter()
 
-  const disableSubmit = loading || isDeposit ? !canDeposit : !canWithdraw // difference == 0 ;
+  const disableSubmit =
+    !connected || loading || submitting || isDeposit
+      ? !canDeposit
+      : !canWithdraw
 
   return (
     <>
-      <div className="my-2">
-        <ButtonMenu
-          activeIndex={isDeposit ? 0 : 1}
-          onItemClick={handleChangeMode}
-        >
-          <ButtonMenuItem disabled={!canDeposit}>Deposit</ButtonMenuItem>
-          <ButtonMenuItem>Withdraw</ButtonMenuItem>
-        </ButtonMenu>
-      </div>
-      <div className="pb-4 text-center">
-        {!submitted && submitting && (
-          <>
-            <h2>Approve the transaction.</h2>
-            <p>Almost there...</p>
-          </>
-        )}
-        {submitting && (
-          <div className="flex h-64 items-center justify-center">
-            <Loading className="h-6 w-6 mb-3 text-primary-light" />
-          </div>
-        )}
-      </div>
+      <ButtonMenu
+        activeIndex={isDeposit ? 0 : 1}
+        onItemClick={handleChangeMode}
+      >
+        <ButtonMenuItem disabled={!canDeposit}>Deposit</ButtonMenuItem>
+        <ButtonMenuItem>Withdraw</ButtonMenuItem>
+      </ButtonMenu>
+      <div className="mt-4" />
       <AmountInput
         title={isDeposit ? 'I want to deposit' : 'Withdraw collateral'}
         placeholder="0"
@@ -191,24 +153,19 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
         onChange={onChangeAmountInput}
         disabled={!connected}
       />
-      {ipAllowed || !connected ? (
-        <Button
-          onClick={handleSubmitContribution}
-          className="w-full my-4"
-          disabled={disableSubmit}
-        >
-          <div className={`flex items-center justify-center`}>
-            {isDeposit ? `Deposit` : `Withdraw`}
-          </div>
-        </Button>
-      ) : (
-        <Button className="w-full my-4" disabled>
-          <div className={`flex items-center justify-center`}>
-            Country Not Allowed 🇺🇸😭
-          </div>
-        </Button>
-      )}
-      <p>
+
+      <Button
+        onClick={handleSubmitContribution}
+        className="w-full my-4"
+        disabled={disableSubmit}
+        isLoading={submitting}
+      >
+        {submitting ? 'Waiting approval' : isDeposit ? `Deposit` : `Withdraw`}
+      </Button>
+      {/* <Button className="w-full my-4" disabled>
+          Country Not Allowed 🇺🇸😭
+        </Button> */}
+      <p className="text-xs">
         {endDeposits?.isBefore() && endIdo?.isAfter()
           ? 'You can only reduce your contribution during the grace period. Reducing cannot be reversed.'
           : 'Increase or reduce your contribution.'}

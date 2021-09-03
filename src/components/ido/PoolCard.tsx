@@ -1,15 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React from 'react'
 import 'twin.macro'
 import useInterval from '../../hooks/useInterval'
-import useIpAddress from '../../hooks/useIpAddress'
-import useLargestAccounts from '../../hooks/useLargestAccounts'
 import usePool from '../../hooks/usePool'
-import { notify } from '../../stores/useNotificationStore'
 import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
-import { Button } from '../button'
-import { AmountInput } from '../input/AmountInput'
-import Loading from '../Loading'
-import { ButtonMenu, ButtonMenuItem } from '../menu'
 import CardOverlay from './CardOverlay'
 import PoolContribCard from './PoolContribCard'
 import PoolRedeemCard from './PoolRedeemCard'
@@ -23,17 +16,7 @@ interface PoolCardProps {
 const PoolCard: React.FC<PoolCardProps> = ({ pool, round }) => {
   const actions = useWalletStore((s) => s.actions)
 
-  const { startIdo, endIdo, withdrawIdo, endDeposits } = usePool(pool)
-
-  // refresh usdc vault regularly
-  useInterval(async () => {
-    if (endIdo.isAfter()) {
-      // await actions.fetchUsdcVault(pool)
-    } else {
-      // await actions.fetchPrtVault(pool)
-      await actions.fetchRedeemableMint(pool)
-    }
-  }, 10_000)
+  const { startIdo, endIdo, startRedeem, endDeposits } = usePool(pool)
 
   useInterval(async () => {
     // re-fetch pools once in a while
@@ -45,10 +28,11 @@ const PoolCard: React.FC<PoolCardProps> = ({ pool, round }) => {
       title={`IDO Round ${round}`}
       endIdo={endIdo}
       startIdo={startIdo}
+      startRedeem={startRedeem}
       endDeposits={endDeposits}
     >
-      {withdrawIdo.isAfter() && <PoolContribCard pool={pool} />}
-      {withdrawIdo.isBefore() && <PoolRedeemCard pool={pool} />}
+      {startRedeem.isAfter() && <PoolContribCard pool={pool} />}
+      {startRedeem.isBefore() && <PoolRedeemCard pool={pool} />}
       <StatsCard pool={pool} />
     </CardOverlay>
   )

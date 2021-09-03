@@ -13,24 +13,24 @@ export function calculateBalance(
   mints: { [pk: string]: MintAccount },
   account: TokenAccount
 ): number {
-  const mint = mints[account.mint.toBase58()]
+  const mint = account?.mint && mints[account.mint.toBase58()]
   return mint ? fixedPointToNumber(account.amount, mint.decimals) : 0
 }
 
 export function calculateSupply(
   mints: { [pk: string]: MintAccount },
-  pk: PublicKey
+  tokenMint: PublicKey
 ): number | undefined {
-  const mint = mints[pk.toBase58()]
+  const mint = mints[tokenMint.toBase58()]
   return mint && fixedPointToNumber(mint.supply, mint.decimals)
 }
 
 export function calculateNativeAmountUnsafe(
   mints: { [pk: string]: MintAccount },
-  pk: PublicKey,
+  tokenMint: PublicKey,
   amount: number
 ): BN {
-  const mint = mints[pk.toBase58()]
+  const mint = mints[tokenMint.toBase58()]
   const nativeAmount = Math.round(amount * Math.pow(10, mint.decimals))
   return new BN(nativeAmount.toString())
 }

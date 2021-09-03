@@ -1,34 +1,53 @@
-import { useMemo } from 'react'
-import useWalletStore from '../stores/useWalletStore'
+import { AccountInfo, TokenAmount } from '@solana/web3.js'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { notify } from '../stores/useNotificationStore'
+import useWalletStore, { PoolAccount } from '../stores/useWalletStore'
 import { calculateBalance } from '../utils/balance'
+import { TokenAccount } from '../utils/tokens'
+import useInterval from './useInterval'
+import usePool from './usePool'
 
-export default function useVaults() {
-  const mints = useWalletStore((s) => s.mints)
-  const usdcVault = useWalletStore((s) => s.usdcVault)
-  const mangoVault = useWalletStore((s) => s.mangoVault)
+export default function useVaults(pool: PoolAccount) {
+  const { mints, actions } = useWalletStore((s) => s)
+  const { endIdo } = usePool(pool)
+  const [usdcVault, setUsdcVault] = useState<TokenAccount | undefined>()
+  const [prtVault, setPrtVault] = useState<TokenAccount | undefined>()
 
-  const usdc = useMemo(
-    () =>
-      usdcVault
-        ? { account: usdcVault, balance: calculateBalance(mints, usdcVault) }
-        : undefined,
-    [usdcVault, mints]
+  const fetchVaults = useCallback(async () => {
+    const { usdc, watermelon } = await actions.fetchVaults(pool)
+    setUsdcVault(usdc)
+    setPrtVault(watermelon)
+  }, [actions, endIdo, setUsdcVault, setPrtVault])
+
+  useEffect(() => {
+    fetchVaults().catch((e) => {
+      notify({
+        type: 'warn',
+        title: 'Update vaults failed',
+        message: e.message,
+      })
+    })
+  }, [])
+
+  // refresh usdc vault regularly
+  useInterval(async () => {
+    await fetchVaults()
+    await actions.fetchRedeemableMint(pool)
+  }, 10_000)
+
+  const usdcBalance = useMemo(
+    () => calculateBalance(mints, usdcVault),
+    [mints, usdcVault]
   )
-  const mango = useMemo(
-    () =>
-      mangoVault
-        ? { account: mangoVault, balance: calculateBalance(mints, mangoVault) }
-        : undefined,
-    [mangoVault, mints]
+  const prtBalance = useMemo(
+    () => calculateBalance(mints, prtVault),
+    [mints, prtVault]
   )
-
-  const usdcBalance = useMemo(() => usdc?.balance, [usdc])
-  const mangoBalance = useMemo(() => mango?.balance, [mango])
 
   const estimatedPrice = useMemo(
-    () => (usdc && mango ? usdc.balance / mango.balance : undefined),
-    [usdc, mango]
+    () => (usdcBalance && prtBalance ? usdcBalance / prtBalance : undefined),
+    [usdcBalance, prtBalance]
   )
 
-  return { usdc, mango, usdcBalance, mangoBalance, estimatedPrice }
+  return { usdcBalance, prtBalance, estimatedPrice }
 }

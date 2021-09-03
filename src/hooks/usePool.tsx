@@ -5,7 +5,7 @@ export default function usePool(pool: PoolAccount) {
   const startIdo = pool ? moment.unix(pool.startIdoTs.toNumber()) : undefined
   const endIdo = pool ? moment.unix(pool.endIdoTs.toNumber()) : undefined
 
-  const withdrawIdo = pool
+  const startRedeem = pool
     ? moment.unix(pool.withdrawMelonTs.toNumber())
     : undefined
   const endDeposits = pool
@@ -24,5 +24,5 @@ export default function usePool(pool: PoolAccount) {
   // const endDeposits = moment.unix(unixTs).add(1, 'days');
   // const endIdo = moment.unix(unixTs).add(2, 'days');
 
-  return { pool, startIdo, endIdo, withdrawIdo, endDeposits }
+  return { pool, startIdo, endIdo, startRedeem, endDeposits }
 }
