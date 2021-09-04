@@ -141,18 +141,11 @@ const useWalletStore = create<WalletStore>((set, get) => ({
       const { connection, connected, wallet, set } = get()
       const walletOwner = wallet?.publicKey
 
-      console.log(
-        'fetchWalletTokenAccounts',
-        connected,
-        walletOwner?.toString()
-      )
-
       if (connected && walletOwner) {
         const ownedTokenAccounts = await getOwnedTokenAccounts(
           connection,
           walletOwner
         )
-
         set((state) => {
           state.tokenAccounts = ownedTokenAccounts
         })
@@ -169,7 +162,6 @@ const useWalletStore = create<WalletStore>((set, get) => ({
           pool.poolUsdc,
           pool.poolWatermelon,
         ])
-
       const usdc = parseTokenAccount(pool.poolUsdc, accountUsdc)
       const watermelon = parseTokenAccount(
         pool.poolWatermelon,
@@ -178,18 +170,14 @@ const useWalletStore = create<WalletStore>((set, get) => ({
       return { usdc: usdc.account, watermelon: watermelon.account }
     },
     async fetchRedeemableMint(pool: PoolAccount) {
-      const connection = get().connection
-      const set = get().set
-
+      const { connection, set } = get()
       const mintKeys = [pool.redeemableMint]
       const mints = await Promise.all(
         mintKeys.map((pk) => getMint(connection, pk))
       )
-
       set((state) => {
         for (const mint of mints) {
           state.mints[mint.publicKey.toBase58()] = mint.account
-          // console.log('mint', pa.publicKey.toBase58(), pa.account)
         }
       })
     },

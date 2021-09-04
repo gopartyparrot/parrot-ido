@@ -29,7 +29,7 @@ export const RPC_ENDPOINTS: WalletEndpoint[] = [
   {
     id: 'devnet',
     network: 'devnet' as web3.Cluster,
-    rpcURL: 'http://api.devnet.solana.com',
+    rpcURL: 'https://api.devnet.solana.com',
     rpcName: 'Solana Devnet',
     commitment: 'processed' as web3.Commitment,
   },

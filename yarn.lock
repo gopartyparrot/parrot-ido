@@ -1394,10 +1394,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@parrotfi/wallets@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@parrotfi/wallets/-/wallets-1.0.3.tgz#c00b692e5e78e6f8c9fad47b2363d3a54dc5adfb"
-  integrity sha512-YDwMnls8+swoJNccbTc4NwZU208GD1wRNwh63uMmDMf6o3lyQDQ//lVQkf7dPymH5p8I6yfe/12GyLykE4+rPQ==
+"@parrotfi/wallets@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@parrotfi/wallets/-/wallets-1.0.4.tgz#e2dead2b428c9dd6ebd2b8218dae80bf686caa15"
+  integrity sha512-LvPx81gIVHrIOQcD6+NcoChixPsul6rrNElAawY++3yhrl+6ygMUs7Io5v91hnnCSoVamS1HFEz0xLytmJI0/g==
   dependencies:
     bs58 "^4.0.1"
     eventemitter3 "^4.0.7"

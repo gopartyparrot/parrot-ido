@@ -28,7 +28,7 @@ export const RpcSwitcher: React.FC = () => {
 
   return (
     <Menu as="div" className="relative">
-      <Menu.Button className="h-10 px-4 text-sm rounded-xl border flex flex-row items-center justify-center border-black space-x-2 min-w-rpc">
+      <Menu.Button className="h-10 px-4 text-sm rounded-xl border flex flex-row items-center justify-center border-black space-x-2 min-w-rpc hover:bg-lightgray">
         <svg
           className="w-5 h-5"
           width="20"

@@ -12,11 +12,6 @@ export default function usePool(pool: PoolAccount) {
     ? moment.unix(pool.endDepositsTs.toNumber())
     : undefined
 
-  // console.log(`${pool.publicKey.toBase58()} startIdo: ${startIdo}`)
-  // console.log(`${pool.publicKey.toBase58()} endDeposits: ${endDeposits}`)
-  // console.log(`${pool.publicKey.toBase58()} endIdo: ${endIdo}`)
-  // console.log(`${pool.publicKey.toBase58()} withdrawIdo: ${withdrawIdo}`)
-
   /*
   // override for announcement */
   // const unixTs = 1630628552;

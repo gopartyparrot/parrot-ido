@@ -2,7 +2,6 @@ import { useWallet, WalletModal } from '@parrotfi/wallets'
 import classNames from 'classnames'
 import React, { useCallback } from 'react'
 import useModal from '../../hooks/useModal'
-import { notify } from '../../stores/useNotificationStore'
 
 interface ConnectWalletProps {
   className?: string
@@ -13,13 +12,13 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
   className,
   onShowWallets,
 }) => {
-  const { wallet, connected } = useWallet()
+  const { wallet, connected, deactivate } = useWallet()
 
-  const [onPresentConnectWallet] = useModal(<WalletModal onNotify={notify} />)
+  const [onPresentConnectWallet] = useModal(<WalletModal />)
 
   const handleConnect = useCallback(() => {
     if (connected && wallet) {
-      wallet.disconnect()
+      deactivate()
     } else {
       if (onShowWallets) {
         onShowWallets()
