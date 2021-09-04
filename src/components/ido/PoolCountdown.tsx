@@ -23,7 +23,7 @@ const PoolCountdown: React.FC<PoolCountdownProps> = ({
         ? 'Deposits are closed'
         : 'The IDO has ended'
     if (completed) {
-      return <p className="text-sm mt-2 text-center">{message}</p>
+      return <p className="text-sm mt-2 py-2 text-center">{message}</p>
     } else {
       return (
         <div className={classNames(className, 'flex items-center')}>

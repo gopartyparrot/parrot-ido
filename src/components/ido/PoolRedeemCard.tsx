@@ -87,23 +87,6 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
         </div>
       </div>
       <div className="bg-secondary rounded-xl p-6 text-center">
-        <p className="text-sm text-secondary">Your contribution</p>
-        <div className="flex items-center justify-center pt-2">
-          <img
-            alt=""
-            width="20"
-            height="20"
-            src="/icons/usdc.svg"
-            className="mr-2"
-          />
-          <NumberText
-            className="font-bold text-mdx"
-            value={contributeBalance}
-            defaultIfNull="N/A"
-          />
-        </div>
-      </div>
-      <div className="bg-secondary rounded-xl p-6 text-center">
         <p className="text-sm text-secondary">Token Price</p>
         <div className="flex items-center justify-center pt-2">
           <img
@@ -116,6 +99,24 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           <NumberText
             className="font-bold text-mdx"
             value={vaults.estimatedPrice}
+            defaultIfNull="N/A"
+            displayDecimals={6}
+          />
+        </div>
+      </div>
+      <div className="bg-secondary rounded-xl p-6 text-center">
+        <p className="text-sm text-secondary">Your contribution</p>
+        <div className="flex items-center justify-center pt-2">
+          <img
+            alt=""
+            width="20"
+            height="20"
+            src="/icons/usdc.svg"
+            className="mr-2"
+          />
+          <NumberText
+            className="font-bold text-mdx"
+            value={contributeBalance}
             defaultIfNull="N/A"
           />
         </div>

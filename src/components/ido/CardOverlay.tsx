@@ -30,7 +30,7 @@ const CardOverlay: React.FC<CardOverlayProps> = ({
   return (
     <div className="bg-white w-full sm:w-card rounded-3xl shadow-card overflow-hidden relative">
       {hasOverlay && (
-        <div className="absolute z-20 w-full px-8 h-full flex items-center justify-center">
+        <div className="absolute z-10 w-full px-8 h-full flex items-center justify-center">
           <div className="bg-white w-full p-6 rounded-3xl flex flex-col items-center space-y-2">
             {notStarted && <h3>Entry Starts</h3>}
             {notRedeem && <h3>Redeem Starts</h3>}
@@ -49,7 +49,7 @@ const CardOverlay: React.FC<CardOverlayProps> = ({
         <header className="md:border-b-2 border-brandPrimary px-6  flex flex-row items-center">
           <h1 className="text-md font-bold flex-1 pt-6 pb-4">{title}</h1>
           {!hasEnded && (
-            <div className="bg-brandSecondary rounded-3xl mt-3 px-3 py-2 text-xs font-bold">
+            <div className="bg-brandSecondary rounded-3xl mt-1 px-3 py-2 text-xs font-bold">
               {noDeposits ? 'Grace Period' : 'Sale Period'}
             </div>
           )}

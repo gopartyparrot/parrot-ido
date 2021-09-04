@@ -1,4 +1,5 @@
 import { AccountInfo, TokenAmount } from '@solana/web3.js'
+import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { notify } from '../stores/useNotificationStore'
 import useWalletStore, { PoolAccount } from '../stores/useWalletStore'
@@ -45,7 +46,10 @@ export default function useVaults(pool: PoolAccount) {
   )
 
   const estimatedPrice = useMemo(
-    () => (usdcBalance && prtBalance ? usdcBalance / prtBalance : undefined),
+    () =>
+      usdcBalance && prtBalance
+        ? new BigNumber(usdcBalance).dividedBy(prtBalance)
+        : undefined,
     [usdcBalance, prtBalance]
   )
 

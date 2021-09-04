@@ -51,7 +51,7 @@ const ToastItem: React.FC<ToastItemProps> = ({
   return (
     <CSSTransition nodeRef={ref} timeout={250} style={style} {...props}>
       <div
-        className="left-4 sm:left-auto right-4 fixed z-40 max-w-full sm:w-full sm:max-w-sm transition-all ease-in duration-200"
+        className="left-4 sm:left-auto right-4 fixed z-50 max-w-full sm:w-full sm:max-w-sm transition-all ease-in duration-200"
         ref={ref}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

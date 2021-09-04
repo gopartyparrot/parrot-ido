@@ -1,20 +1,27 @@
-import { WalletContextProvider } from '@parrotfi/wallets'
+import { WalletProvider } from '@parrotfi/wallets'
+import BigNumber from 'bignumber.js'
 import { ThemeProvider } from 'next-themes'
 import Head from 'next/head'
 import React from 'react'
 import Notifications from '../components/Notifications'
-import { RPC_URL, SOLANA_COMMITMENT, SOLANA_NETWORK } from '../config/constants'
+import { RPC_ENDPOINT, RPC_ENDPOINTS } from '../config/constants'
 import { IDOProvider } from '../contexts/IDOContext'
 import { ModalProvider } from '../contexts/ModalContext'
+import { notify } from '../stores/useNotificationStore'
 import '../styles/global.scss'
 import '../styles/toast.scss'
 
+BigNumber.config({
+  EXPONENTIAL_AT: 1000,
+  DECIMAL_PLACES: 80,
+})
+
 function App({ Component, pageProps }) {
-  const title = 'Mango Markets'
+  const title = 'Parrot IDO'
   const description =
     'Claim your stake in the Mango DAO. Join us in building Mango, the protocol for permissionless leverage trading & lending.'
   const keywords =
-    'Mango Markets, Serum, SRM, Serum DEX, DEFI, Decentralized Finance, Decentralised Finance, Crypto, ERC20, Ethereum, Decentralize, Solana, SOL, SPL, Cross-Chain, Trading, Fastest, Fast, SerumBTC, SerumUSD, SRM Tokens, SPL Tokens'
+    'Parrot IDO, Serum, SRM, Serum DEX, DEFI, Decentralized Finance, Decentralised Finance, Crypto, ERC20, Ethereum, Decentralize, Solana, SOL, SPL, Cross-Chain, Trading, Fastest, Fast, SerumBTC, SerumUSD, SRM Tokens, SPL Tokens'
   const baseUrl = 'https://token.mango.markets'
 
   return (
@@ -42,12 +49,10 @@ function App({ Component, pageProps }) {
         <meta name="twitter:site" content="@mangomarkets" />
       </Head>
       <ThemeProvider defaultTheme="light" attribute="class">
-        <WalletContextProvider
-          options={{
-            network: SOLANA_NETWORK,
-            rpcURL: RPC_URL,
-            commitment: SOLANA_COMMITMENT,
-          }}
+        <WalletProvider
+          endpoints={RPC_ENDPOINTS}
+          defaultEndpoint={RPC_ENDPOINT}
+          onNotify={notify}
         >
           <ModalProvider>
             <IDOProvider>
@@ -55,7 +60,7 @@ function App({ Component, pageProps }) {
               <Notifications />
             </IDOProvider>
           </ModalProvider>
-        </WalletContextProvider>
+        </WalletProvider>
       </ThemeProvider>
     </>
   )

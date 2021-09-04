@@ -3,6 +3,7 @@ import ConnectWallet from '../account/ConnectWallet'
 
 import { Logo } from '../logo'
 import { DarkModeToggle } from './DarkModeToggle'
+import { RpcSwitcher } from './RpcSwitcher'
 
 export const Header: React.FC = () => {
   return (
@@ -11,8 +12,9 @@ export const Header: React.FC = () => {
         <div className="flex flex-row items-center">
           <Logo />
         </div>
-        <div className="flex flex-row items-center justify-end">
+        <div className="flex flex-row items-center justify-end space-x-4">
           <DarkModeToggle />
+          <RpcSwitcher />
           <ConnectWallet />
         </div>
       </div>

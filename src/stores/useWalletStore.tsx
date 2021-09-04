@@ -1,11 +1,11 @@
-import { WalletAdapter } from '@parrotfi/wallets'
+import { WalletAdapter, WalletEndpoint } from '@parrotfi/wallets'
 import * as anchor from '@project-serum/anchor'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import produce from 'immer'
 import uniqBy from 'lodash/uniqBy'
 import create, { SetState, State } from 'zustand'
-import { RPC_URL, SOLANA_NETWORK } from '../config/constants'
+import { IDO_ENDPOINT } from '../config/constants'
 import { findLargestBalanceAccountForMint } from '../hooks/useLargestAccounts'
 import poolIdl from '../idls/ido_pool.json'
 import { createAssociatedTokenAccount } from '../utils/associated'
@@ -19,29 +19,6 @@ import {
   ProgramAccount,
   TokenAccount,
 } from '../utils/tokens'
-
-export const IDO_CONFIGS = [
-  {
-    network: 'mainnet',
-    programId: 'xxx',
-    usdcMint: 'xxx',
-    pools: ['AHBj9LAjxStT2YQHN6QdfHKpZLtEVr8ACqeFgYcPsTnr'],
-  },
-  {
-    network: 'devnet',
-    programId: '5s48HdiM1PjxqHDpGvZUVnX6eKbGbvN15rFHJ7RwxCv4',
-    usdcMint: 'G1Z261S3B2XQWCZo1qXJkEbeqkrcY1mVW3B3vMj5uqRq',
-    pools: [
-      '3LF3P35APZEVBbmYRmRz83oaW5rKNRFqC62r863ujUeZ',
-      '9Rjif7icpFwoKT35odhwH4jxxz1YmRjE8YBjM1u2bysH',
-      'BuwLsSNCCKreog2dq48M9cBFARsFcST91NvdwWiVWmUR',
-    ],
-  },
-]
-
-const IDO_CONFIG = IDO_CONFIGS.find((e) => e.network === SOLANA_NETWORK)
-const DEFAULT_CONNECTION = new Connection(RPC_URL, 'recent')
-const POOLS_PKS = IDO_CONFIG.pools.map((i) => new PublicKey(i))
 
 export interface PoolAccount {
   publicKey: PublicKey
@@ -64,7 +41,6 @@ interface WalletStore extends State {
   usdcMint: PublicKey
   wallet: WalletAdapter | undefined
   connection: Connection
-  providerUrl: string
   provider: anchor.Provider | undefined
   program: anchor.Program | undefined
   pools: PoolAccount[]
@@ -75,6 +51,7 @@ interface WalletStore extends State {
 }
 
 interface WalletStoreActions {
+  connectRpc: (endpoint: WalletEndpoint) => void
   fetchPools: () => Promise<void>
   fetchWalletTokenAccounts: () => Promise<void>
   fetchMints: () => Promise<void>
@@ -95,48 +72,52 @@ interface WalletStoreActions {
 
 const useWalletStore = create<WalletStore>((set, get) => ({
   connected: false,
-  programId: new PublicKey(IDO_CONFIG.programId),
-  usdcMint: new PublicKey(IDO_CONFIG.usdcMint),
+  programId: new PublicKey(IDO_ENDPOINT.programId),
+  usdcMint: new PublicKey(IDO_ENDPOINT.usdcMint),
   wallet: null,
-  connection: DEFAULT_CONNECTION,
-  providerUrl: '',
+  connection: null,
   provider: undefined,
   program: undefined,
   pools: [],
   tokenAccounts: [],
   mints: {},
   actions: {
+    connectRpc(endpoint: WalletEndpoint) {
+      set((state) => {
+        state.connection = new Connection(endpoint.rpcURL, {
+          commitment: endpoint.commitment,
+        })
+      })
+    },
     async fetchPools() {
       const { wallet, connection, programId, set } = get()
 
-      // console.log('fetchPool', connection, poolIdl)
-      if (connection) {
-        const provider = new anchor.Provider(
-          connection,
-          wallet,
-          anchor.Provider.defaultOptions()
-        )
-        const program = new anchor.Program(
-          poolIdl as anchor.Idl,
-          programId,
-          provider
-        )
+      const provider = new anchor.Provider(
+        connection,
+        wallet,
+        anchor.Provider.defaultOptions()
+      )
+      const program = new anchor.Program(
+        poolIdl as anchor.Idl,
+        programId,
+        provider
+      )
 
-        const pools: PoolAccount[] = []
-        for await (const poolPk of POOLS_PKS) {
-          const pool = (await program.account.poolAccount.fetch(
-            poolPk
-          )) as PoolAccount
-          pool.publicKey = poolPk
-          pools.push(pool)
-        }
-
-        set((state) => {
-          state.provider = provider
-          state.program = program
-          state.pools = pools
-        })
+      const pools: PoolAccount[] = []
+      for await (const poolAddress of IDO_ENDPOINT.pools) {
+        const poolPk = new anchor.web3.PublicKey(poolAddress)
+        const pool = (await program.account.poolAccount.fetch(
+          poolPk
+        )) as PoolAccount
+        pool.publicKey = poolPk
+        pools.push(pool)
       }
+
+      set((state) => {
+        state.provider = provider
+        state.program = program
+        state.pools = pools
+      })
     },
     async fetchMints() {
       const { connection, usdcMint, pools, set } = get()
@@ -213,11 +194,18 @@ const useWalletStore = create<WalletStore>((set, get) => ({
       })
     },
     async submitDepositContribution(pool: PoolAccount, amount: number) {
-      const { actions, usdcMint } = get()
-      await actions.fetchWalletTokenAccounts()
-      const { program, provider, tokenAccounts, mints, wallet, connection } =
-        get()
+      const {
+        actions,
+        usdcMint,
+        program,
+        provider,
+        tokenAccounts,
+        mints,
+        wallet,
+        connection,
+      } = get()
 
+      await actions.fetchWalletTokenAccounts()
       const usdc = findLargestBalanceAccountForMint(
         mints,
         tokenAccounts,
@@ -272,10 +260,8 @@ const useWalletStore = create<WalletStore>((set, get) => ({
       await actions.fetchWalletTokenAccounts()
     },
     async submitWithdrawContribution(pool: PoolAccount, amount: number) {
-      const actions = get().actions
-      await actions.fetchWalletTokenAccounts()
-
       const {
+        actions,
         program,
         provider,
         tokenAccounts,
@@ -284,6 +270,8 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         usdcMint,
         connection,
       } = get()
+
+      await actions.fetchWalletTokenAccounts()
       const redeemable = findLargestBalanceAccountForMint(
         mints,
         tokenAccounts,
@@ -333,10 +321,10 @@ const useWalletStore = create<WalletStore>((set, get) => ({
       await actions.fetchWalletTokenAccounts()
     },
     async submitRedeem(pool: PoolAccount) {
-      const actions = get().actions
-      await actions.fetchWalletTokenAccounts()
+      const { actions, program, tokenAccounts, mints, wallet, connection } =
+        get()
 
-      const { program, tokenAccounts, mints, wallet, connection } = get()
+      await actions.fetchWalletTokenAccounts()
 
       const redeemable = findLargestBalanceAccountForMint(
         mints,
@@ -396,10 +384,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         successMessage: 'PRT redeemed successfully!',
       })
 
-      await Promise.all([
-        actions.fetchPools(),
-        actions.fetchWalletTokenAccounts(),
-      ])
+      await actions.fetchWalletTokenAccounts()
     },
   },
   set: (fn: (s: WalletStore) => WalletStore) => set(produce(fn)),

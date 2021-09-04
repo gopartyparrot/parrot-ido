@@ -20,7 +20,7 @@ const Modal: React.FC<ModalProps> = ({
     <Dialog
       open={isOpen}
       onClose={() => onDismiss()}
-      className="fixed z-10 inset-0 overflow-y-auto"
+      className="fixed z-40 inset-0 overflow-y-auto"
     >
       {/* <Transition.Child
           as={Fragment}

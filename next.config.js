@@ -1,20 +1,13 @@
-const fs = require('fs')
 const dotenv = require('dotenv')
 const { join, resolve } = require('path')
 // const { withSentryConfig } = require('@sentry/nextjs');
-
-dotenv.config({ path: join(__dirname, `./.env.${process.env.CHANNEL}`) })
 
 const nextJsConfig = {
   poweredByHeader: false,
   trailingSlash: true,
   env: {
-    // NextJs will bundle all this env in the static files
-    // NEXT_PUBLIC_XXX will be available at run-time, while the others can only be access at build-time/ssr
-    NETWORK: process.env.NETWORK,
-    CHANNEL: process.env.CHANNEL,
-    VERSION: process.env.VERSION,
-    SENTRY_DSN: process.env.SENTRY_DSN,
+    NEXT_PUBLIC_VERSION: process.env.VERSION,
+    NEXT_PUBLIC_NETWORK: process.env.NETWORK,
   },
   webpack: (config, options) => {
     config.module = {
@@ -26,6 +19,14 @@ const nextJsConfig = {
           loader: '@svgr/webpack',
         },
       ],
+    }
+    // ensure only one react is loaded (mainly for dev)
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve.alias,
+        react: resolve('./node_modules/react'),
+      },
     }
     if (!options.isServer) {
       config.resolve.fallback.fs = false
@@ -48,6 +49,6 @@ const SentryWebpackPluginOptions = {
 module.exports = nextJsConfig
 
 // module.exports =
-//   process.env.CHANNEL === 'prod' && process.env.NODE_ENV === 'production'
+//   process.env.NODE_ENV === 'production'
 //     ? withSentryConfig(nextJsConfig, SentryWebpackPluginOptions)
 //     : nextJsConfig;

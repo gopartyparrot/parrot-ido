@@ -11,7 +11,7 @@ export const DarkModeToggle: React.FC = () => {
   }, [setTheme, theme])
 
   return (
-    <label className="relative w-14 h-6 mr-4" htmlFor="dark-mode-btn">
+    <label className="relative w-14 h-6" htmlFor="dark-mode-btn">
       <input
         id="dark-mode-btn"
         type="checkbox"

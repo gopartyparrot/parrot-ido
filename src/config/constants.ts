@@ -1,18 +1,57 @@
 import { web3 } from '@project-serum/anchor'
+import { WalletEndpoint } from '../../../parrot-wallets/lib/esm'
 
-export const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL
-export const SOLANA_NETWORK: web3.Cluster =
-  (process.env.NEXT_PUBLIC_NETWORK as web3.Cluster) || 'devnet'
-export const SOLANA_COMMITMENT: web3.Commitment = 'processed'
+export const NETWORK = process.env.NEXT_PUBLIC_NETWORK
 export const VERSION = process.env.NEXT_PUBLIC_VERSION
-export const CHANNEL = process.env.NEXT_PUBLIC_CHANNEL
-export const RPC_URL =
-  process.env.NEXT_PUBLIC_RPC_URL || 'https://api.devnet.solana.com'
 
-export const TOKEN_COIN_DISPLAY_DECIMALS = 4
-export const TOKEN_STABLE_DISPLAY_DECIMALS = 2
-export const NUMBER_DISPLAY_DECIMALS = 2
+export const RPC_ENDPOINTS: WalletEndpoint[] = [
+  {
+    id: 'parrot',
+    network: 'mainnet-beta' as web3.Cluster,
+    rpcURL: 'https://parrot.rpcpool.com',
+    rpcName: 'Parrot',
+    commitment: 'processed' as web3.Commitment,
+  },
+  {
+    id: 'solana',
+    network: 'mainnet-beta' as web3.Cluster,
+    rpcURL: 'https://api.mainnet-beta.solana.com',
+    rpcName: 'Solana',
+    commitment: 'processed' as web3.Commitment,
+  },
+  {
+    id: 'serum',
+    network: 'mainnet-beta' as web3.Cluster,
+    rpcURL: 'https://solana-api.projectserum.com/',
+    rpcName: 'Project Serum',
+    commitment: 'processed' as web3.Commitment,
+  },
+  {
+    id: 'devnet',
+    network: 'devnet' as web3.Cluster,
+    rpcURL: 'http://api.devnet.solana.com',
+    rpcName: 'Solana Devnet',
+    commitment: 'processed' as web3.Commitment,
+  },
+]
 
-export const TOTAL_RAISED = 70462383.600012
+export const IDO_ENDPOINTS = [
+  {
+    network: 'mainnet-beta' as web3.Cluster,
+    programId: 'xxx',
+    usdcMint: 'xxx',
+    pools: ['AHBj9LAjxStT2YQHN6QdfHKpZLtEVr8ACqeFgYcPsTnr'],
+  },
+  {
+    network: 'devnet' as web3.Cluster,
+    programId: '5s48HdiM1PjxqHDpGvZUVnX6eKbGbvN15rFHJ7RwxCv4',
+    usdcMint: 'G1Z261S3B2XQWCZo1qXJkEbeqkrcY1mVW3B3vMj5uqRq',
+    pools: [
+      '7px9N7ZouesntaHbfsCTYZh3x9HM83adbYWujYGsZfbu',
+      '9kMaNLhDyx34jzpneMu2PCKxKd6JwSTfVeQLnmXqXJih',
+    ],
+  },
+]
 
-export const RPC_ENDPOINTS = {}
+export const RPC_ENDPOINT = RPC_ENDPOINTS.find((i) => i.network === NETWORK)
+export const IDO_ENDPOINT = IDO_ENDPOINTS.find((i) => i.network === NETWORK)

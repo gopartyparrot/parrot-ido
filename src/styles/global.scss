@@ -50,7 +50,7 @@
   // Border
   --color-border-default: #dedede;
   --color-border-secondary: #ededf2;
-  --color-border-grey: #bcbcbc;
+  --color-border-gray: #bdc2c4;
 }
 
 .dark {
@@ -89,7 +89,7 @@
   // Border
   --color-border-default: rgb(26, 27, 32);
   --color-border-secondary: #191b2e;
-  --color-border-grey: #ffffff;
+  --color-border-gray: #3a3b51;
 }
 
 // tailwind
@@ -127,10 +127,6 @@ button {
 
 .light .light-hidden {
   display: none !important;
-}
-
-.-z-1 {
-  z-index: -1;
 }
 
 .progress-bar {

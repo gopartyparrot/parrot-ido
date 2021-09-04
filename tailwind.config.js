@@ -61,20 +61,11 @@ module.exports = {
       ...baseColors,
       default: 'var(--color-border-default)',
       secondary: 'var(--color-border-secondary)',
-      grey: 'var(--color-border-grey)',
+      gray: 'var(--color-border-gray)',
     },
     fontFamily: {
       sans: ['Manrope', 'Roboto'],
-      mono: [
-        'ui-monospace',
-        'SFMono-Regular',
-        'Menlo',
-        'Monaco',
-        'Consolas',
-        'Liberation Mono',
-        'Courier New',
-        'monospace',
-      ],
+      mono: ['ui-monospace', 'monospace'],
     },
     fontSize: {
       xs: ['12px', '12px'],
@@ -105,12 +96,12 @@ module.exports = {
       max: 'max-content',
       prose: '65ch',
     },
-    minWidth: {
-      symbol: '2.5em',
-      card: '496px',
-    },
     extend: {
       width: {
+        card: '496px',
+      },
+      minWidth: {
+        rpc: '190px',
         card: '496px',
       },
       blur: {

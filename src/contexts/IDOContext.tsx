@@ -1,52 +1,23 @@
-import { useWallet } from '@parrotfi/wallets'
-import React, { useEffect } from 'react'
-import { RPC_URL } from '../config/constants'
-import useLocalStorageState from '../hooks/useLocalStorageState'
+import { useWallet, WalletEndpoint } from '@parrotfi/wallets'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { notify } from '../stores/useNotificationStore'
 import useWalletStore from '../stores/useWalletStore'
 
-export const IDOContext = React.createContext({})
+export const useIDOProvider = () => useContext(IDOContext)
+
+export const IDOContext = React.createContext({
+  loadingIDO: false,
+  loadingError: '',
+  loadIDO: (endpoint?: WalletEndpoint) => {
+    ///
+  },
+})
 
 export const IDOProvider = ({ children }) => {
-  const { connected, provider, wallet } = useWallet()
-  const {
-    providerUrl: selectedProviderUrl,
-    set: setWalletStore,
-    actions,
-  } = useWalletStore((state) => state)
-
-  const [savedProviderUrl, setSavedProviderUrl] = useLocalStorageState(
-    'walletProvider',
-    RPC_URL
-  )
-
-  useEffect(() => {
-    if (selectedProviderUrl && selectedProviderUrl != savedProviderUrl) {
-      setSavedProviderUrl(selectedProviderUrl)
-    }
-  }, [selectedProviderUrl])
-
-  useEffect(() => {
-    if (provider) {
-      const updateWallet = () => {
-        setWalletStore((state) => {
-          state.wallet = wallet
-        })
-      }
-
-      if (document.readyState !== 'complete') {
-        // wait to ensure that browser extensions are loaded
-        const listener = () => {
-          updateWallet()
-          window.removeEventListener('load', listener)
-        }
-        window.addEventListener('load', listener)
-        return () => window.removeEventListener('load', listener)
-      } else {
-        updateWallet()
-      }
-    }
-  }, [provider])
+  const [loadingIDO, setLoadingIDO] = useState(true)
+  const [loadingError, setLoadingError] = useState('')
+  const { connected, wallet, endpoint } = useWallet()
+  const { set: setWalletStore, actions } = useWalletStore((state) => state)
 
   useEffect(() => {
     if (!wallet) return
@@ -54,14 +25,7 @@ export const IDOProvider = ({ children }) => {
       setWalletStore((state) => {
         state.connected = true
       })
-      notify({
-        title: 'Wallet connected',
-        message:
-          'Connected to wallet ' +
-          wallet.publicKey.toString().substr(0, 5) +
-          '...' +
-          wallet.publicKey.toString().substr(-5),
-      })
+      // refetch pool and set provider with new waller
       actions.fetchPools().catch((e) => {
         notify({
           type: 'error',
@@ -75,9 +39,6 @@ export const IDOProvider = ({ children }) => {
         state.connected = false
         state.tokenAccounts = []
       })
-      notify({
-        title: 'Disconnected from wallet',
-      })
     }
     return () => {
       wallet?.disconnect?.()
@@ -87,20 +48,49 @@ export const IDOProvider = ({ children }) => {
     }
   }, [connected])
 
-  // fetch pool on page load
-  useEffect(() => {
-    const pageLoad = async () => {
+  const loadIDO = useCallback(async (endpoint) => {
+    setLoadingIDO(true)
+    setLoadingError('')
+    setWalletStore((state) => {
+      state.pools = []
+      state.tokenAccounts = []
+    })
+    actions.connectRpc(endpoint)
+    try {
       await actions.fetchPools()
+      setLoadingIDO(false)
       await actions.fetchMints()
-    }
-    pageLoad().catch((e) => {
+    } catch (e) {
+      setLoadingError(e.message)
       notify({
         type: 'error',
         title: 'Failed to fetch pools information',
         message: e.message,
       })
-    })
+    }
+    setLoadingIDO(false)
   }, [])
 
-  return <IDOContext.Provider value={{}}>{children}</IDOContext.Provider>
+  // initial loading
+  useEffect(() => {
+    loadIDO(endpoint)
+  }, [])
+
+  useEffect(() => {
+    setWalletStore((state) => {
+      state.wallet = wallet
+    })
+  }, [wallet])
+
+  return (
+    <IDOContext.Provider
+      value={{
+        loadIDO,
+        loadingIDO,
+        loadingError,
+      }}
+    >
+      {children}
+    </IDOContext.Provider>
+  )
 }

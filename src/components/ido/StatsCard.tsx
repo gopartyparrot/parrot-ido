@@ -72,6 +72,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
               className="font-bold text-mdx"
               value={vaults.estimatedPrice}
               defaultIfNull="N/A"
+              displayDecimals={6}
             />
           </div>
         </div>

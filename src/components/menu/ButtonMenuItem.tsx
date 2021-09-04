@@ -19,6 +19,8 @@ const ButtonMenuItem: React.FC<ButtonMenuItemProps> = ({
           'text-tertiary': !isActive,
           'text-brandPrimary': isActive,
           'font-bold': isActive,
+          'text-disabled': props.disabled,
+          'cursor-not-allowed': props.disabled,
         }
       )}
       {...props}

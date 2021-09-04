@@ -12,14 +12,7 @@ interface PoolCardProps {
 }
 
 const PoolCard: React.FC<PoolCardProps> = ({ pool, round }) => {
-  const actions = useWalletStore((s) => s.actions)
-
   const { startIdo, endIdo, startRedeem, endDeposits } = usePool(pool)
-
-  useInterval(async () => {
-    // re-fetch pools once in a while
-    await actions.fetchPools()
-  }, 120_000)
 
   return (
     <CardOverlay

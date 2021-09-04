@@ -2,6 +2,7 @@ import { useWallet, WalletModal } from '@parrotfi/wallets'
 import classNames from 'classnames'
 import React, { useCallback } from 'react'
 import useModal from '../../hooks/useModal'
+import { notify } from '../../stores/useNotificationStore'
 
 interface ConnectWalletProps {
   className?: string
@@ -14,13 +15,7 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
 }) => {
   const { wallet, connected } = useWallet()
 
-  const [onPresentConnectWallet] = useModal(
-    <WalletModal
-      onError={() => {
-        //
-      }}
-    />
-  )
+  const [onPresentConnectWallet] = useModal(<WalletModal onNotify={notify} />)
 
   const handleConnect = useCallback(() => {
     if (connected && wallet) {
@@ -36,8 +31,9 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
   return (
     <button
       className={classNames(
-        'font-bold rounded-xl text-sm border shadow-outerButton custom-button-active-effect hover:text-white flex flex-row items-center justify-center',
-        'outline-none focus:outline-none h-8 px-4',
+        'h-10 px-4 text-sm font-bold rounded-xl border flex flex-row items-center justify-center',
+        'outline-none focus:outline-none hover:text-white',
+        'shadow-outerButton custom-button-active-effect',
         {
           'text-brandPrimary hover:bg-brandPrimaryHover': !connected,
           'text-failure hover:bg-failureHover': connected,

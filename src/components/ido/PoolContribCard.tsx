@@ -106,11 +106,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   }, [submitting, isDeposit])
 
   const canDeposit =
-    connected &&
-    !submitting &&
-    startIdo.isBefore() &&
-    endIdo.isAfter() &&
-    endDeposits.isAfter()
+    startIdo.isBefore() && endIdo.isAfter() && endDeposits.isAfter()
 
   useEffect(() => {
     if (!canDeposit) {
@@ -118,13 +114,13 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
     }
   }, [canDeposit])
 
-  const canWithdraw =
-    connected && !submitting && startIdo.isBefore() && endIdo.isAfter()
+  const canWithdraw = startIdo.isBefore() && endIdo.isAfter()
 
   const disableSubmit =
-    !connected || loading || submitting || isDeposit
-      ? !canDeposit
-      : !canWithdraw
+    !connected ||
+    loading ||
+    submitting ||
+    (isDeposit ? !canDeposit : !canWithdraw)
 
   return (
     <>
@@ -165,8 +161,9 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
           Country Not Allowed 🇺🇸😭
         </Button> */}
       {endDeposits?.isBefore() && endIdo?.isAfter() && (
-        <p className="text-xs my-4">
+        <p className="text-xs my-4 leading-normal">
           You can only reduce your contribution during the grace period.
+          <br />
           Reducing cannot be reversed.
         </p>
       )}
