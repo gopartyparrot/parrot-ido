@@ -23,7 +23,7 @@ module.exports = {
     preserveHtmlElements: false,
     content: ['./src/**/*.tsx'],
     options: {
-      safelist: ['dark'],
+      safelist: ['dark', 'scale'],
     },
   },
   darkMode: 'class',
@@ -102,7 +102,7 @@ module.exports = {
     },
   },
   variants: {
-    extend: { boxShadow: ['active'] },
+    extend: { boxShadow: ['active'], display: ['dark'] },
   },
   plugins: [],
 }

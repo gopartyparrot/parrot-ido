@@ -20,8 +20,8 @@ export const DarkModeToggle: React.FC = () => {
       />
       <span className="absolute top-0 left-0 right-0 bottom-0 rounded-3xl bg-tertiary">
         <span className="dark-mode-toggle bg-default rounded-full absolute top-0 left-0 p-1 bottom-0 transform transition-all duration-300 ease-in-out">
-          <ModeLightIcon className="text-white fill-current dark-hidden" />
-          <ModeDarkIcon className=" text-white fill-current light-hidden" />
+          <ModeLightIcon className="text-white fill-current dark:hidden" />
+          <ModeDarkIcon className=" text-white fill-current hidden dark:block" />
         </span>
       </span>
     </label>
