@@ -138,7 +138,6 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           />
         </div>
       </div>
-
       <Button
         onClick={handleRedeem}
         className="w-full mt-6 mb-4"

@@ -1,16 +1,21 @@
 import { useWallet, WalletEndpoint } from '@parrotfi/wallets'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useEffect, useState } from 'react'
 import { notify } from '../stores/useNotificationStore'
 import useWalletStore from '../stores/useWalletStore'
 
-export const useIDOProvider = () => useContext(IDOContext)
+interface IDOContext {
+  loadingIDO: boolean
+  loadingError: string
+  /**
+   * Fetch/init IDO pools and connection for given RPC endpoint
+   */
+  loadIDO: (endpoint: WalletEndpoint) => void
+}
 
-export const IDOContext = React.createContext({
+export const IDOContext = createContext<IDOContext>({
   loadingIDO: false,
   loadingError: '',
-  loadIDO: (endpoint?: WalletEndpoint) => {
-    ///
-  },
+  loadIDO: () => null,
 })
 
 export const IDOProvider = ({ children }) => {

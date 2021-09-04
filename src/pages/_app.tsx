@@ -7,9 +7,11 @@ import Notifications from '../components/Notifications'
 import { RPC_ENDPOINT, RPC_ENDPOINTS } from '../config/constants'
 import { IDOProvider } from '../contexts/IDOContext'
 import { ModalProvider } from '../contexts/ModalContext'
+import { RefreshProvider } from '../contexts/RefreshContext'
 import { notify } from '../stores/useNotificationStore'
 import '../styles/global.scss'
-import '../styles/toast.scss'
+import '../components/toast/toast.scss'
+import '../components/tooltip/tooltip.scss'
 
 BigNumber.config({
   EXPONENTIAL_AT: 1000,
@@ -22,17 +24,12 @@ function App({ Component, pageProps }) {
     'Claim your stake in the Mango DAO. Join us in building Mango, the protocol for permissionless leverage trading & lending.'
   const keywords =
     'Parrot IDO, Serum, SRM, Serum DEX, DEFI, Decentralized Finance, Decentralised Finance, Crypto, ERC20, Ethereum, Decentralize, Solana, SOL, SPL, Cross-Chain, Trading, Fastest, Fast, SerumBTC, SerumUSD, SRM Tokens, SPL Tokens'
-  const baseUrl = 'https://token.mango.markets'
+  const baseUrl = 'https://ido.parrot.fi'
 
   return (
     <>
       <Head>
         <title>{title}</title>
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=PT+Mono&display=swap"
-          rel="stylesheet"
-        />
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="keywords" content={keywords} />
@@ -56,8 +53,11 @@ function App({ Component, pageProps }) {
         >
           <ModalProvider>
             <IDOProvider>
-              <Component {...pageProps} />
+              <RefreshProvider>
+                <Component {...pageProps} />
+              </RefreshProvider>
               <Notifications />
+              <div id="tooltip-portal-root" />
             </IDOProvider>
           </ModalProvider>
         </WalletProvider>

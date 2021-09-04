@@ -1,7 +1,6 @@
 import React from 'react'
-import useInterval from '../../hooks/useInterval'
 import usePool from '../../hooks/usePool'
-import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
+import { PoolAccount } from '../../stores/useWalletStore'
 import CardOverlay from './CardOverlay'
 import PoolContribCard from './PoolContribCard'
 import PoolRedeemCard from './PoolRedeemCard'

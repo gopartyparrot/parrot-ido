@@ -1,3 +1,4 @@
+import { InformationCircleIcon } from '@heroicons/react/outline'
 import React, { useCallback, useEffect, useState } from 'react'
 // import useIpAddress from '../../hooks/useIpAddress's
 import useLargestAccounts from '../../hooks/useLargestAccounts'
@@ -30,7 +31,6 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   const [inputAmount, setInputAmount] = useState('0')
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [maxButtonTransition, setMaxButtonTransition] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
   const [refreshing, setRefreshing] = useState(false)
 
@@ -68,12 +68,6 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
       setTimeout(() => setRefreshing(false), 1000)
     }
   }
-
-  useEffect(() => {
-    if (maxButtonTransition) {
-      setMaxButtonTransition(false)
-    }
-  }, [maxButtonTransition])
 
   useEffect(() => {
     setLoading(true)
@@ -148,7 +142,6 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
         onChange={onChangeAmountInput}
         disabled={!connected}
       />
-
       <Button
         onClick={handleSubmitContribution}
         className="w-full my-4"
@@ -161,13 +154,15 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
           Country Not Allowed 🇺🇸😭
         </Button> */}
       {endDeposits?.isBefore() && endIdo?.isAfter() && (
-        <p className="text-xs my-4 leading-normal">
-          You can only reduce your contribution during the grace period.
-          <br />
-          Reducing cannot be reversed.
-        </p>
+        <div className="flex items-center space-x-2 mb-4">
+          <InformationCircleIcon className="h-5 w-5 text-secondary" />
+          <p className="text-xxs sm:text-xs leading-normal">
+            You can only reduce your contribution during the grace period.
+            <br />
+            Reducing cannot be reversed.
+          </p>
+        </div>
       )}
-
       <StatsCard pool={pool} />
     </>
   )

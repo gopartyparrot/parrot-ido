@@ -13,9 +13,4 @@ const useModal = (modal: React.ReactNode): [Handler, Handler] => {
   return [onPresentCallback, onDismiss]
 }
 
-export const useModalBlocking = () => {
-  const { setBlocking } = useContext(ModalContext)
-  return setBlocking
-}
-
 export default useModal

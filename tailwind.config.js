@@ -68,6 +68,7 @@ module.exports = {
       mono: ['ui-monospace', 'monospace'],
     },
     fontSize: {
+      xxs: ['10px', '10px'],
       xs: ['12px', '12px'],
       sm: ['14px', '14px'],
       base: ['16px', '16px'],
@@ -77,44 +78,26 @@ module.exports = {
       xl: ['36px', '36px'],
       xxl: ['40px', '40px'],
     },
-    maxWidth: {
-      none: 'none',
-      0: '0rem',
-      xs: '20rem',
-      sm: '24rem',
-      md: '28rem',
-      lg: '32rem',
-      xl: '36rem',
-      '2xl': '42rem',
-      '3xl': '48rem',
-      '4xl': '1080px',
-      '5xl': '64rem',
-      '6xl': '72rem',
-      '7xl': '80rem',
-      full: '100%',
-      min: 'min-content',
-      max: 'max-content',
-      prose: '65ch',
-    },
     extend: {
-      width: {
-        card: '496px',
-      },
       minWidth: {
         rpc: '190px',
+      },
+      maxWidth: {
+        '4xl': '1080px',
         card: '496px',
-      },
-      blur: {
-        xs: 'blur(3px)',
-      },
-      shadow: {
-        card: '0px 2px 2px rgba(0, 0, 0, 0.16)',
+        tooltip: '305px',
       },
       minHeight: {
         '70vh': '70vh',
       },
       maxHeight: {
         90: '21rem',
+      },
+      blur: {
+        xs: 'blur(3px)',
+      },
+      shadow: {
+        card: '0px 2px 2px rgba(0, 0, 0, 0.16)',
       },
     },
   },

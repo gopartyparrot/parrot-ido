@@ -1,34 +1,26 @@
-import { useTheme } from 'next-themes'
-import React, { useCallback } from 'react'
-import { useWallet } from '../../../../parrot-wallets/lib/esm'
-
-import ModeDarkIcon from '../../../public/icons/mode-dark.svg'
-import ModeLightIcon from '../../../public/icons/mode-light.svg'
-import { RPC_ENDPOINTS } from '../../config/constants'
-import { useIDOProvider } from '../../contexts/IDOContext'
-import { notify } from '../../stores/useNotificationStore'
-import useWalletStore from '../../stores/useWalletStore'
-
 import { Menu, Transition } from '@headlessui/react'
-import { Fragment, useEffect, useRef, useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/solid'
+import { useWallet, WalletEndpoint } from '@parrotfi/wallets'
 import classNames from 'classnames'
+import React, { Fragment, useCallback } from 'react'
+import { RPC_ENDPOINTS } from '../../config/constants'
+import { useIDO } from '../../hooks/useIDO'
 
 export const RpcSwitcher: React.FC = () => {
+  const { loadIDO } = useIDO()
   const { setEndpoint, endpoint } = useWallet()
-  const { loadIDO } = useIDOProvider()
 
   const handleChange = useCallback(
-    (endpoint) => () => {
+    (endpoint: WalletEndpoint) => () => {
       setEndpoint(endpoint)
       loadIDO(endpoint)
     },
-    [setEndpoint]
+    [loadIDO, setEndpoint]
   )
 
   return (
     <Menu as="div" className="relative">
-      <Menu.Button className="h-10 px-4 text-sm rounded-xl border flex flex-row items-center justify-center border-black space-x-2 min-w-rpc hover:bg-lightgray">
+      <Menu.Button className="h-10 px-4 text-sm rounded-xl border flex flex-row items-center justify-center border-black space-x-2 hover:bg-lightgray sm:min-w-rpc">
         <svg
           className="w-5 h-5"
           width="20"

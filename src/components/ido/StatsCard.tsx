@@ -4,6 +4,8 @@ import usePool from '../../hooks/usePool'
 import NumberText from '../texts/Number'
 import { PoolAccount } from '../../stores/useWalletStore'
 import { QuestionMarkCircleIcon } from '@heroicons/react/outline'
+import React from 'react'
+import { useTooltip } from '../tooltip'
 
 interface StatsCardProps {
   pool: PoolAccount
@@ -13,13 +15,40 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
   const { endIdo, endDeposits } = usePool(pool)
   const vaults = useVaults(pool)
 
+  const {
+    targetRef: targetSaleRef,
+    tooltip: tooltipSale,
+    tooltipVisible: tooltipSaleVisible,
+  } = useTooltip(
+    `In the first 24 hours, you may deposit or withdraw your USDC from the vault. During the sale period, the PRT price can fluctuate.`,
+    {
+      placement: 'bottom-start',
+      trigger: 'hover',
+    }
+  )
+
+  const {
+    targetRef: targetGraceRef,
+    tooltip: tooltipGrace,
+    tooltipVisible: tooltipGraceVisible,
+  } = useTooltip(
+    `After 24 hours, deposits will be restricted and only withdrawals allowed. During the grace period, the PRT price can only go down.`,
+    {
+      placement: 'bottom-start',
+      trigger: 'hover',
+    }
+  )
+
   return (
     <div className="flex flex-col space-y-2">
       <div className="bg-secondary rounded-xl p-6 grid grid-cols-2 gap-2">
         <div>
           <div className="text-sm text-secondary flex flex-row items-center justify-center">
-            <span>Sale Period Ends</span>
-            <QuestionMarkCircleIcon className="ml-1 h-5 w-5" />
+            <span className="mr-1">Sale Period Ends</span>
+            <span ref={targetSaleRef}>
+              <QuestionMarkCircleIcon className="h-5 w-5" />
+            </span>
+            {tooltipSaleVisible && tooltipSale}
           </div>
           <PoolCountdown
             pool={pool}
@@ -29,8 +58,11 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
         </div>
         <div>
           <div className="text-sm text-secondary flex flex-row items-center justify-center">
-            <span>Grace Period Ends</span>
-            <QuestionMarkCircleIcon className="ml-1 h-5 w-5" />
+            <span className="mr-1">Grace Period Ends</span>
+            <span ref={targetGraceRef}>
+              <QuestionMarkCircleIcon className="h-5 w-5" />
+            </span>
+            {tooltipGraceVisible && tooltipGrace}
           </div>
           <PoolCountdown
             pool={pool}

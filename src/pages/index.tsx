@@ -5,12 +5,12 @@ import { Button } from '../components/button'
 import { Header } from '../components/header'
 import CardBase from '../components/ido/CardBase'
 import PoolCard from '../components/ido/PoolCard'
-import { useIDOProvider } from '../contexts/IDOContext'
+import { useIDO } from '../hooks/useIDO'
 import useWalletStore from '../stores/useWalletStore'
 
 const Main = () => {
   const { endpoint } = useWallet()
-  const { loadIDO, loadingIDO, loadingError } = useIDOProvider()
+  const { loadIDO, loadingIDO, loadingError } = useIDO()
   const pools = useWalletStore((s) => s.pools)
 
   const handleReload = useCallback(() => {
@@ -18,7 +18,7 @@ const Main = () => {
   }, [endpoint, loadIDO])
 
   return (
-    <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 my-6 mx-auto">
+    <main className="w-full flex flex-col items-center justify-center my-4 space-y-4 sm:my-6 md:space-x-6 md:flex-row md:space-y-0">
       {pools.map((pool, index) => (
         <PoolCard
           key={pool.publicKey.toBase58()}
@@ -27,8 +27,8 @@ const Main = () => {
         />
       ))}
       {!!loadingError && (
-        <CardBase title="Error" className="col-span-2">
-          <p className="leading-snug pb-6">{loadingError}</p>
+        <CardBase title="Error" className="md:col-span-2">
+          <p className="leading-snug mb-6">{loadingError}</p>
           <Button size="sm" onClick={handleReload}>
             Retry
           </Button>

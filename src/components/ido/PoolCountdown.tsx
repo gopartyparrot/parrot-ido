@@ -3,6 +3,7 @@ import Countdown from 'react-countdown'
 import moment from 'moment'
 import { PoolAccount } from '../../stores/useWalletStore'
 import classNames from 'classnames'
+import { useRefresh } from '../../hooks/useRefresh'
 
 interface PoolCountdownProps {
   pool?: PoolAccount
@@ -16,6 +17,7 @@ const PoolCountdown: React.FC<PoolCountdownProps> = ({
   className,
 }) => {
   const { endIdo, endDeposits } = usePool(pool)
+  const { doForceRefresh } = useRefresh()
   const renderCountdown = ({ days, hours, minutes, seconds, completed }) => {
     hours += days * 24
     const message =
@@ -51,7 +53,13 @@ const PoolCountdown: React.FC<PoolCountdownProps> = ({
   }
 
   if (date) {
-    return <Countdown date={date.format()} renderer={renderCountdown} />
+    return (
+      <Countdown
+        date={date.format()}
+        renderer={renderCountdown}
+        onComplete={doForceRefresh}
+      />
+    )
   } else {
     return null
   }

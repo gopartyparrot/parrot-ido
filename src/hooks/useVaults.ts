@@ -30,9 +30,10 @@ export default function useVaults(pool: PoolAccount) {
     })
   }, [])
 
-  // refresh usdc vault regularly
   useInterval(async () => {
+    // refresh vaults regularly (to update price/usdc)
     await fetchVaults()
+    // fetch RedeemableMint account to update mint total supply
     await actions.fetchRedeemableMint(pool)
   }, 10_000)
 
