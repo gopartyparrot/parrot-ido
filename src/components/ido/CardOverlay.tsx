@@ -1,6 +1,5 @@
-import classNames from 'classnames'
 import moment from 'moment'
-import React, { PropsWithChildren, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import CardBase from './CardBase'
 import PoolCountdown from './PoolCountdown'
 
@@ -34,7 +33,7 @@ const CardOverlay: React.FC<CardOverlayProps> = ({
       overlayContent={
         hasOverlay && (
           <div className="absolute z-10 w-full px-8 h-full flex items-center justify-center">
-            <div className="bg-white w-full p-6 rounded-3xl flex flex-col items-center space-y-2">
+            <div className="bg-white w-full p-6 rounded-3xl flex flex-col items-center space-y-3">
               {notStarted && <h3>Entry Starts</h3>}
               {notRedeem && <h3>Redeem Starts</h3>}
               <PoolCountdown date={notStarted ? startIdo : startRedeem} />

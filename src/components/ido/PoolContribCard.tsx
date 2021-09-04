@@ -79,6 +79,15 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   useEffect(() => {
     if (submitting) {
       const handleSubmit = async () => {
+        if (+inputAmount <= 0) {
+          notify({
+            type: 'warn',
+            title: isDeposit ? 'Invalid deposit' : 'Invalid withdraw',
+            message: 'Please enter a valid amount',
+          })
+          setSubmitting(false)
+          return
+        }
         try {
           if (isDeposit) {
             await actions.submitDepositContribution(pool, +inputAmount)
@@ -103,10 +112,10 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
     startIdo.isBefore() && endIdo.isAfter() && endDeposits.isAfter()
 
   useEffect(() => {
-    if (!canDeposit) {
+    if (!canDeposit && startIdo.isBefore()) {
       handleChangeMode(1)
     }
-  }, [canDeposit])
+  }, [canDeposit, startIdo])
 
   const canWithdraw = startIdo.isBefore() && endIdo.isAfter()
 
@@ -156,11 +165,12 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
       {endDeposits?.isBefore() && endIdo?.isAfter() && (
         <div className="flex items-center space-x-2 mb-4">
           <InformationCircleIcon className="h-5 w-5 text-secondary" />
-          <p className="text-xxs sm:text-xs leading-normal">
-            You can only reduce your contribution during the grace period.
-            <br />
-            Reducing cannot be reversed.
-          </p>
+          <div className="text-xxs sm:text-xs">
+            <p className="mb-1">
+              You can only reduce your contribution during the grace period.
+            </p>
+            <p>Reducing cannot be reversed.</p>
+          </div>
         </div>
       )}
       <StatsCard pool={pool} />

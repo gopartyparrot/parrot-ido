@@ -16,13 +16,11 @@ export default function usePool(pool: PoolAccount) {
   //   ? moment.unix(pool.endDepositsTs.toNumber())
   //   : undefined
 
-  /*
-  // override for announcement */
-
-  const startIdo = moment.unix(unixTs)
-  const endDeposits = moment.unix(unixTs).add(20, 'seconds')
-  const endIdo = moment.unix(unixTs).add(120, 'seconds')
-  const startRedeem = moment.unix(unixTs).add(3, 'days')
+  // override for test
+  const startIdo = moment.unix(unixTs).add(10, 'seconds')
+  const endDeposits = moment.unix(unixTs).add(30, 'seconds')
+  const endIdo = moment.unix(unixTs).add(60, 'seconds')
+  const startRedeem = moment.unix(unixTs).add(90, 'seconds')
 
   return { updated, pool, startIdo, endIdo, startRedeem, endDeposits }
 }
