@@ -30,7 +30,7 @@ const Main = () => {
         <CardBase title="Error" className="md:col-span-2">
           <p className="leading-snug mb-6">{loadingError}</p>
           <Button size="sm" onClick={handleReload}>
-            Retry
+            Retry refresh
           </Button>
         </CardBase>
       )}

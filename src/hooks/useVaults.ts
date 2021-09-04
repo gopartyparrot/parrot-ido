@@ -35,7 +35,7 @@ export default function useVaults(pool: PoolAccount) {
     await fetchVaults()
     // fetch RedeemableMint account to update mint total supply
     await actions.fetchRedeemableMint(pool)
-  }, 10_000)
+  }, 15_000)
 
   const usdcBalance = useMemo(
     () => calculateBalance(mints, usdcVault),

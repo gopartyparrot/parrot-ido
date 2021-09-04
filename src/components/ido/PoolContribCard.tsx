@@ -1,4 +1,5 @@
 import { InformationCircleIcon } from '@heroicons/react/outline'
+import BigNumber from 'bignumber.js'
 import React, { useCallback, useEffect, useState } from 'react'
 // import useIpAddress from '../../hooks/useIpAddress's
 import useLargestAccounts from '../../hooks/useLargestAccounts'
@@ -21,21 +22,17 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   const { startIdo, endIdo, endDeposits } = usePool(pool)
   // const { ipAllowed } = useIpAddress()
 
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const [isDeposit, setIsDeposit] = useState(true)
+  const [inputAmount, setInputAmount] = useState('0')
+
   const usdcBalance = largestAccounts.usdc?.balance || 0
   const redeemableBalance = largestAccounts.redeemable?.balance || 0
-
-  const [isDeposit, setIsDeposit] = useState(true)
-
   const totalBalance = isDeposit ? usdcBalance : redeemableBalance
 
-  const [inputAmount, setInputAmount] = useState('0')
-  const [submitting, setSubmitting] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [refreshing, setRefreshing] = useState(false)
-
   useEffect(() => {
-    console.log('reset input on balance change')
     setInputAmount('')
   }, [totalBalance])
 
@@ -50,24 +47,45 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
     [setIsDeposit]
   )
 
-  const onChangeAmountInput = (amount: string) => {
-    setInputAmount(amount)
-    if (endDeposits?.isBefore() && +amount > redeemableBalance) {
-      setErrorMessage('Deposits ended, contribution cannot increase')
-      setTimeout(() => setErrorMessage(null), 4000)
-    } else {
-      // setWalletAmount(totalBalance - amount);
-    }
-  }
+  const handleChangeAmount = useCallback(
+    (amount: string) => {
+      setInputAmount(amount)
+      if (isDeposit && endDeposits?.isBefore() && +amount > redeemableBalance) {
+        notify({
+          title: 'Deposits ended',
+          message: 'Contribution cannot increase',
+        })
+      }
+    },
+    [isDeposit, endDeposits, redeemableBalance]
+  )
 
-  const handleRefresh = async () => {
+  const handleRefresh = useCallback(async () => {
     setRefreshing(true)
     try {
       await actions.fetchWalletTokenAccounts()
     } finally {
       setTimeout(() => setRefreshing(false), 1000)
     }
-  }
+  }, [actions])
+
+  const getInputError = useCallback(() => {
+    const inputError = {
+      hasError: false,
+      message: '',
+    }
+    if (submitting) {
+      return inputError
+    }
+
+    if (new BigNumber(inputAmount).gt(totalBalance)) {
+      inputError.hasError = true
+      inputError.message = `Insufficient USDC balance`
+      return inputError
+    }
+
+    return inputError
+  }, [submitting, isDeposit, inputAmount, totalBalance])
 
   useEffect(() => {
     setLoading(true)
@@ -110,6 +128,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
 
   const canDeposit =
     startIdo.isBefore() && endIdo.isAfter() && endDeposits.isAfter()
+  const canWithdraw = startIdo.isBefore() && endIdo.isAfter()
 
   useEffect(() => {
     if (!canDeposit && startIdo.isBefore()) {
@@ -117,12 +136,13 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
     }
   }, [canDeposit, startIdo])
 
-  const canWithdraw = startIdo.isBefore() && endIdo.isAfter()
+  const inputError = getInputError()
 
   const disableSubmit =
     !connected ||
     loading ||
     submitting ||
+    inputError.hasError ||
     (isDeposit ? !canDeposit : !canWithdraw)
 
   return (
@@ -141,14 +161,14 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
         maxValue={totalBalance.toString()}
         maxIsLoading={refreshing}
         maxLabel={isDeposit ? `balance:` : `max withdraw:`}
-        // hasError={collateralInputError.hasError}
-        // errorMessage={collateralInputError.message}
+        errorMessage={inputError.message}
+        hasError={inputError.hasError}
         tokenSymbol="USDC"
         tokenIcon="usdc.svg"
         value={inputAmount}
         valueRound="ceil"
         decimals={6}
-        onChange={onChangeAmountInput}
+        onChange={handleChangeAmount}
         disabled={!connected}
       />
       <Button
@@ -159,17 +179,15 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
       >
         {submitting ? 'Waiting approval' : isDeposit ? `Deposit` : `Withdraw`}
       </Button>
-      {/* <Button className="w-full my-4" disabled>
-          Country Not Allowed 🇺🇸😭
-        </Button> */}
+      {/* Country Not Allowed 🇺🇸😭 */}
       {endDeposits?.isBefore() && endIdo?.isAfter() && (
         <div className="flex items-center space-x-2 mb-4">
           <InformationCircleIcon className="h-5 w-5 text-secondary" />
           <div className="text-xxs sm:text-xs">
             <p className="mb-1">
-              You can only reduce your contribution during the grace period.
+              You can only withdraw your contribution during the grace period.
             </p>
-            <p>Reducing cannot be reversed.</p>
+            <p>Any withdrawals cannot be reversed.</p>
           </div>
         </div>
       )}

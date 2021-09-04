@@ -43,16 +43,14 @@ export default function useIpAddress() {
         const ipLocation = parsedResponse.match(/loc=(.+)/)
         ipCountryCode = ipLocation ? ipLocation[1] : ''
       } catch {
-        const response = await fetch(`https://countrycode.bonfida.workers.dev/`)
+        const response = await fetch(`https://www.cloudflare.com/cdn-cgi/trace`)
         const parsedResponse = await response.json()
         ipCountryCode = parsedResponse.countryCode
       }
-
       if (ipCountryCode) {
         setIpAllowed(!SANCTIONED_COUNTRY_CODES.includes(ipCountryCode))
       }
     }
-
     checkIpLocation()
   }, [])
 
