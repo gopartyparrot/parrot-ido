@@ -1,8 +1,5 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react'
 
-const FAST_INTERVAL = 10000
-const SLOW_INTERVAL = 60000
-
 interface RefreshContext {
   manual: number
   doForceRefresh: () => void
@@ -17,7 +14,10 @@ export const RefreshProvider = ({ children }) => {
   const [manual, setManual] = useState(0)
 
   const doForceRefresh = useCallback(() => {
-    setManual((prev) => prev + 1)
+    // Wait 250ms before force update to allow some time for moment to sync
+    setTimeout(() => {
+      setManual((prev) => prev + 1)
+    }, 250)
   }, [manual])
 
   return (

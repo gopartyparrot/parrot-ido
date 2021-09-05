@@ -24,7 +24,7 @@ const PoolCard: React.FC<PoolCardProps> = ({ pool, round }) => {
       {startRedeem.isAfter() && <PoolContribCard pool={pool} />}
       {startRedeem.isBefore() && <PoolRedeemCard pool={pool} />}
       {/* Debug stats */}
-      <div className="bg-secondary rounded-xl p-2 mt-4 space-y-3 font-mono text-xs">
+      <div className="hidden bg-secondary rounded-xl p-2 mt-4 space-y-3 font-mono text-xs">
         <p>
           Start Ido: {startIdo?.fromNow()} ({startIdo?.format()})
         </p>

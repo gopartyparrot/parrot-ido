@@ -35,9 +35,9 @@ const Main = () => {
         </CardBase>
       )}
       {loadingIDO &&
-        [1, 2].map((key) => (
+        [1, 2].map((key, index) => (
           <CardBase key={key} title="Loading...">
-            <Skeleton count={3} height={90} className="my-1" />
+            <Skeleton count={3} height={90} className="mt-2" />
           </CardBase>
         ))}
     </main>

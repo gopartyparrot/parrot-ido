@@ -22,7 +22,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
 
   const contributeBalance = largestAccounts.redeemable?.balance || 0
 
-  const redeemableAmount = useMemo(() => {
+  const redeemablePrtAmount = useMemo(() => {
     const redeemableSupply = calculateSupply(mints, pool.redeemableMint)
     return vaults.prtBalance && redeemableSupply
       ? (contributeBalance * vaults.prtBalance) / redeemableSupply
@@ -63,12 +63,12 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
       }
       handleSubmit()
     }
-  }, [submitting])
+  }, [submitting, redeemablePrtAmount])
 
-  const disableSubmit = !connected || loading || redeemableAmount < 0
+  const disableSubmit = !connected || loading || redeemablePrtAmount <= 0
 
   return (
-    <div className="space-y-2">
+    <div className="">
       <div className="bg-secondary rounded-xl p-6 text-center">
         <p className="text-sm text-secondary">Total raised</p>
         <div className="flex items-center justify-center pt-2">
@@ -86,7 +86,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           />
         </div>
       </div>
-      <div className="bg-secondary rounded-xl p-6 text-center">
+      {/* <div className="bg-secondary rounded-xl p-6 text-center mt-2">
         <p className="text-sm text-secondary">Token Price</p>
         <div className="flex items-center justify-center pt-2">
           <img
@@ -103,8 +103,8 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
             displayDecimals={6}
           />
         </div>
-      </div>
-      <div className="bg-secondary rounded-xl p-6 text-center">
+      </div> */}
+      <div className="bg-secondary rounded-xl p-6 text-center mt-2">
         <p className="text-sm text-secondary">Your contribution</p>
         <div className="flex items-center justify-center pt-2">
           <img
@@ -121,7 +121,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           />
         </div>
       </div>
-      <div className="bg-secondary rounded-xl p-6 text-center">
+      <div className="bg-secondary rounded-xl p-6 text-center mt-2">
         <p className="text-sm text-secondary">Redeemable amount</p>
         <div className="flex items-center justify-center pt-2">
           <img
@@ -133,18 +133,18 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           />
           <NumberText
             className="font-bold text-mdx"
-            value={redeemableAmount}
+            value={redeemablePrtAmount}
             defaultIfNull="N/A"
           />
         </div>
       </div>
       <Button
         onClick={handleRedeem}
-        className="w-full mt-6 mb-4"
+        className="w-full mt-6"
         disabled={disableSubmit}
         isLoading={submitting}
       >
-        {submitting ? 'Waiting approval' : 'Get PRT'}
+        {submitting ? 'Waiting approval' : 'Redeem PRT'}
       </Button>
     </div>
   )

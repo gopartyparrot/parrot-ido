@@ -27,7 +27,7 @@ const ButtonMenuItem: React.FC<ButtonMenuItemProps> = ({
     >
       {children}
       <div
-        className={classNames('rounded-full h-1 -mx-2 mt-1', {
+        className={classNames('rounded-full h-1 mx-4 mt-1', {
           'bg-brandPrimary': isActive,
           'bg-transparent': !isActive,
         })}
