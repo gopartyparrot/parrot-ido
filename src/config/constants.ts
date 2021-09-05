@@ -1,5 +1,5 @@
 import { web3 } from '@project-serum/anchor'
-import { WalletEndpoint } from '../../../parrot-wallets/lib/esm'
+import { WalletEndpoint } from '@parrotfi/wallets'
 
 export const NETWORK = process.env.NEXT_PUBLIC_NETWORK
 export const VERSION = process.env.NEXT_PUBLIC_VERSION
