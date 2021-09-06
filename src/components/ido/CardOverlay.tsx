@@ -1,25 +1,19 @@
 import moment from 'moment'
 import React, { ReactNode } from 'react'
+import usePool from '../../hooks/usePool'
+import { PoolAccount } from '../../stores/useWalletStore'
 import CardBase from './CardBase'
 import PoolCountdown from './PoolCountdown'
 
 interface CardOverlayProps {
-  startIdo: moment.Moment
-  endDeposits: moment.Moment
-  endIdo: moment.Moment
-  startRedeem: moment.Moment
+  pool: PoolAccount
   title: string
   children: ReactNode
 }
 
-const CardOverlay: React.FC<CardOverlayProps> = ({
-  children,
-  startIdo,
-  endDeposits,
-  startRedeem,
-  endIdo,
-  title,
-}) => {
+const CardOverlay: React.FC<CardOverlayProps> = ({ children, pool, title }) => {
+  const { startIdo, endIdo, startRedeem, endDeposits, poolStatus } =
+    usePool(pool)
   const notStarted = startIdo.isAfter()
   const noDeposits = endDeposits.isBefore()
   const notRedeem = endIdo.isBefore() && startRedeem.isAfter()
@@ -36,7 +30,10 @@ const CardOverlay: React.FC<CardOverlayProps> = ({
             <div className="bg-white w-full p-6 rounded-3xl flex flex-col items-center space-y-3">
               {notStarted && <h3>Entry Starts</h3>}
               {notRedeem && <h3>Redeem Starts</h3>}
-              <PoolCountdown date={notStarted ? startIdo : startRedeem} />
+              <PoolCountdown
+                date={notStarted ? startIdo : startRedeem}
+                poolStatus={poolStatus}
+              />
             </div>
           </div>
         )

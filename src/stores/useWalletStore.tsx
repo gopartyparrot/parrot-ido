@@ -305,7 +305,6 @@ const useWalletStore = create<WalletStore>((set, get) => ({
       )
 
       await sendTransaction({ transaction, wallet, connection })
-
       await actions.fetchWalletTokenAccounts()
     },
     async submitRedeem(pool: PoolAccount) {
@@ -371,7 +370,6 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         sendingMessage: 'Sending redeem transaction...',
         successMessage: 'PRT redeemed successfully!',
       })
-
       await actions.fetchWalletTokenAccounts()
     },
   },

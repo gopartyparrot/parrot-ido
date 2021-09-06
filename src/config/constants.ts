@@ -9,21 +9,28 @@ export const RPC_ENDPOINTS: WalletEndpoint[] = [
     id: 'parrot',
     network: 'mainnet-beta' as web3.Cluster,
     rpcURL: 'https://parrot.rpcpool.com',
-    rpcName: 'Parrot',
+    rpcName: 'Parrot RCP',
     commitment: 'processed' as web3.Commitment,
   },
   {
     id: 'solana',
     network: 'mainnet-beta' as web3.Cluster,
     rpcURL: 'https://api.mainnet-beta.solana.com',
-    rpcName: 'Solana',
+    rpcName: 'Solana RCP',
     commitment: 'processed' as web3.Commitment,
   },
   {
     id: 'serum',
     network: 'mainnet-beta' as web3.Cluster,
     rpcURL: 'https://solana-api.projectserum.com/',
-    rpcName: 'Project Serum',
+    rpcName: 'Serum RPC',
+    commitment: 'processed' as web3.Commitment,
+  },
+  {
+    id: 'custom',
+    network: 'mainnet-beta' as web3.Cluster,
+    rpcURL: '',
+    rpcName: 'Custom RPC',
     commitment: 'processed' as web3.Commitment,
   },
   {
@@ -47,8 +54,8 @@ export const IDO_ENDPOINTS = [
     programId: '5s48HdiM1PjxqHDpGvZUVnX6eKbGbvN15rFHJ7RwxCv4',
     usdcMint: 'G1Z261S3B2XQWCZo1qXJkEbeqkrcY1mVW3B3vMj5uqRq',
     pools: [
-      '7px9N7ZouesntaHbfsCTYZh3x9HM83adbYWujYGsZfbu',
-      '9kMaNLhDyx34jzpneMu2PCKxKd6JwSTfVeQLnmXqXJih',
+      '3ah8jT2jkHb3vhKGSxNK4Dm1XDY842vmJaTG8YaFtdyB',
+      '4qkLCR7JrkLCqfJ8iPKTBHGSsqvbY2EjVNeHx9iTdDSR',
     ],
   },
 ]

@@ -27,12 +27,12 @@ export default function useVaults(pool: PoolAccount) {
     })
   }, [])
 
-  useInterval(async () => {
-    // refresh vaults regularly (to update price/usdc)
-    await fetchVaults()
-    // fetch RedeemableMint account to update mint total supply
-    await actions.fetchRedeemableMint(pool)
-  }, 15_000)
+  // useInterval(async () => {
+  //   // refresh vaults regularly (to update price/usdc)
+  //   await fetchVaults()
+  //   // fetch RedeemableMint account to update mint total supply
+  //   await actions.fetchRedeemableMint(pool)
+  // }, 15_000)
 
   const usdcBalance = useMemo(
     () => calculateBalance(mints, usdcVault),
@@ -51,5 +51,5 @@ export default function useVaults(pool: PoolAccount) {
     [usdcBalance, prtBalance]
   )
 
-  return { usdcBalance, prtBalance, estimatedPrice }
+  return { usdcBalance, prtBalance, estimatedPrice, fetchVaults }
 }

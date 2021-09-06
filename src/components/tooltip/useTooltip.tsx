@@ -176,7 +176,7 @@ const useTooltip = (
 
   const tooltip = (
     <div
-      className="tooltip-container max-w-tooltip rounded p-3 text-xs leading-snug text-white whitespace-no-wrap bg-black shadow-lg"
+      className="tooltip-container z-20 max-w-tooltip rounded p-3 text-xs leading-snug text-white whitespace-no-wrap bg-black shadow-lg"
       ref={setTooltipElement}
       style={styles.popper}
       {...attributes.popper}

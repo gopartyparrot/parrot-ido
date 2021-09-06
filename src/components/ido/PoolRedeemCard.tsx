@@ -16,7 +16,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
   const connected = useWalletStore((s) => s.connected)
   const mints = useWalletStore((s) => s.mints)
   const largestAccounts = useLargestAccounts(pool)
-  const vaults = useVaults(pool)
+  const { prtBalance, usdcBalance, fetchVaults } = useVaults(pool)
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
 
@@ -24,10 +24,10 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
 
   const redeemablePrtAmount = useMemo(() => {
     const redeemableSupply = calculateSupply(mints, pool.redeemableMint)
-    return vaults.prtBalance && redeemableSupply
-      ? (contributeBalance * vaults.prtBalance) / redeemableSupply
+    return prtBalance && redeemableSupply
+      ? (contributeBalance * prtBalance) / redeemableSupply
       : 0
-  }, [vaults.prtBalance, contributeBalance, mints, pool.redeemableMint])
+  }, [prtBalance, contributeBalance, mints, pool.redeemableMint])
 
   const handleRedeem = useCallback(() => {
     setSubmitting(true)
@@ -52,6 +52,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
         try {
           await actions.submitRedeem(pool)
           setSubmitting(false)
+          fetchVaults()
         } catch (e) {
           notify({
             type: 'error',
@@ -81,7 +82,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           />
           <NumberText
             className="font-bold text-mdx"
-            value={vaults.usdcBalance}
+            value={usdcBalance}
             defaultIfNull="N/A"
           />
         </div>
@@ -98,7 +99,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           />
           <NumberText
             className="font-bold text-mdx"
-            value={vaults.estimatedPrice}
+            value={estimatedPrice}
             defaultIfNull="N/A"
             displayDecimals={6}
           />

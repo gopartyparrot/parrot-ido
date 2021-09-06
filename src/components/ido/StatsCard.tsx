@@ -1,20 +1,28 @@
 import PoolCountdown from './PoolCountdown'
-import useVaults from '../../hooks/useVaults'
-import usePool from '../../hooks/usePool'
+import moment from 'moment'
 import NumberText from '../texts/Number'
-import { PoolAccount } from '../../stores/useWalletStore'
 import { QuestionMarkCircleIcon } from '@heroicons/react/outline'
 import React from 'react'
 import { useTooltip } from '../tooltip'
+import BigNumber from 'bignumber.js'
 
 interface StatsCardProps {
-  pool: PoolAccount
+  endIdo: moment.Moment
+  endDeposits: moment.Moment
+  poolStatus: string
+  estimatedPrice: BigNumber
+  vaultPrtBalance: number
+  vaultUsdcBalance: number
 }
 
-const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
-  const { endIdo, endDeposits } = usePool(pool)
-  const vaults = useVaults(pool)
-
+const StatsCard: React.FC<StatsCardProps> = ({
+  endIdo,
+  endDeposits,
+  poolStatus,
+  estimatedPrice,
+  vaultPrtBalance,
+  vaultUsdcBalance,
+}) => {
   const {
     targetRef: targetSaleRef,
     tooltip: tooltipSale,
@@ -51,7 +59,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
             {tooltipSaleVisible && tooltipSale}
           </div>
           <PoolCountdown
-            pool={pool}
+            poolStatus={poolStatus}
             date={endDeposits}
             className="justify-center pt-2"
           />
@@ -65,7 +73,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
             {tooltipGraceVisible && tooltipGrace}
           </div>
           <PoolCountdown
-            pool={pool}
+            poolStatus={poolStatus}
             date={endIdo}
             className="justify-center pt-2"
           />
@@ -84,7 +92,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
             />
             <NumberText
               className="font-bold text-mdx"
-              value={vaults.usdcBalance}
+              value={vaultUsdcBalance}
               defaultIfNull="N/A"
             />
           </div>
@@ -102,7 +110,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
             />
             <NumberText
               className="font-bold text-mdx"
-              value={vaults.estimatedPrice}
+              value={estimatedPrice}
               defaultIfNull="N/A"
               displayDecimals={6}
             />
@@ -116,7 +124,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ pool }) => {
             <img className="h-5 mr-2 w-auto" src="/icons/prt.svg" alt="mango" />
             <NumberText
               className="font-bold text-mdx"
-              value={vaults.prtBalance}
+              value={vaultPrtBalance}
               defaultIfNull="N/A"
             />
           </div>

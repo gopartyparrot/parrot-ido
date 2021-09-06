@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 // import useIpAddress from '../../hooks/useIpAddress's
 import useLargestAccounts from '../../hooks/useLargestAccounts'
 import usePool from '../../hooks/usePool'
+import useVaults from '../../hooks/useVaults'
 import { notify } from '../../stores/useNotificationStore'
 import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
 import { Button } from '../button'
@@ -19,7 +20,8 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   const actions = useWalletStore((s) => s.actions)
   const connected = useWalletStore((s) => s.connected)
   const largestAccounts = useLargestAccounts(pool)
-  const { startIdo, endIdo, endDeposits } = usePool(pool)
+  const { startIdo, endIdo, endDeposits, poolStatus } = usePool(pool)
+  const vaults = useVaults(pool)
   // const { ipAllowed } = useIpAddress()
 
   const [loading, setLoading] = useState(true)
@@ -113,6 +115,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
             await actions.submitWithdrawContribution(pool, +inputAmount)
           }
           setSubmitting(false)
+          vaults.fetchVaults()
         } catch (e) {
           notify({
             type: 'error',
@@ -159,7 +162,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
         title={isDeposit ? 'I want to deposit' : 'Withdraw collateral'}
         placeholder="0"
         maxValue={totalBalance.toString()}
-        maxIsLoading={refreshing}
+        maxIsLoading={connected && loading}
         maxLabel={isDeposit ? `balance:` : `max withdraw:`}
         errorMessage={inputError.message}
         hasError={inputError.hasError}
@@ -191,7 +194,14 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
           </div>
         </div>
       )}
-      <StatsCard pool={pool} />
+      <StatsCard
+        endDeposits={endDeposits}
+        endIdo={endIdo}
+        poolStatus={poolStatus}
+        vaultPrtBalance={vaults.prtBalance}
+        vaultUsdcBalance={vaults.usdcBalance}
+        estimatedPrice={vaults.estimatedPrice}
+      />
     </>
   )
 }

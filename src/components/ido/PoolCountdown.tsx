@@ -6,29 +6,22 @@ import classNames from 'classnames'
 import { useRefresh } from '../../hooks/useRefresh'
 
 interface PoolCountdownProps {
-  pool?: PoolAccount
-  className?: string
   date: moment.Moment
+  poolStatus: string
+  className?: string
 }
 
 const PoolCountdown: React.FC<PoolCountdownProps> = ({
-  pool,
   date,
+  poolStatus,
   className,
 }) => {
-  const { endIdo, endDeposits } = usePool(pool)
   const { doForceRefresh } = useRefresh()
 
   const renderCountdown = ({ days, hours, minutes, seconds, completed }) => {
     hours += days * 24
     if (completed) {
-      const message =
-        endDeposits?.isBefore() && endIdo?.isAfter()
-          ? 'Deposits are closed'
-          : endIdo?.isBefore()
-          ? 'The IDO has ended'
-          : 'The IDO is starting...'
-      return <p className="text-sm mt-2 py-2 text-center">{message}</p>
+      return <p className="text-sm mt-2 py-2 text-center">{poolStatus}</p>
     } else {
       return (
         <div className={classNames(className, 'flex items-center')}>
