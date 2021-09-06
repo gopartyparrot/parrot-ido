@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import React from 'react'
-import { variants } from '../button/types'
 
+import { variants } from '../button/types'
 import { ButtonMenuItemProps } from './types'
 
 const ButtonMenuItem: React.FC<ButtonMenuItemProps> = ({

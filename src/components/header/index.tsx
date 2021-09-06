@@ -1,6 +1,6 @@
 import React from 'react'
-import ConnectWallet from '../account/ConnectWallet'
 
+import ConnectWallet from '../account/ConnectWallet'
 import { Logo } from '../logo'
 import { DarkModeToggle } from './DarkModeToggle'
 import { RpcSwitcher } from './RpcSwitcher'

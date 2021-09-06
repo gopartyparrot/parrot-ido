@@ -1,6 +1,7 @@
 import { InformationCircleIcon } from '@heroicons/react/outline'
 import BigNumber from 'bignumber.js'
 import React, { useCallback, useEffect, useState } from 'react'
+
 // import useIpAddress from '../../hooks/useIpAddress's
 import useLargestAccounts from '../../hooks/useLargestAccounts'
 import usePool from '../../hooks/usePool'
@@ -26,7 +27,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
 
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
+  const [, setRefreshing] = useState(false)
   const [isDeposit, setIsDeposit] = useState(true)
   const [inputAmount, setInputAmount] = useState('0')
 
@@ -102,7 +103,9 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
         if (+inputAmount <= 0) {
           notify({
             type: 'warn',
-            title: isDeposit ? 'Invalid deposit' : 'Invalid withdraw',
+            title: isDeposit
+              ? 'Required deposit amount'
+              : 'Required withdraw amount',
             message: 'Please enter a valid amount',
           })
           setSubmitting(false)

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import ToastContent from './ToastContent'
 
+import ToastContent from './ToastContent'
 import { ToastItemProps } from './types'
 
 const ToastItem: React.FC<ToastItemProps> = ({

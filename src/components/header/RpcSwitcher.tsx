@@ -3,19 +3,27 @@ import { ChevronDownIcon } from '@heroicons/react/solid'
 import { useWallet, WalletEndpoint } from '@parrotfi/wallets'
 import classNames from 'classnames'
 import React, { Fragment, useCallback } from 'react'
+
 import { RPC_ENDPOINTS } from '../../config/constants'
-import { useIDO } from '../../hooks/useIDO'
 
 export const RpcSwitcher: React.FC = () => {
-  const { loadIDO } = useIDO()
   const { setEndpoint, endpoint } = useWallet()
 
   const handleChange = useCallback(
     (endpoint: WalletEndpoint) => () => {
+      if (endpoint.id === 'custom') {
+        //
+        endpoint.rpcURL = prompt(
+          'Enter RPC url (eg https://api.mainnet-beta.solana.com)',
+          'https://'
+        )
+        if (!endpoint.rpcURL) {
+          return
+        }
+      }
       setEndpoint(endpoint)
-      loadIDO(endpoint)
     },
-    [loadIDO, setEndpoint]
+    [setEndpoint]
   )
 
   return (

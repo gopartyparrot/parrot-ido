@@ -1,8 +1,7 @@
-import usePool from '../../hooks/usePool'
-import Countdown from 'react-countdown'
-import moment from 'moment'
-import { PoolAccount } from '../../stores/useWalletStore'
 import classNames from 'classnames'
+import moment from 'moment'
+import Countdown from 'react-countdown'
+
 import { useRefresh } from '../../hooks/useRefresh'
 
 interface PoolCountdownProps {

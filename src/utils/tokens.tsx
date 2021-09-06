@@ -1,4 +1,3 @@
-import { Connection, PublicKey, AccountInfo } from '@solana/web3.js'
 import {
   AccountInfo as TokenAccountInfo,
   AccountLayout,
@@ -6,6 +5,7 @@ import {
   MintLayout,
   u64,
 } from '@solana/spl-token'
+import { AccountInfo,Connection, PublicKey } from '@solana/web3.js'
 
 export type TokenAccount = TokenAccountInfo
 export type MintAccount = MintInfo

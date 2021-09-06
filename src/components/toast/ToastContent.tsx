@@ -1,12 +1,13 @@
-import classNames from 'classnames'
-import React, { useCallback } from 'react'
 import {
   CheckCircleIcon,
+  ExclamationCircleIcon,
   InformationCircleIcon,
   XCircleIcon,
-  ExclamationCircleIcon,
 } from '@heroicons/react/outline'
 import { XIcon } from '@heroicons/react/solid'
+import classNames from 'classnames'
+import React, { useCallback } from 'react'
+
 import { ToastContentProps, ToastTypes } from './types'
 
 let globalId = 0

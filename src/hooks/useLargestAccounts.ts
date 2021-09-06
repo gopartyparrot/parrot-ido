@@ -1,11 +1,13 @@
+import { web3 } from '@project-serum/anchor'
+
 import useWalletStore, { PoolAccount } from '../stores/useWalletStore'
 import { calculateBalance } from '../utils/balance'
-import { ProgramAccount, TokenAccount } from '../utils/tokens'
+import { MintAccount, ProgramAccount, TokenAccount } from '../utils/tokens'
 
 export function findLargestBalanceAccountForMint(
-  mints,
+  mints: { [pk: string]: MintAccount },
   tokenAccounts: ProgramAccount<TokenAccount>[],
-  mintPk
+  mintPk: web3.PublicKey
 ) {
   const accounts = tokenAccounts.filter((a) => a.account.mint.equals(mintPk))
 

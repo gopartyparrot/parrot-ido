@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react'
+
 import { Modal } from '../components/modal'
 
 interface ModalContext {

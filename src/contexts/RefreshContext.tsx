@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useState } from 'react'
 
 interface RefreshContext {
   manual: number

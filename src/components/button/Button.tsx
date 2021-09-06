@@ -1,7 +1,7 @@
 import classNames from 'classnames'
-import { Spinner } from '../spinner'
 import React, { cloneElement, ElementType, isValidElement } from 'react'
 
+import { Spinner } from '../spinner'
 import { ButtonProps, sizes, variants } from './types'
 
 const Button = <E extends ElementType = 'button'>(

@@ -1,10 +1,11 @@
-import PoolCountdown from './PoolCountdown'
-import moment from 'moment'
-import NumberText from '../texts/Number'
 import { QuestionMarkCircleIcon } from '@heroicons/react/outline'
-import React from 'react'
-import { useTooltip } from '../tooltip'
 import BigNumber from 'bignumber.js'
+import moment from 'moment'
+import React from 'react'
+
+import NumberText from '../texts/Number'
+import { useTooltip } from '../tooltip'
+import PoolCountdown from './PoolCountdown'
 
 interface StatsCardProps {
   endIdo: moment.Moment

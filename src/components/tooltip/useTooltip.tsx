@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useCallback, useEffect, useRef,useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { createPortal } from 'react-dom'
 import { usePopper } from 'react-popper'
+
 import { TooltipOptions, TooltipRefs } from './types'
 
 const useTooltip = (

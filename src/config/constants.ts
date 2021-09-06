@@ -1,5 +1,5 @@
-import { web3 } from '@project-serum/anchor'
 import { WalletEndpoint } from '@parrotfi/wallets'
+import { web3 } from '@project-serum/anchor'
 
 export const NETWORK = process.env.NEXT_PUBLIC_NETWORK
 export const VERSION = process.env.NEXT_PUBLIC_VERSION
@@ -22,7 +22,7 @@ export const RPC_ENDPOINTS: WalletEndpoint[] = [
   {
     id: 'serum',
     network: 'mainnet-beta' as web3.Cluster,
-    rpcURL: 'https://solana-api.projectserum.com/',
+    rpcURL: 'https://solana-api.projectserum.com',
     rpcName: 'Serum RPC',
     commitment: 'processed' as web3.Commitment,
   },

@@ -1,5 +1,6 @@
 import { useWallet, WalletEndpoint } from '@parrotfi/wallets'
 import React, { createContext, useCallback, useEffect, useState } from 'react'
+
 import { notify } from '../stores/useNotificationStore'
 import useWalletStore from '../stores/useWalletStore'
 
@@ -60,8 +61,8 @@ export const IDOProvider = ({ children }) => {
       state.pools = []
       state.tokenAccounts = []
     })
-    actions.connectRpc(endpoint)
     try {
+      actions.connectRpc(endpoint)
       await actions.fetchPools()
       setLoadingIDO(false)
       await actions.fetchMints()
@@ -69,17 +70,19 @@ export const IDOProvider = ({ children }) => {
       setLoadingError(e.message)
       notify({
         type: 'error',
-        title: 'Failed to fetch pools information',
+        title: 'Failed to load IDO pools',
         message: e.message,
       })
     }
     setLoadingIDO(false)
   }, [])
 
-  // initial loading
+  // pool loading
   useEffect(() => {
-    loadIDO(endpoint)
-  }, [])
+    if (endpoint.rpcURL) {
+      loadIDO(endpoint)
+    }
+  }, [endpoint.rpcURL])
 
   useEffect(() => {
     setWalletStore((state) => {

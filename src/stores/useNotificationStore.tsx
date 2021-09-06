@@ -1,5 +1,6 @@
-import create, { State } from 'zustand'
 import produce from 'immer'
+import create, { State } from 'zustand'
+
 import { Toast, ToastTypes } from '../components/toast'
 import { ToastAction } from '../components/toast/types'
 

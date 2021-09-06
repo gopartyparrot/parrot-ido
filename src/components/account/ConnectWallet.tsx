@@ -1,6 +1,7 @@
 import { useWallet, WalletModal } from '@parrotfi/wallets'
 import classNames from 'classnames'
 import React, { useCallback } from 'react'
+
 import useModal from '../../hooks/useModal'
 
 interface ConnectWalletProps {

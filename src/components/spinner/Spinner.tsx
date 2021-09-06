@@ -5,11 +5,15 @@ export interface SpinnerProps {
   className?: string
 }
 
-const Spinner: React.FC<SpinnerProps> = ({ className }) => {
+const Spinner: React.FC<SpinnerProps> = ({ className, size = 'md' }) => {
   return (
     <svg
       className={classNames(
-        'animate-spin h-5 w-5 text-brandPrimary',
+        'animate-spin text-brandPrimary',
+        {
+          'h-3 w-3': size === 'sm',
+          'h-5 w-5': size === 'md',
+        },
         className
       )}
       xmlns="http://www.w3.org/2000/svg"

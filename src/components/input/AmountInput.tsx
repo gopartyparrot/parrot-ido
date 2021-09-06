@@ -1,12 +1,12 @@
+import BigNumber from 'bignumber.js'
 import classNames from 'classnames'
-import { TokenIcon } from '../icons'
-import PercentButton from '../percent-button'
-import { Spinner } from '../spinner'
 import React, { useCallback } from 'react'
 import NumberFormat, { NumberFormatValues } from 'react-number-format'
 
 import SortDown from '../../../public/icons/sort-down.svg'
-import BigNumber from 'bignumber.js'
+import { TokenIcon } from '../icons'
+import PercentButton from '../percent-button'
+import { Spinner } from '../spinner'
 
 const toSafeNum = (
   value: string,
@@ -87,7 +87,17 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     [onChange, decimals]
   )
 
-  const handleSelectMax = useCallback(
+  const handleSelectMax = useCallback(() => {
+    if (!onChange || disabled || readOnly || !maxValue) {
+      return
+    }
+    const safeNum = toSafeNum(maxValue, decimals, valueRound)
+    if (safeNum) {
+      onChange(safeNum)
+    }
+  }, [onChange, disabled, readOnly, maxValue])
+
+  const handleSelectPercent = useCallback(
     (value) => {
       if (!onChange || disabled || readOnly) {
         return
@@ -106,14 +116,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     <div className="mb-3">
       <div className="flex flex-row items-center justify-between mb-3">
         <label className="flex-1 text-sm font-bold">{title}</label>
-        {maxIsLoading && <Spinner className="mx-2" />}
         {!!maxValue && (
           <PercentButton
-            disabled={disabled}
+            disabled={disabled && maxIsLoading}
             current={value}
             max={maxValue}
             maxPercentage={maxPercentage}
-            onChange={handleSelectMax}
+            onChange={handleSelectPercent}
           />
         )}
       </div>
@@ -183,9 +192,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       <div className="flex flex-row py-2">
         {hasError && <span className="text-xs text-error">{errorMessage}</span>}
         <span className="flex-1" />
-        <span className="text-xs text-secondary">
-          {maxLabel} {maxValue}
-        </span>
+        <button
+          className="text-xs text-secondary outline-none focus:outline-none"
+          onClick={handleSelectMax}
+        >
+          {maxLabel} {maxIsLoading ? '' : maxValue}
+        </button>
+        {maxIsLoading && <Spinner className="mx-1" size="sm" />}
       </div>
     </div>
   )

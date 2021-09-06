@@ -1,6 +1,6 @@
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/solid'
-import React, { Fragment } from 'react'
+import React from 'react'
 
 interface ModalProps {
   isOpen: boolean
@@ -34,7 +34,7 @@ const Modal: React.FC<ModalProps> = ({
         > */}
       <Dialog.Overlay className="fixed inset-0 bg-overlay" />
       {/* </Transition.Child> */}
-      <div className="min-h-full flex items-center max-w-sm w-full mx-auto">
+      <div className="min-h-full flex items-center max-w-sm w-full mx-auto px-4">
         <div className="relative bg-default rounded-3xl w-full p-4 sm:p-6">
           <div className="absolute -right-3 -top-3.5">
             <button

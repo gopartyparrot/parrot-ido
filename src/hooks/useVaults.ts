@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import { notify } from '../stores/useNotificationStore'
 import useWalletStore, { PoolAccount } from '../stores/useWalletStore'
 import { calculateBalance } from '../utils/balance'
 import { TokenAccount } from '../utils/tokens'
-import useInterval from './useInterval'
 
 export default function useVaults(pool: PoolAccount) {
   const { mints, actions } = useWalletStore((s) => s)

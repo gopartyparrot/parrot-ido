@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
-import { ToastContainer } from './toast'
+
 import { useNotificationStore } from '../stores/useNotificationStore'
+import { ToastContainer } from './toast'
 
 const Notifications = () => {
   const { notifications, set: setNotificationStore } = useNotificationStore(
