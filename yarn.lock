@@ -2064,10 +2064,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@parrotfi/wallets@1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@parrotfi/wallets/-/wallets-1.0.6.tgz#861daac6177b1fd2ce7a2cfd57134560b8c1e328"
-  integrity sha512-WdihAnDfZxx8gBOQhrbuopi6YCu9Qrqgz+VoMmK6r4xZiYlVJ57APcqsH5oreY1RzIoGh27kOHJ18gcA7gPXBg==
+"@parrotfi/wallets@1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@parrotfi/wallets/-/wallets-1.0.7.tgz#1cbcbbd5bf7f5b8c598b2db7ab1e96635ef4b6e7"
+  integrity sha512-HH21T/I/U3Jug201OZB/1ftGzDqniRX4AacsGAG0l5BPTJgnT4Fpi90am3J25A2RkdDl0Q682hWsbdZZZ9Supg==
   dependencies:
     bs58 "^4.0.1"
     eventemitter3 "^4.0.7"

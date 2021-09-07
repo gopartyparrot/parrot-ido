@@ -1,34 +1,44 @@
-import { Menu, Transition } from '@headlessui/react'
+import { Popover, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/solid'
 import { useWallet, WalletEndpoint } from '@parrotfi/wallets'
 import classNames from 'classnames'
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 
 import { RPC_ENDPOINTS } from '../../config/constants'
 
 export const RpcSwitcher: React.FC = () => {
-  const { setEndpoint, endpoint } = useWallet()
+  const { setEndpoint, endpoint, customRpcUrl: savedCustomRpcUrl } = useWallet()
+  const [customRpcURL, setCustomRpcURL] = useState(savedCustomRpcUrl)
 
-  const handleChange = useCallback(
-    (endpoint: WalletEndpoint) => () => {
-      if (endpoint.id === 'custom') {
-        //
-        endpoint.rpcURL = prompt(
-          'Enter RPC url (eg https://api.mainnet-beta.solana.com)',
-          'https://'
-        )
-        if (!endpoint.rpcURL) {
-          return
-        }
+  const handleChangeCustomRpc = useCallback(
+    (evt) => {
+      setCustomRpcURL(evt.target.value)
+    },
+    [setCustomRpcURL]
+  )
+
+  const handleSelectCustomRpc = useCallback(
+    (endpoint: WalletEndpoint, close: () => void) => () => {
+      if (customRpcURL) {
+        endpoint.rpcURL = customRpcURL
+        setEndpoint(endpoint)
       }
+      close()
+    },
+    [customRpcURL]
+  )
+
+  const handleSelectEndpoint = useCallback(
+    (endpoint: WalletEndpoint, close: () => void) => () => {
       setEndpoint(endpoint)
+      close()
     },
     [setEndpoint]
   )
 
   return (
-    <Menu as="div" className="relative">
-      <Menu.Button className="h-10 px-4 text-sm rounded-xl border outline-none focus:outline-none flex flex-row items-center justify-center border-black space-x-2 hover:bg-lightgray sm:min-w-rpc">
+    <Popover className="relative">
+      <Popover.Button className="h-10 px-4 text-sm rounded-xl border outline-none focus:outline-none flex flex-row items-center justify-center border-black space-x-2 hover:bg-lightgray sm:min-w-rpc">
         <svg
           className="w-5 h-5"
           width="20"
@@ -41,37 +51,56 @@ export const RpcSwitcher: React.FC = () => {
         </svg>
         <span className="flex-1">{endpoint?.rpcName}</span>
         <ChevronDownIcon className="w-5 h-5" aria-hidden="true" />
-      </Menu.Button>
+      </Popover.Button>
       <Transition
         as={Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
+        enter="transition ease-out duration-200"
+        enterFrom="opacity-0 translate-y-1"
+        enterTo="opacity-100 translate-y-0"
+        leave="transition ease-in duration-150"
+        leaveFrom="opacity-100 translate-y-0"
+        leaveTo="opacity-0 translate-y-1"
       >
-        <Menu.Items className="z-40 absolute bg-default w-full mt-1 right-0 origin-top-right rounded-lg shadow-lg outline-none focus:outline-none border border-secondary">
-          {RPC_ENDPOINTS.map((item, index) => (
-            <Menu.Item key={item.id}>
-              {({ active }) => (
-                <button
-                  onClick={handleChange(item)}
-                  className={classNames(
-                    'group flex items-center justify-center w-full px-2 py-4',
-                    {
-                      'text-brandPrimary': active,
-                      'border-t border-gray': index > 0,
-                    }
-                  )}
-                >
-                  {item.rpcName}
-                </button>
-              )}
-            </Menu.Item>
-          ))}
-        </Menu.Items>
+        <Popover.Panel className="z-40 absolute bg-default w-full mt-1 right-0 origin-top-right rounded-lg shadow-lg outline-none focus:outline-none border border-secondary">
+          {({ close }) =>
+            RPC_ENDPOINTS.map((item, index) => (
+              <div key={item.id}>
+                {item.id !== 'custom' ? (
+                  <button
+                    onClick={handleSelectEndpoint(item, close)}
+                    className={classNames(
+                      'group flex items-center justify-center w-full px-2 py-4 hover:text-brandPrimary',
+                      {
+                        'border-t border-gray': index > 0,
+                      }
+                    )}
+                  >
+                    {item.rpcName}
+                  </button>
+                ) : (
+                  <div className="border-t border-gray group w-full flex flex-col items-center px-3 py-3">
+                    <div className="flex flex-row items-center w-full">
+                      <label className="flex-1 font-bold">Custom RPC</label>
+                      <button
+                        className="text-brandPrimary text-sm"
+                        onClick={handleSelectCustomRpc(item, close)}
+                      >
+                        apply
+                      </button>
+                    </div>
+                    <input
+                      placeholder="https://api.mainnet-beta.solana.com"
+                      className="appearance-none pt-3 text-xs focus:outline-none outline-none inline-flex w-full"
+                      value={customRpcURL}
+                      onChange={handleChangeCustomRpc}
+                    />
+                  </div>
+                )}
+              </div>
+            ))
+          }
+        </Popover.Panel>
       </Transition>
-    </Menu>
+    </Popover>
   )
 }

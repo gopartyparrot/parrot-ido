@@ -80,7 +80,7 @@ module.exports = {
     },
     extend: {
       minWidth: {
-        rpc: '190px',
+        rpc: '220px',
       },
       maxWidth: {
         '4xl': '1080px',
