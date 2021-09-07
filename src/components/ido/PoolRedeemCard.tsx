@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import useLargestAccounts from '../../hooks/useLargestAccounts'
+import usePool from '../../hooks/usePool'
 import useVaults from '../../hooks/useVaults'
 import { notify } from '../../stores/useNotificationStore'
 import useWalletStore, { PoolAccount } from '../../stores/useWalletStore'
 import { calculateSupply } from '../../utils/balance'
 import { Button } from '../button'
 import NumberText from '../texts/Number'
+import PoolCountdown from './PoolCountdown'
 
 interface PoolRedeemCardProps {
   pool: PoolAccount
@@ -18,6 +20,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
   const mints = useWalletStore((s) => s.mints)
   const largestAccounts = useLargestAccounts(pool)
   const { prtBalance, usdcBalance, fetchVaults } = useVaults(pool)
+  const { startRedeem, poolStatus } = usePool(pool)
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
 
@@ -67,10 +70,21 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
     }
   }, [submitting])
 
-  const disableSubmit = !connected || loading || redeemablePrtAmount <= 0
+  const disableSubmit =
+    !connected || loading || redeemablePrtAmount <= 0 || startRedeem.isAfter()
 
   return (
     <div className="">
+      {startRedeem.isAfter() && (
+        <div className="bg-secondary rounded-xl p-6 text-center mb-2">
+          <p className="text-sm text-secondary">Redeem starts</p>
+          <PoolCountdown
+            poolStatus={poolStatus}
+            date={startRedeem}
+            className="justify-center pt-2"
+          />
+        </div>
+      )}
       <div className="bg-secondary rounded-xl p-6 text-center">
         <p className="text-sm text-secondary">Total raised</p>
         <div className="flex items-center justify-center pt-2">

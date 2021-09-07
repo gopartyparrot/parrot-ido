@@ -19,7 +19,7 @@ const CardOverlay: React.FC<CardOverlayProps> = ({ children, pool, title }) => {
   const notRedeem = endIdo.isBefore() && startRedeem.isAfter()
 
   const hasEnded = endIdo.isBefore()
-  const hasOverlay = notStarted || notRedeem
+  const hasOverlay = notStarted
 
   return (
     <CardBase

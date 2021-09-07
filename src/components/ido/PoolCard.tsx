@@ -16,8 +16,8 @@ const PoolCard: React.FC<PoolCardProps> = ({ pool, round }) => {
 
   return (
     <CardOverlay title={`IDO Round ${round}`} pool={pool}>
-      {startRedeem.isAfter() && <PoolContribCard pool={pool} />}
-      {startRedeem.isBefore() && <PoolRedeemCard pool={pool} />}
+      {endIdo.isAfter() && <PoolContribCard pool={pool} />}
+      {endIdo.isBefore() && <PoolRedeemCard pool={pool} />}
       {/* Debug stats */}
       <div className="hidden bg-secondary rounded-xl p-2 mt-4 space-y-3 font-mono text-xs">
         <p>

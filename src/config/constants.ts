@@ -33,13 +33,13 @@ export const RPC_ENDPOINTS: WalletEndpoint[] = [
     rpcName: 'Custom RPC',
     commitment: 'processed' as web3.Commitment,
   },
-  {
-    id: 'devnet',
-    network: 'devnet' as web3.Cluster,
-    rpcURL: 'https://api.devnet.solana.com',
-    rpcName: 'Solana Devnet',
-    commitment: 'processed' as web3.Commitment,
-  },
+  // {
+  //   id: 'devnet',
+  //   network: 'devnet' as web3.Cluster,
+  //   rpcURL: 'https://api.devnet.solana.com',
+  //   rpcName: 'Solana Devnet',
+  //   commitment: 'processed' as web3.Commitment,
+  // },
 ]
 
 export const IDO_ENDPOINTS = [

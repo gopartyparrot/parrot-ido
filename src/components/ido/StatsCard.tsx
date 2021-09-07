@@ -80,55 +80,50 @@ const StatsCard: React.FC<StatsCardProps> = ({
           />
         </div>
       </div>
-      <div className="bg-secondary rounded-xl p-6 grid grid-cols-2 gap-2">
-        <div className="text-center">
-          <p className="text-sm text-secondary">USDC Contributed</p>
-          <div className="flex items-center justify-center pt-2">
-            <img
-              alt=""
-              width="20"
-              height="20"
-              src="/icons/usdc.svg"
-              className="mr-2"
-            />
-            <NumberText
-              className="font-bold text-mdx"
-              value={vaultUsdcBalance}
-              defaultIfNull="N/A"
-            />
-          </div>
-        </div>
-
-        <div className="text-center">
-          <p className="text-sm text-secondary">Estimated Token Price</p>
-          <div className="flex items-center justify-center pt-2">
-            <img
-              alt=""
-              width="20"
-              height="20"
-              src="/icons/usdc.svg"
-              className="mr-2"
-            />
-            <NumberText
-              className="font-bold text-mdx"
-              value={estimatedPrice}
-              defaultIfNull="N/A"
-              displayDecimals={6}
-            />
-          </div>
+      <div className="bg-secondary rounded-xl p-6 text-center">
+        <p className="text-sm text-secondary">USDC Contributed</p>
+        <div className="flex items-center justify-center pt-2">
+          <img
+            alt=""
+            width="20"
+            height="20"
+            src="/icons/usdc.svg"
+            className="mr-2"
+          />
+          <NumberText
+            className="font-bold text-mdx"
+            value={vaultUsdcBalance}
+            defaultIfNull="N/A"
+          />
         </div>
       </div>
-      <div className="bg-secondary rounded-xl p-6">
-        <div className="text-center">
-          <p className="text-sm text-secondary">PRT For Sale</p>
-          <div className="flex items-center justify-center pt-2">
-            <img className="h-5 mr-2 w-auto" src="/icons/prt.svg" alt="mango" />
-            <NumberText
-              className="font-bold text-mdx"
-              value={vaultPrtBalance}
-              defaultIfNull="N/A"
-            />
-          </div>
+      <div className="bg-secondary rounded-xl p-6 text-center">
+        <p className="text-sm text-secondary">Estimated Token Price</p>
+        <div className="flex items-center justify-center pt-2">
+          <img
+            alt=""
+            width="20"
+            height="20"
+            src="/icons/usdc.svg"
+            className="mr-2"
+          />
+          <NumberText
+            className="font-bold text-mdx"
+            value={estimatedPrice}
+            defaultIfNull="N/A"
+            displayDecimals={6}
+          />
+        </div>
+      </div>
+      <div className="bg-secondary rounded-xl p-6 text-center">
+        <p className="text-sm text-secondary">PRT For Sale</p>
+        <div className="flex items-center justify-center pt-2">
+          <img className="h-5 mr-2 w-auto" src="/icons/prt.svg" alt="mango" />
+          <NumberText
+            className="font-bold text-mdx"
+            value={vaultPrtBalance}
+            defaultIfNull="N/A"
+          />
         </div>
       </div>
     </div>
