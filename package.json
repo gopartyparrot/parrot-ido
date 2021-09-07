@@ -13,7 +13,9 @@
     "format": "prettier --write .",
     "lint": "eslint . --ext ts --ext tsx --ext js --ext jsx",
     "test": "jest",
-    "test-all": "yarn lint && yarn type-check && yarn test"
+    "test-all": "yarn lint && yarn type-check && yarn test",
+    "storybook": "start-storybook -s public -p 9001",
+    "storybook:build": "build-storybook -s public -p 9001"
   },
   "lint-staged": {
     "*.@(ts|tsx|js|jsx)": [
@@ -47,6 +49,13 @@
     "zustand": "3.5.10"
   },
   "devDependencies": {
+    "@babel/core": "7.15.5",
+    "@storybook/addon-actions": "6.3.8",
+    "@storybook/addon-essentials": "6.3.8",
+    "@storybook/addon-links": "6.3.8",
+    "@storybook/builder-webpack5": "6.3.8",
+    "@storybook/manager-webpack5": "6.3.8",
+    "@storybook/react": "6.3.8",
     "@svgr/webpack": "5.5.0",
     "@testing-library/react": "12.0.0",
     "@types/jest": "27.0.1",
@@ -55,6 +64,7 @@
     "@types/react-transition-group": "4.4.2",
     "@typescript-eslint/eslint-plugin": "4.30.0",
     "@typescript-eslint/parser": "4.30.0",
+    "autoprefixer": "^10.3.4",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "2.24.2",
@@ -64,14 +74,14 @@
     "husky": "7.0.2",
     "identity-obj-proxy": "3.0.0",
     "jest": "27.1.0",
-    "jest-watch-typeahead": "0.6.4",
     "lint-staged": "11.1.2",
     "postcss": "8.3.6",
     "postcss-preset-env": "6.7.0",
     "prettier": "2.3.2",
     "sass": "1.39.0",
+    "sass-loader": "^12.1.0",
     "tailwindcss": "2.2.9",
-    "twin.macro": "2.7.0",
-    "typescript": "4.4.2"
+    "typescript": "4.4.2",
+    "webpack": "5.52.0"
   }
 }

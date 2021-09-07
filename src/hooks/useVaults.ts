@@ -5,6 +5,7 @@ import { notify } from '../stores/useNotificationStore'
 import useWalletStore, { PoolAccount } from '../stores/useWalletStore'
 import { calculateBalance } from '../utils/balance'
 import { TokenAccount } from '../utils/tokens'
+import useInterval from './useInterval'
 
 export default function useVaults(pool: PoolAccount) {
   const { mints, actions } = useWalletStore((s) => s)
@@ -27,12 +28,12 @@ export default function useVaults(pool: PoolAccount) {
     })
   }, [])
 
-  // useInterval(async () => {
-  //   // refresh vaults regularly (to update price/usdc)
-  //   await fetchVaults()
-  //   // fetch RedeemableMint account to update mint total supply
-  //   await actions.fetchRedeemableMint(pool)
-  // }, 15_000)
+  useInterval(async () => {
+    // refresh vaults regularly (to update price/usdc)
+    await fetchVaults()
+    // fetch RedeemableMint account to update mint total supply
+    await actions.fetchRedeemableMint(pool)
+  }, 15_000)
 
   const usdcBalance = useMemo(
     () => calculateBalance(mints, usdcVault),

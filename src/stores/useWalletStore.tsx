@@ -1,12 +1,11 @@
 import { WalletAdapter, WalletEndpoint } from '@parrotfi/wallets'
-import * as anchor from '@project-serum/anchor'
+import { BN, Idl, Program, Provider, web3 } from '@project-serum/anchor'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import produce from 'immer'
 import uniqBy from 'lodash/uniqBy'
 import create, { SetState, State } from 'zustand'
 
-import { IDO_ENDPOINT } from '../config/constants'
+import { IDO_ENDPOINTS } from '../config/constants'
 import { findLargestBalanceAccountForMint } from '../hooks/useLargestAccounts'
 import poolIdl from '../idls/ido_pool.json'
 import { createAssociatedTokenAccount } from '../utils/associated'
@@ -22,28 +21,29 @@ import {
 } from '../utils/tokens'
 
 export interface PoolAccount {
-  publicKey: PublicKey
-  distributionAuthority: PublicKey
-  startIdoTs: anchor.BN
-  endDepositsTs: anchor.BN
-  endIdoTs: anchor.BN
-  withdrawMelonTs: anchor.BN
+  publicKey: web3.PublicKey
+  distributionAuthority: web3.PublicKey
+  startIdoTs: BN
+  endDepositsTs: BN
+  endIdoTs: BN
+  withdrawMelonTs: BN
   nonce: number
-  numIdoTokens: anchor.BN
-  poolUsdc: PublicKey
-  poolWatermelon: PublicKey
-  watermelonMint: PublicKey
-  redeemableMint: PublicKey
+  numIdoTokens: BN
+  poolUsdc: web3.PublicKey
+  poolWatermelon: web3.PublicKey
+  watermelonMint: web3.PublicKey
+  redeemableMint: web3.PublicKey
 }
 
 interface WalletStore extends State {
   connected: boolean
-  programId: PublicKey
-  usdcMint: PublicKey
+  programId: web3.PublicKey
+  usdcMint: web3.PublicKey
+  poolsPks: web3.PublicKey[]
   wallet: WalletAdapter | undefined
-  connection: Connection
-  provider: anchor.Provider | undefined
-  program: anchor.Program | undefined
+  connection: web3.Connection
+  provider: Provider | undefined
+  program: Program | undefined
   pools: PoolAccount[]
   tokenAccounts: ProgramAccount<TokenAccount>[]
   mints: { [pubkey: string]: MintAccount }
@@ -73,8 +73,9 @@ interface WalletStoreActions {
 
 const useWalletStore = create<WalletStore>((set, get) => ({
   connected: false,
-  programId: new PublicKey(IDO_ENDPOINT.programId),
-  usdcMint: new PublicKey(IDO_ENDPOINT.usdcMint),
+  programId: null,
+  usdcMint: null,
+  poolsPks: [],
   wallet: null,
   connection: null,
   provider: undefined,
@@ -84,29 +85,30 @@ const useWalletStore = create<WalletStore>((set, get) => ({
   mints: {},
   actions: {
     connectRpc(endpoint: WalletEndpoint) {
+      const idoConfig = IDO_ENDPOINTS.find(
+        (i) => i.network === endpoint.network
+      )
       set((state) => {
-        state.connection = new Connection(endpoint.rpcURL, {
+        state.programId = new web3.PublicKey(idoConfig.programId)
+        state.usdcMint = new web3.PublicKey(idoConfig.usdcMint)
+        state.poolsPks = idoConfig.pools.map((i) => new web3.PublicKey(i))
+        state.connection = new web3.Connection(endpoint.rpcURL, {
           commitment: endpoint.commitment,
         })
       })
     },
     async fetchPools() {
-      const { wallet, connection, programId, set } = get()
+      const { wallet, connection, programId, poolsPks, set } = get()
 
-      const provider = new anchor.Provider(
+      const provider = new Provider(
         connection,
         wallet,
-        anchor.Provider.defaultOptions()
+        Provider.defaultOptions()
       )
-      const program = new anchor.Program(
-        poolIdl as anchor.Idl,
-        programId,
-        provider
-      )
+      const program = new Program(poolIdl as Idl, programId, provider)
 
       const pools: PoolAccount[] = []
-      for await (const poolAddress of IDO_ENDPOINT.pools) {
-        const poolPk = new anchor.web3.PublicKey(poolAddress)
+      for await (const poolPk of poolsPks) {
         const pool = (await program.account.poolAccount.fetch(
           poolPk
         )) as PoolAccount
@@ -201,7 +203,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         usdcMint
       )
 
-      const [poolSigner] = await anchor.web3.PublicKey.findProgramAddress(
+      const [poolSigner] = await web3.PublicKey.findProgramAddress(
         [pool.watermelonMint.toBuffer()],
         program.programId
       )
@@ -220,7 +222,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         pool.redeemableMint
       )
       let redeemableAccPk = redeemableAcc?.account?.publicKey
-      const transaction = new Transaction()
+      const transaction = new web3.Transaction()
       if (!redeemableAccPk) {
         const [ins, pk] = await createAssociatedTokenAccount(
           wallet.publicKey,
@@ -241,7 +243,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
             userUsdc: usdc.account.publicKey,
             userRedeemable: redeemableAccPk,
             tokenProgram: TOKEN_PROGRAM_ID,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+            clock: web3.SYSVAR_CLOCK_PUBKEY,
           },
         })
       )
@@ -272,7 +274,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         usdcMint
       )
 
-      const [poolSigner] = await anchor.web3.PublicKey.findProgramAddress(
+      const [poolSigner] = await web3.PublicKey.findProgramAddress(
         [pool.watermelonMint.toBuffer()],
         program.programId
       )
@@ -288,7 +290,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         withdrawAmount.toString(),
         'exchangeRedeemableForUsdc'
       )
-      const transaction = new Transaction()
+      const transaction = new web3.Transaction()
       transaction.add(
         program.instruction.exchangeRedeemableForUsdc(withdrawAmount, {
           accounts: {
@@ -300,7 +302,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
             userUsdc: usdc.account.publicKey,
             userRedeemable: redeemable.account.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+            clock: web3.SYSVAR_CLOCK_PUBKEY,
           },
         })
       )
@@ -327,12 +329,12 @@ const useWalletStore = create<WalletStore>((set, get) => ({
 
       console.log('exchangeRedeemableForMango', redeemable, watermelon)
 
-      const [poolSigner] = await anchor.web3.PublicKey.findProgramAddress(
+      const [poolSigner] = await web3.PublicKey.findProgramAddress(
         [pool.watermelonMint.toBuffer()],
         program.programId
       )
 
-      const transaction = new Transaction()
+      const transaction = new web3.Transaction()
 
       let watermelonAccount = watermelon?.account?.publicKey
       if (!watermelonAccount) {
@@ -358,7 +360,7 @@ const useWalletStore = create<WalletStore>((set, get) => ({
               userWatermelon: watermelonAccount,
               userRedeemable: redeemable.account.publicKey,
               tokenProgram: TOKEN_PROGRAM_ID,
-              clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+              clock: web3.SYSVAR_CLOCK_PUBKEY,
             },
           }
         )

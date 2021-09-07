@@ -9,7 +9,7 @@ import { ThemeProvider } from 'next-themes'
 import React from 'react'
 
 import Notifications from '../components/Notifications'
-import { RPC_ENDPOINT, RPC_ENDPOINTS } from '../config/constants'
+import { DEFAULT_RPC, RPC_ENDPOINTS } from '../config/constants'
 import { IDOProvider } from '../contexts/IDOContext'
 import { ModalProvider } from '../contexts/ModalContext'
 import { RefreshProvider } from '../contexts/RefreshContext'
@@ -48,7 +48,7 @@ function App({ Component, pageProps }) {
       <ThemeProvider defaultTheme="light" attribute="class">
         <WalletProvider
           endpoints={RPC_ENDPOINTS}
-          defaultEndpoint={RPC_ENDPOINT}
+          defaultEndpoint={DEFAULT_RPC}
           onNotify={notify}
         >
           <ModalProvider>

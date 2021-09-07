@@ -65,7 +65,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
       }
       handleSubmit()
     }
-  }, [submitting, redeemablePrtAmount])
+  }, [submitting])
 
   const disableSubmit = !connected || loading || redeemablePrtAmount <= 0
 

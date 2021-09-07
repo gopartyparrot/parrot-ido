@@ -9,14 +9,14 @@ export const RPC_ENDPOINTS: WalletEndpoint[] = [
     id: 'parrot',
     network: 'mainnet-beta' as web3.Cluster,
     rpcURL: 'https://parrot.rpcpool.com',
-    rpcName: 'Parrot RCP',
+    rpcName: 'Parrot RPC',
     commitment: 'processed' as web3.Commitment,
   },
   {
     id: 'solana',
     network: 'mainnet-beta' as web3.Cluster,
     rpcURL: 'https://api.mainnet-beta.solana.com',
-    rpcName: 'Solana RCP',
+    rpcName: 'Solana RPC',
     commitment: 'processed' as web3.Commitment,
   },
   {
@@ -45,9 +45,12 @@ export const RPC_ENDPOINTS: WalletEndpoint[] = [
 export const IDO_ENDPOINTS = [
   {
     network: 'mainnet-beta' as web3.Cluster,
-    programId: 'xxx',
-    usdcMint: 'xxx',
-    pools: ['AHBj9LAjxStT2YQHN6QdfHKpZLtEVr8ACqeFgYcPsTnr'],
+    programId: '7r2chJLUU87eaM7T1aBi6f7g9BbtbgnwQ9kPbMGxJQWV',
+    usdcMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    pools: [
+      'EzYFsixTStAiB6cY51TM8rbwnnJrXFmTCZoaAm6wythB',
+      'A376PCoLXF4EBBnxxBLpvxCwUb81TKUUcEV8vFKL83J1',
+    ],
   },
   {
     network: 'devnet' as web3.Cluster,
@@ -60,5 +63,4 @@ export const IDO_ENDPOINTS = [
   },
 ]
 
-export const RPC_ENDPOINT = RPC_ENDPOINTS.find((i) => i.network === NETWORK)
-export const IDO_ENDPOINT = IDO_ENDPOINTS.find((i) => i.network === NETWORK)
+export const DEFAULT_RPC = RPC_ENDPOINTS.find((i) => i.network === NETWORK)

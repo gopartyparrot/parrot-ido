@@ -63,7 +63,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
     [isDeposit, endDeposits, redeemableBalance]
   )
 
-  const handleRefresh = useCallback(async () => {
+  const _handleRefresh = useCallback(async () => {
     setRefreshing(true)
     try {
       await actions.fetchWalletTokenAccounts()
