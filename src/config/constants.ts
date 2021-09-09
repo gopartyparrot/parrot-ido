@@ -48,8 +48,8 @@ export const IDO_ENDPOINTS = [
     programId: '7r2chJLUU87eaM7T1aBi6f7g9BbtbgnwQ9kPbMGxJQWV',
     usdcMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
     pools: [
-      'EzYFsixTStAiB6cY51TM8rbwnnJrXFmTCZoaAm6wythB',
-      'A376PCoLXF4EBBnxxBLpvxCwUb81TKUUcEV8vFKL83J1',
+      'FoBi5bfmuPHDoi74UANBG34Hg8uamv6exVHG9vwEkK6D',
+      '5r9Wk4cwCR2caJiB9E76XpcXsjQuFYJK71N3nwZJhVUH',
     ],
   },
   {
