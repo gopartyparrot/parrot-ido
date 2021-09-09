@@ -50,7 +50,7 @@ const BigCountdown: React.FC<BigCountdownProps> = ({ date, className }) => {
         <div
           className={classNames(
             className,
-            'flex items-center justify-center mb-10 sm:mb-16'
+            'flex items-center justify-center mt-6 mb-10 sm:mb-16'
           )}
         >
           <CountdownBlock count={days} label="DAYS" />

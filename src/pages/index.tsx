@@ -70,7 +70,7 @@ const Page: React.FC = () => {
           srcSet="/images/bg/m1.png 1x, /images/bg/m2.png 2x"
         />
       </div>
-      <div className="-mt-24">
+      <div className="-mt-32">
         {!isStared && <BigCountdown date={IDO_STARTS} />}
         {isStared && <Main />}
       </div>
