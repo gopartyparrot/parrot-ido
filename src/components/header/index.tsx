@@ -6,7 +6,7 @@ import { RpcSwitcher } from './RpcSwitcher'
 
 export const Header: React.FC = () => {
   return (
-    <header className="px-2 sm:px-6 fixed w-full">
+    <header className="px-2 sm:px-6 absolute top-0 w-full z-10">
       <div className="flex flex-row items-center justify-between h-16">
         <div>
           <Logo />
