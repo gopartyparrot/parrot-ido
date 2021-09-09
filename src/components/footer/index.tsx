@@ -3,8 +3,8 @@ import React from 'react'
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="px-2 sm:px-6 text-center mb-6">
-      <h5 className="text-lg font-bold">Backed by</h5>
+    <footer className="px-2 sm:px-6 text-center mb-2 sm:mb-6">
+      <h5 className="text-md sm:text-lg font-bold">Backed by</h5>
       <div className="mt-6 flex flex-row items-end justify-center space-x-6">
         <div>
           <Image src="/images/backed/alameda.svg" width={216} height={44} />
