@@ -21,9 +21,10 @@ BigNumber.config({
 })
 
 function App({ Component, pageProps }) {
-  const title = 'Parrot IDO'
-  const description = ''
-  const keywords = 'Parrot IDO, DeFi, Solana, Lending, Borrow'
+  const title = 'Parrot Protocol IDO'
+  const description =
+    'This is the IDO (initial DEX offering) page for Parrot Protocol, a liquidity network for borrowing and lending on Solana. Get access to PRT tokens!'
+  const keywords = 'Parrot, IDO, DeFi, Solana, Lending, Borrow'
   const baseUrl = 'https://ido.parrot.fi'
 
   return (

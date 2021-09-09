@@ -84,7 +84,7 @@
   --color-bg-disabled: #050505;
   --color-bg-input: #191b2e;
   --color-bg-header: #191b2e;
-  --color-bg-scaffold: #000000;
+  --color-bg-scaffold: #191a27;
   --color-bg-overlay: rgba(0, 0, 0, 0.6);
   // Border
   --color-border-default: rgb(26, 27, 32);
@@ -163,12 +163,7 @@ button {
 
 .dark .react-loading-skeleton {
   background-color: #282938 !important;
-  background-image: linear-gradient(
-    90deg,
-    #25263b,
-    #343548,
-    #25263b
-  ) !important;
+  background-image: linear-gradient(90deg, #25263b, #343548, #25263b) !important;
 }
 
 .dark-mode-toggle {

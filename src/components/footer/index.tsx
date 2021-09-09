@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
           <Image src="/images/backed/ngc.svg" width={178} height={20} />
         </div>
       </div>
-      <div className="mt-8 flex flex-row items-center justify-center m-auto space-x-6">
+      <div className="mt-3 sm:mt-6 flex flex-row flex-wrap items-center justify-center m-auto space-x-6 space-y-3">
         <div>
           <Image src="/images/backed/sino.svg" width={80} height={24} />
         </div>

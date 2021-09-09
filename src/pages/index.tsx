@@ -54,12 +54,23 @@ const Page: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-scaffold">
       <Header />
-      <img
-        srcSet="/images/bg/1.png 2880px, /images/bg/2.png 1440px"
-        src="/images/bg/2.png"
-        alt=""
-      />
-      <div className="-mt-20">
+      <div className="w-full flex justify-center items-center overflow-hidden">
+        <img
+          className="max-w-none hidden sm:block"
+          width="1440px"
+          height="500px"
+          src="/images/bg/d1.png"
+          srcSet="/images/bg/d1.png 1x, /images/bg/d2.png 2x"
+        />
+        <img
+          className="max-w-none block sm:hidden"
+          width="1000px"
+          height="1100px"
+          src="/images/bg/m1.png"
+          srcSet="/images/bg/m1.png 1x, /images/bg/m2.png 2x"
+        />
+      </div>
+      <div className="-mt-24">
         {!isStared && <BigCountdown date={IDO_STARTS} />}
         {isStared && <Main />}
       </div>

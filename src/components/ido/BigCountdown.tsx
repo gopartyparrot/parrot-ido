@@ -17,7 +17,7 @@ const CountdownBlock: React.FC<CountdownBlockProps> = ({
 }) => {
   return (
     <>
-      <div className="bg-tertiary flex flex-col items-center w-12 sm:w-100 pt-4 rounded-xl overflow-hidden">
+      <div className="bg-tertiary flex flex-col items-center w-14 sm:w-100 pt-4 rounded-xl overflow-hidden">
         <div className="text-brandPrimary text-lg sm:text-xxl text-center font-bold">
           {count}
         </div>
@@ -26,7 +26,7 @@ const CountdownBlock: React.FC<CountdownBlockProps> = ({
         </div>
       </div>
       {!isLast && (
-        <div className="text-brandPrimary text-lg sm:text-xxl px-2 sm:px-4 mb-6 sm:mb-12">
+        <div className="text-brandPrimary text-lg sm:text-xxl px-2 sm:px-4 mb-6 font-bold sm:mb-12">
           :
         </div>
       )}
@@ -50,7 +50,7 @@ const BigCountdown: React.FC<BigCountdownProps> = ({ date, className }) => {
         <div
           className={classNames(
             className,
-            'flex items-center justify-center mb-6 sm:mb-16'
+            'flex items-center justify-center mb-10 sm:mb-16'
           )}
         >
           <CountdownBlock count={days} label="DAYS" />
