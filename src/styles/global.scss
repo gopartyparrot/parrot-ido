@@ -44,7 +44,7 @@
   --color-bg-tertiary: #ededf2;
   --color-bg-disabled: #e9eaeb;
   --color-bg-input: #e8f4f5;
-  --color-bg-header: #ffffff;
+  --color-bg-header: transparent;
   --color-bg-scaffold: #e5e5e5;
   --color-bg-overlay: rgba(0, 0, 0, 0.6);
   // Border
@@ -106,7 +106,7 @@
 }
 
 body {
-  @apply tracking-wide font-sans font-normal text-base text-default;
+  @apply tracking-wide font-sans font-normal text-base text-default bg-scaffold;
 }
 
 h2 {
@@ -163,12 +163,7 @@ button {
 
 .dark .react-loading-skeleton {
   background-color: #282938 !important;
-  background-image: linear-gradient(
-    90deg,
-    #25263b,
-    #343548,
-    #25263b
-  ) !important;
+  background-image: linear-gradient(90deg, #25263b, #343548, #25263b) !important;
 }
 
 .dark-mode-toggle {

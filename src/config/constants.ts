@@ -1,8 +1,19 @@
 import { WalletEndpoint } from '@parrotfi/wallets'
 import { web3 } from '@project-serum/anchor'
+import moment from 'moment'
 
 export const NETWORK = process.env.NEXT_PUBLIC_NETWORK
 export const VERSION = process.env.NEXT_PUBLIC_VERSION
+
+/**
+ * Used after IDO finished, need to set it before withdraw found
+ */
+export const IDO_TOTAL_RAISED = 0
+
+/**
+ * Used for lending page countdown
+ */
+export const IDO_STARTS = moment('September 14, 2021 9:00:00 AM GMT+08:00')
 
 export const RPC_ENDPOINTS: WalletEndpoint[] = [
   {

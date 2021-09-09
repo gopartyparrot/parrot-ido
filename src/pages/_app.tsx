@@ -45,7 +45,7 @@ function App({ Component, pageProps }) {
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@gopartyparrot" />
       </Head>
-      <ThemeProvider defaultTheme="light" attribute="class">
+      <ThemeProvider defaultTheme="dark" attribute="class">
         <WalletProvider
           endpoints={RPC_ENDPOINTS}
           defaultEndpoint={DEFAULT_RPC}

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { IDO_TOTAL_RAISED } from '../../config/constants'
 import useLargestAccounts from '../../hooks/useLargestAccounts'
 import usePool from '../../hooks/usePool'
 import useVaults from '../../hooks/useVaults'
@@ -97,7 +98,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           />
           <NumberText
             className="font-bold text-mdx"
-            value={usdcBalance}
+            value={IDO_TOTAL_RAISED || usdcBalance}
             defaultIfNull="N/A"
           />
         </div>

@@ -85,12 +85,12 @@ export const RpcSwitcher: React.FC = () => {
                         className="text-brandPrimary text-sm"
                         onClick={handleSelectCustomRpc(item, close)}
                       >
-                        apply
+                        edit
                       </button>
                     </div>
                     <input
                       placeholder="https://api.mainnet-beta.solana.com"
-                      className="appearance-none pt-3 text-xs focus:outline-none outline-none inline-flex w-full"
+                      className="bg-input appearance-none pt-2 text-xs focus:outline-none outline-none inline-flex w-full"
                       value={customRpcURL}
                       onChange={handleChangeCustomRpc}
                     />

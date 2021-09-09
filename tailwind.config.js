@@ -76,7 +76,7 @@ module.exports = {
       mdx: ['20px', '20px'],
       lg: ['24px', '24px'],
       xl: ['36px', '36px'],
-      xxl: ['40px', '40px'],
+      xxl: ['64px', '64px'],
     },
     extend: {
       minWidth: {
@@ -92,6 +92,9 @@ module.exports = {
       },
       maxHeight: {
         90: '21rem',
+      },
+      width: {
+        100: '100px',
       },
       blur: {
         xs: 'blur(3px)',
