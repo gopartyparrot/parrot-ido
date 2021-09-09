@@ -8,6 +8,7 @@ module.exports = {
   env: {
     NEXT_PUBLIC_VERSION: process.env.VERSION,
     NEXT_PUBLIC_NETWORK: process.env.NETWORK,
+    NEXT_PUBLIC_IDO_START: process.env.IDO_START,
   },
   webpack: (config, options) => {
     config.module = {

@@ -13,7 +13,7 @@ export const IDO_TOTAL_RAISED = 0
 /**
  * Used for lending page countdown
  */
-export const IDO_STARTS = moment('2021-09-14T09:00:00+08:00')
+export const IDO_STARTS = moment(process.env.NEXT_PUBLIC_IDO_START)
 
 export const RPC_ENDPOINTS: WalletEndpoint[] = [
   {
