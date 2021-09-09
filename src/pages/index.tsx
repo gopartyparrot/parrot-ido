@@ -57,15 +57,15 @@ const Page: React.FC = () => {
       <div className="w-full flex justify-center items-center overflow-hidden">
         <img
           className="max-w-none hidden sm:block"
-          width="1440px"
-          height="500px"
+          width={1440}
+          height={500}
           src="/images/bg/d1.png"
           srcSet="/images/bg/d1.png 1x, /images/bg/d2.png 2x"
         />
         <img
           className="max-w-none block sm:hidden"
-          width="1000px"
-          height="1100px"
+          width={1000}
+          height={1100}
           src="/images/bg/m1.png"
           srcSet="/images/bg/m1.png 1x, /images/bg/m2.png 2x"
         />

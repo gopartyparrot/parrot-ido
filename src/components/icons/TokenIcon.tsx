@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import React from 'react'
 
 interface TokenIconProps {
@@ -16,7 +15,7 @@ const TokenIcon: React.FC<TokenIconProps> = ({
 }) => {
   const iconUrl = icon?.startsWith('http') ? icon : `/icons/${icon}`
   return (
-    <Image
+    <img
       className={className}
       src={iconUrl}
       alt={symbol}
