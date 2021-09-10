@@ -315,7 +315,6 @@ const useWalletStore = create<WalletStore>((set, get) => ({
         get()
 
       await actions.fetchWalletTokenAccounts()
-
       const redeemable = findLargestBalanceAccountForMint(
         mints,
         tokenAccounts,

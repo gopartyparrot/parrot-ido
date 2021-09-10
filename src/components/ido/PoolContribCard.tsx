@@ -27,7 +27,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
 
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-  const [, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [isDeposit, setIsDeposit] = useState(true)
   const [inputAmount, setInputAmount] = useState('0')
 
@@ -63,7 +63,9 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
     [isDeposit, endDeposits, redeemableBalance]
   )
 
-  const _handleRefresh = useCallback(async () => {
+  const handleRefresh = useCallback(async () => {
+    console.log('handleRefresh start')
+
     setRefreshing(true)
     try {
       await actions.fetchWalletTokenAccounts()
@@ -91,10 +93,16 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
   }, [submitting, isDeposit, inputAmount, totalBalance])
 
   useEffect(() => {
-    setLoading(true)
-    if (largestAccounts.usdc) {
+    if (!loading) {
+      return
+    }
+    if (isDeposit && largestAccounts.usdc) {
       setLoading(false)
     }
+    if (!isDeposit && largestAccounts.redeemable) {
+      setLoading(false)
+    }
+    setTimeout(() => setLoading(false), 2000)
   }, [largestAccounts])
 
   useEffect(() => {
@@ -104,8 +112,8 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
           notify({
             type: 'warn',
             title: isDeposit
-              ? 'Required deposit amount'
-              : 'Required withdraw amount',
+              ? 'Required a deposit amount'
+              : 'Required a withdraw amount',
             message: 'Please enter a valid amount',
           })
           setSubmitting(false)
@@ -166,6 +174,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
         placeholder="0"
         maxValue={totalBalance.toString()}
         maxIsLoading={connected && loading}
+        maxIsRefreshing={refreshing}
         maxLabel={isDeposit ? `balance:` : `max withdraw:`}
         errorMessage={inputError.message}
         hasError={inputError.hasError}
@@ -174,6 +183,7 @@ const PoolContribCard: React.FC<PoolContribCardProps> = ({ pool }) => {
         value={inputAmount}
         valueRound="ceil"
         decimals={6}
+        onRefreshMax={handleRefresh}
         onChange={handleChangeAmount}
         disabled={!connected}
       />

@@ -2,8 +2,6 @@ import classNames from 'classnames'
 import moment from 'moment'
 import Countdown from 'react-countdown'
 
-import { useRefresh } from '../../hooks/useRefresh'
-
 interface CountdownBlockProps {
   count: string
   label: string

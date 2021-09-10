@@ -1,3 +1,4 @@
+import { RefreshIcon } from '@heroicons/react/outline'
 import BigNumber from 'bignumber.js'
 import classNames from 'classnames'
 import React, { useCallback } from 'react'
@@ -38,6 +39,7 @@ type AmountInputProps = {
   maxValue?: string
   maxPercentage?: number
   maxIsLoading?: boolean
+  maxIsRefreshing?: boolean
   tokenIcon: string
   tokenSymbol: string
   tokenNameDetail?: string
@@ -46,6 +48,7 @@ type AmountInputProps = {
   readOnly?: boolean
   hasError?: boolean
   onChange?: (value: string) => void
+  onRefreshMax?: () => void
   onSelectToken?: () => void
 }
 
@@ -56,6 +59,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   maxValue,
   maxPercentage = 100,
   maxIsLoading,
+  maxIsRefreshing,
   placeholder,
   tokenIcon,
   tokenSymbol,
@@ -68,6 +72,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   hasError = false,
   errorMessage,
   onChange,
+  onRefreshMax,
   onSelectToken,
 }) => {
   const handleChange = useCallback(
@@ -199,6 +204,15 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           {maxLabel} {maxIsLoading ? '' : maxValue}
         </button>
         {maxIsLoading && <Spinner className="mx-1" size="sm" />}
+        {onRefreshMax && (
+          <button disabled={maxIsRefreshing} onClick={onRefreshMax}>
+            <RefreshIcon
+              className={classNames('w-3 h-3 ml-1', {
+                'animate-spin': maxIsRefreshing,
+              })}
+            />
+          </button>
+        )}
       </div>
     </div>
   )
