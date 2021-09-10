@@ -37,11 +37,14 @@ const CountdownBlock: React.FC<CountdownBlockProps> = ({
 interface BigCountdownProps {
   date: moment.Moment
   className?: string
+  onComplete: () => void
 }
 
-const BigCountdown: React.FC<BigCountdownProps> = ({ date, className }) => {
-  const { doForceRefresh } = useRefresh()
-
+const BigCountdown: React.FC<BigCountdownProps> = ({
+  className,
+  date,
+  onComplete,
+}) => {
   const renderCountdown = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
       return <div />
@@ -67,7 +70,7 @@ const BigCountdown: React.FC<BigCountdownProps> = ({ date, className }) => {
       <Countdown
         date={date.format()}
         renderer={renderCountdown}
-        onComplete={doForceRefresh}
+        onComplete={onComplete}
       />
     )
   } else {

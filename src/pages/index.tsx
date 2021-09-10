@@ -10,6 +10,7 @@ import CardBase from '../components/ido/CardBase'
 import PoolCard from '../components/ido/PoolCard'
 import { IDO_STARTS } from '../config/constants'
 import { useIDO } from '../hooks/useIDO'
+import { useRefresh } from '../hooks/useRefresh'
 import useWalletStore from '../stores/useWalletStore'
 
 const Main = () => {
@@ -49,6 +50,7 @@ const Main = () => {
 }
 
 const Page: React.FC = () => {
+  const { doForceRefresh } = useRefresh()
   const isStared = IDO_STARTS.isBefore()
 
   return (
@@ -71,7 +73,9 @@ const Page: React.FC = () => {
         />
       </div>
       <div className="-mt-32">
-        {!isStared && <BigCountdown date={IDO_STARTS} />}
+        {!isStared && (
+          <BigCountdown date={IDO_STARTS} onComplete={doForceRefresh} />
+        )}
         {isStared && <Main />}
       </div>
       <Footer />

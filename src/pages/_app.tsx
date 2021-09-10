@@ -20,7 +20,7 @@ BigNumber.config({
   DECIMAL_PLACES: 80,
 })
 
-function App({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   const title = 'Parrot Protocol IDO'
   const description =
     'This is the IDO (initial DEX offering) page for Parrot Protocol, a liquidity network for borrowing and lending on Solana. Get access to PRT tokens!'
@@ -67,4 +67,4 @@ function App({ Component, pageProps }) {
   )
 }
 
-export default App
+export default MyApp

@@ -8,7 +8,7 @@ export const VERSION = process.env.NEXT_PUBLIC_VERSION
 /**
  * Used after IDO finished, need to set it before withdraw found
  */
-export const IDO_TOTAL_RAISED = 0
+export const IDO_TOTAL_RAISED = process.env.NEXT_PUBLIC_IDO_RAISED || 0
 
 /**
  * Used for lending page countdown
