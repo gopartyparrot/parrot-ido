@@ -1,6 +1,6 @@
 # Parrot IDO - Frontend
 
-I modified version of the [Mango Token Sale](https://github.com/blockworks-foundation/mango-token-sale) with some improvements.
+A modified version of the [Mango Token Sale](https://github.com/blockworks-foundation/mango-token-sale) with some improvements.
 
 The main changes are:
 
@@ -28,7 +28,7 @@ NOTE: it will build and export a static HTML version
 
 ## Configuration
 
-The configuration for the awaitables RPCs and IDO pools are in [constants.ts](./src/config/constants.ts)
+The configuration for the available RPCs and IDO pools are in [constants.ts](./src/config/constants.ts)
 
 ## Testing
 
