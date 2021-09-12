@@ -6,6 +6,10 @@ A modification of the [Mango Token Sale](https://github.com/blockworks-foundatio
 - Support for RPC selection
 - Parrot UI components/styling
 
+# Security
+
+Review that mainnet addresses in [constants.ts](./src/config/constants.ts) match the [Parrot IDO mainnet addresses](https://doc.parrot.fi/security/mainnet.html#prt-ido).
+
 # Serving The UI
 
 The IDO UI is hosted at https://ido.parrot.fi/, but if you'd like to server your own UI, a pre-compiled static HTML site is available in `out`. You can use any static web server to serve that content.
