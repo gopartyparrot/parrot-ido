@@ -59,8 +59,8 @@ export const IDO_ENDPOINTS = [
     programId: '7r2chJLUU87eaM7T1aBi6f7g9BbtbgnwQ9kPbMGxJQWV',
     usdcMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
     pools: [
-      'GdnWPYwejSugpNHPWT3tAYkCLZaPVSNLqsMkqWNa5ZUu', //pool1
-      '5mMwUnXr4NxtwRKvbrQ4Q3QNXGfu2wdWDLTpfrqHaKAA', //pool2
+      '5JGWQPf6zLhuxL4bXa8aWKPxakqVJMWbMf9TBaVWfpXD', //Round 1
+      '9U8xzksWyGkKCAdf4yS49VftTKXk5sSurJn8xF1hcdqd', //Round 2
     ],
   },
   {
