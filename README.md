@@ -1,36 +1,44 @@
 # Parrot IDO - Frontend
 
-A modified version of the [Mango Token Sale](https://github.com/blockworks-foundation/mango-token-sale) with some improvements.
-
-The main changes are:
+A modification of the [Mango Token Sale](https://github.com/blockworks-foundation/mango-token-sale) with some improvements.
 
 - Support for multiple IDO pools
 - Support for RPC selection
 - Parrot UI components/styling
 
-## How to use
+# Serving The UI
 
-Firstly you need to copy the `.env.example` file to `.env` and change the `IDO_START` and `NETWORK` accordingly.
+The IDO UI is hosted at https://ido.parrot.fi/, but if you'd like to server your own UI, a pre-compiled static HTML site is available in `out`. You can use any static web server to serve that content.
 
-For development:
+For example, to use python's http server:
+
+```
+(cd out && python3 -m http.server 8899)
+```
+
+Then open http://localhost:8899, you should see the IDO UI:
+
+![](./images/ido-ui.png)
+
+# Development
+
+To start the vue server:
 
 ```bash
 yarn dev
 ```
 
-For production:
+To build for production:
 
 ```bash
 yarn build
 ```
 
-NOTE: it will build and export a static HTML version
-
 ## Configuration
 
 The configuration for the available RPCs and IDO pools are in [constants.ts](./src/config/constants.ts)
 
-## Testing
+## Storybook
 
 We use `storybook` to test the different states of the pool
 

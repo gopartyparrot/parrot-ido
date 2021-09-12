@@ -51,7 +51,9 @@ const Main = () => {
 
 const Page: React.FC = () => {
   const { doForceRefresh } = useRefresh()
-  const isStared = IDO_STARTS.isBefore()
+  // const isStarted = IDO_STARTS.isBefore()
+
+  const isStarted = true
 
   return (
     <div className="min-h-screen flex flex-col bg-scaffold">
@@ -73,10 +75,10 @@ const Page: React.FC = () => {
         />
       </div>
       <div className="-mt-32">
-        {!isStared && (
+        {!isStarted && (
           <BigCountdown date={IDO_STARTS} onComplete={doForceRefresh} />
         )}
-        {isStared && <Main />}
+        {isStarted && <Main />}
       </div>
       <Footer />
     </div>
