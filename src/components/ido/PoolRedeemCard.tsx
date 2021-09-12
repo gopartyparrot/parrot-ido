@@ -151,6 +151,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           <NumberText
             className="font-bold text-mdx"
             value={redeemablePrtAmount}
+            displayDecimals={6}
             defaultIfNull="N/A"
           />
         </div>
