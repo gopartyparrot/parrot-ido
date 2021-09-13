@@ -28,6 +28,7 @@ module.exports = {
       alias: {
         ...config.resolve.alias,
         react: resolve('./node_modules/react'),
+        'react-dom': resolve('./node_modules/react-dom'),
       },
     }
     if (!options.isServer) {

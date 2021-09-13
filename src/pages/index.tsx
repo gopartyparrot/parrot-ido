@@ -51,9 +51,7 @@ const Main = () => {
 
 const Page: React.FC = () => {
   const { doForceRefresh } = useRefresh()
-  // const isStarted = IDO_STARTS.isBefore()
-
-  const isStarted = true
+  const isStarted = IDO_STARTS.isBefore()
 
   return (
     <div className="min-h-screen flex flex-col bg-scaffold">
