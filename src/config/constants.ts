@@ -17,17 +17,17 @@ export const IDO_STARTS = moment(process.env.NEXT_PUBLIC_IDO_START)
 
 export const RPC_ENDPOINTS: WalletEndpoint[] = [
   {
-    id: 'solana_rpc',
-    network: 'mainnet-beta' as web3.Cluster,
-    rpcURL: 'https://api.mainnet-beta.solana.com',
-    rpcName: 'Solana RPC',
-    commitment: 'processed' as web3.Commitment,
-  },
-  {
-    id: 'parrot_rpc',
+    id: 'parrot',
     network: 'mainnet-beta' as web3.Cluster,
     rpcURL: 'https://parrot.rpcpool.com',
     rpcName: 'Parrot RPC',
+    commitment: 'processed' as web3.Commitment,
+  },
+  {
+    id: 'solana',
+    network: 'mainnet-beta' as web3.Cluster,
+    rpcURL: 'https://api.mainnet-beta.solana.com',
+    rpcName: 'Solana RPC',
     commitment: 'processed' as web3.Commitment,
   },
   {
@@ -74,4 +74,4 @@ export const IDO_ENDPOINTS = [
   },
 ]
 
-export const DEFAULT_RPC = RPC_ENDPOINTS.find((i) => i.id === 'solana_rpc')
+export const DEFAULT_RPC = RPC_ENDPOINTS.find((i) => i.id === 'parrot')
