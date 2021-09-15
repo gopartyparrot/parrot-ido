@@ -61,18 +61,16 @@ const Page: React.FC = () => {
           className="max-w-none hidden sm:block"
           width={1440}
           height={500}
-          src="/images/bg/d1.png"
-          srcSet="/images/bg/d1.png 1x, /images/bg/d2.png 2x"
+          src={isStarted ? '/images/bg/d1.png' : '/images/bg/d2.png'}
         />
         <img
           className="max-w-none block sm:hidden"
-          width={1000}
-          height={1100}
-          src="/images/bg/m1.png"
-          srcSet="/images/bg/m1.png 1x, /images/bg/m2.png 2x"
+          width={375}
+          height={415}
+          src={isStarted ? '/images/bg/m1.png' : '/images/bg/m2.png'}
         />
       </div>
-      <div className="-mt-32">
+      <div className="-mt-24 sm:-mt-32">
         {!isStarted && (
           <BigCountdown date={IDO_STARTS} onComplete={doForceRefresh} />
         )}
