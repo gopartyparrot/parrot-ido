@@ -9,6 +9,7 @@ import { ThemeProvider } from 'next-themes'
 import React from 'react'
 
 import Notifications from '../components/Notifications'
+import ScriptAnalytics from '../components/ScriptAnalytics'
 import { DEFAULT_RPC, RPC_ENDPOINTS } from '../config/constants'
 import { IDOProvider } from '../contexts/IDOContext'
 import { ModalProvider } from '../contexts/ModalContext'
@@ -62,6 +63,7 @@ function MyApp({ Component, pageProps }) {
             </IDOProvider>
           </ModalProvider>
         </WalletProvider>
+        <ScriptAnalytics analyticsID="G-S8MXERDM2M" />
       </ThemeProvider>
     </>
   )
