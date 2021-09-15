@@ -20,21 +20,14 @@ export const RPC_ENDPOINTS: WalletEndpoint[] = [
     id: 'parrot2',
     network: 'mainnet-beta' as web3.Cluster,
     rpcURL: 'https://lokidfxnwlabdq.main.genesysgo.net:8899/',
-    rpcName: 'GenesysGo',
+    rpcName: 'GenesysGo RPC',
     commitment: 'processed' as web3.Commitment,
   },
   {
     id: 'parrot',
     network: 'mainnet-beta' as web3.Cluster,
     rpcURL: 'https://parrot.rpcpool.com',
-    rpcName: 'Parrot RPC',
-    commitment: 'processed' as web3.Commitment,
-  },
-  {
-    id: 'solana',
-    network: 'mainnet-beta' as web3.Cluster,
-    rpcURL: 'https://api.mainnet-beta.solana.com',
-    rpcName: 'Solana RPC',
+    rpcName: 'Triton RPC',
     commitment: 'processed' as web3.Commitment,
   },
   {

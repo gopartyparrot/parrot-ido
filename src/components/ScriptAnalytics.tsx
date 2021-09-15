@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
 interface IProps {
-  analyticsID: string;
+  analyticsID: string
 }
 
 const ScriptAnalytics = ({ analyticsID }: IProps) => {
@@ -17,11 +17,11 @@ const ScriptAnalytics = ({ analyticsID }: IProps) => {
  window.dataLayer = window.dataLayer || [];
  function gtag(){dataLayer.push(arguments);}
  gtag('js', new Date());
- gtag('config', '${analyticsID}');`
+ gtag('config', '${analyticsID}');`,
         }}
       ></script>
     </>
-  );
-};
+  )
+}
 
-export default ScriptAnalytics;
+export default ScriptAnalytics
