@@ -17,6 +17,13 @@ export const IDO_STARTS = moment(process.env.NEXT_PUBLIC_IDO_START)
 
 export const RPC_ENDPOINTS: WalletEndpoint[] = [
   {
+    id: 'parrot2',
+    network: 'mainnet-beta' as web3.Cluster,
+    rpcURL: 'https://lokidfxnwlabdq.main.genesysgo.net:8899/',
+    rpcName: 'GenesysGo',
+    commitment: 'processed' as web3.Commitment,
+  },
+  {
     id: 'parrot',
     network: 'mainnet-beta' as web3.Cluster,
     rpcURL: 'https://parrot.rpcpool.com',
@@ -74,4 +81,4 @@ export const IDO_ENDPOINTS = [
   },
 ]
 
-export const DEFAULT_RPC = RPC_ENDPOINTS.find((i) => i.id === 'parrot')
+export const DEFAULT_RPC = RPC_ENDPOINTS.find((i) => i.id === 'parrot2')
