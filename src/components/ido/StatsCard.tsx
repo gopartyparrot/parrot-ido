@@ -29,7 +29,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
     tooltip: tooltipSale,
     tooltipVisible: tooltipSaleVisible,
   } = useTooltip(
-    `In the first 24 hours, you may deposit or withdraw your USDC from the vault. During the sale period, the PRT price can fluctuate.`,
+    `In the first 12 hours, you may deposit or withdraw your USDC from the vault. During the sale period, the PRT price can fluctuate.`,
     {
       placement: 'bottom-start',
       trigger: 'hover',
@@ -41,7 +41,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
     tooltip: tooltipGrace,
     tooltipVisible: tooltipGraceVisible,
   } = useTooltip(
-    `After 24 hours, deposits will be restricted and only withdrawals allowed. During the grace period, the PRT price can only go down.`,
+    `After 12 hours, deposits will be restricted and only withdrawals allowed. During the grace period, the PRT price can only go down.`,
     {
       placement: 'bottom-start',
       trigger: 'hover',
