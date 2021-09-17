@@ -51,7 +51,7 @@ export const RPC_ENDPOINTS: WalletEndpoint[] = [
 
 export const IDO_RESULTS = {
   '5JGWQPf6zLhuxL4bXa8aWKPxakqVJMWbMf9TBaVWfpXD': {
-    contributed: 69229456.18,
+    contributed: 69229456.78,
     allocation: new BigNumber(2.1).multipliedBy(0.8).multipliedBy(10 ** 9),
   },
   '9U8xzksWyGkKCAdf4yS49VftTKXk5sSurJn8xF1hcdqd': {
