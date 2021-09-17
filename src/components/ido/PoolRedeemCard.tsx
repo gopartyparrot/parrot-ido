@@ -1,6 +1,7 @@
+import BigNumber from 'bignumber.js'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { IDO_TOTAL_RAISED } from '../../config/constants'
+import { IDO_RESULTS } from '../../config/constants'
 import useLargestAccounts from '../../hooks/useLargestAccounts'
 import usePool from '../../hooks/usePool'
 import useVaults from '../../hooks/useVaults'
@@ -71,6 +72,11 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
     }
   }, [submitting])
 
+  const idoResult = IDO_RESULTS[pool.publicKey.toBase58()]
+  const estimatedPrice = new BigNumber(
+    idoResult?.contributed || usdcBalance
+  ).dividedBy(idoResult?.allocation || prtBalance)
+
   const disableSubmit =
     !connected || loading || redeemablePrtAmount <= 0 || startRedeem.isAfter()
 
@@ -98,12 +104,12 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
           />
           <NumberText
             className="font-bold text-mdx"
-            value={IDO_TOTAL_RAISED || usdcBalance}
+            value={idoResult?.contributed || usdcBalance}
             defaultIfNull="N/A"
           />
         </div>
       </div>
-      {/* <div className="bg-secondary rounded-xl p-6 text-center mt-2">
+      <div className="bg-secondary rounded-xl p-6 text-center mt-2">
         <p className="text-sm text-secondary">Token Price</p>
         <div className="flex items-center justify-center pt-2">
           <img
@@ -120,7 +126,7 @@ const PoolRedeemCard: React.FC<PoolRedeemCardProps> = ({ pool }) => {
             displayDecimals={6}
           />
         </div>
-      </div> */}
+      </div>
       <div className="bg-secondary rounded-xl p-6 text-center mt-2">
         <p className="text-sm text-secondary">Your contribution</p>
         <div className="flex items-center justify-center pt-2">

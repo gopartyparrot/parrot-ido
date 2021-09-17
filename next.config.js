@@ -9,7 +9,6 @@ module.exports = {
     NEXT_PUBLIC_VERSION: process.env.VERSION,
     NEXT_PUBLIC_NETWORK: process.env.NETWORK,
     NEXT_PUBLIC_IDO_START: process.env.IDO_START,
-    NEXT_PUBLIC_IDO_RAISED: process.env.IDO_RAISED,
   },
   webpack: (config, options) => {
     config.module = {

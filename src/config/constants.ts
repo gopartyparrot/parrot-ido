@@ -1,14 +1,10 @@
 import { WalletEndpoint } from '@parrotfi/wallets'
 import { web3 } from '@project-serum/anchor'
+import BigNumber from 'bignumber.js'
 import moment from 'moment'
 
 export const NETWORK = process.env.NEXT_PUBLIC_NETWORK
 export const VERSION = process.env.NEXT_PUBLIC_VERSION
-
-/**
- * Used after IDO finished, need to set it before withdraw found
- */
-export const IDO_TOTAL_RAISED = process.env.NEXT_PUBLIC_IDO_RAISED || 0
 
 /**
  * Used for lending page countdown
@@ -52,6 +48,17 @@ export const RPC_ENDPOINTS: WalletEndpoint[] = [
   //   commitment: 'processed' as web3.Commitment,
   // },
 ]
+
+export const IDO_RESULTS = {
+  '5JGWQPf6zLhuxL4bXa8aWKPxakqVJMWbMf9TBaVWfpXD': {
+    contributed: 69229456.18,
+    allocation: new BigNumber(2.1).multipliedBy(0.8).multipliedBy(10 ** 9),
+  },
+  '9U8xzksWyGkKCAdf4yS49VftTKXk5sSurJn8xF1hcdqd': {
+    contributed: 0,
+    allocation: new BigNumber(2.1).multipliedBy(0.2).multipliedBy(10 ** 9),
+  },
+}
 
 export const IDO_ENDPOINTS = [
   {
