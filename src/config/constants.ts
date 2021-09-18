@@ -55,7 +55,7 @@ export const IDO_RESULTS = {
     allocation: new BigNumber(2.1).multipliedBy(0.8).multipliedBy(10 ** 9),
   },
   '9U8xzksWyGkKCAdf4yS49VftTKXk5sSurJn8xF1hcdqd': {
-    contributed: 0,
+    contributed: 15544369.99,
     allocation: new BigNumber(2.1).multipliedBy(0.2).multipliedBy(10 ** 9),
   },
 }
